@@ -192,25 +192,61 @@ function renderSobre() {
     </article>`).join('');
 }
 
-/* ---------- mentor ------------------------------------------------------ */
-function renderMentor() {
-  const el = $('#mentorBox'); if (!el) return;
-  const m = DATA.site.mentor, L = DATA.site.links;
-  el.innerHTML = `
-    <img class="mentor__avatar" src="${url('assets/logo/avatar-256.png')}" width="128" height="128"
-         alt="Avatar do DBA BRABO" loading="lazy">
-    <div>
-      <p class="eyebrow">Fundador e mentor</p>
-      <h3 class="mentor__name">${esc(m.nome)}</h3>
-      <p class="mentor__role">${esc(m.titulo)} · ${esc(m.local)}</p>
-      <p class="mentor__headline">${esc(m.headline)}</p>
-      <ul class="mentor__track">${m.trajetoria.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
-      <div class="badges">${m.reconhecimentos.map(r => `<span class="badge badge--accent">${esc(r)}</span>`).join('')}</div>
-      <div class="hstack mt-6">
-        ${L.linkedin.url ? `<a class="btn btn--outline btn--sm" href="${esc(L.linkedin.url)}" target="_blank" rel="noopener">${icon('linkedin')} Ver LinkedIn</a>` : ''}
-        ${L.github.url   ? `<a class="btn btn--ghost btn--sm" href="${esc(L.github.url)}" target="_blank" rel="noopener">${icon('github')} GitHub</a>` : ''}
+/* ---------- fundadores --------------------------------------------------- */
+/* O primeiro com principal:true vira o card grande com avatar; os demais
+   entram empilhados ao lado. Campo vazio simplesmente nao renderiza — e o
+   botao de LinkedIn fica visivel porem desabilitado ate a URL existir. */
+function botaoLinkedin(url, tamanho = '') {
+  const cls = `btn ${tamanho} `.trim();
+  return url
+    ? `<a class="${cls} btn--outline" href="${esc(url)}" target="_blank" rel="noopener">${icon('linkedin')} Ver LinkedIn</a>`
+    : `<button class="${cls} btn--outline is-disabled" type="button" disabled
+         title="Link ainda não cadastrado">${icon('linkedin')} Ver LinkedIn</button>`;
+}
+
+function renderFundadores() {
+  const box = $('#fundadores'); if (!box) return;
+  const F = (DATA.site.fundadores && DATA.site.fundadores.lista) || [];
+  const principal = F.find(f => f.principal);
+  const demais = F.filter(f => !f.principal);
+
+  const grande = f => !f ? '' : `
+    <article class="founder founder--main reveal">
+      ${f.avatar ? `<img class="founder__avatar" src="${url(f.avatar)}" width="128" height="128"
+                        alt="Avatar de ${esc(f.nome)} — DBA BRABO" loading="lazy">` : ''}
+      <div class="founder__body">
+        <p class="eyebrow">Fundador e mentor</p>
+        <h3 class="founder__name">${esc(f.nome)}</h3>
+        ${f.titulo ? `<p class="founder__role">${esc(f.titulo)}</p>` : ''}
+        ${f.headline ? `<p class="founder__headline">${esc(f.headline)}</p>` : ''}
+        ${f.trajetoria && f.trajetoria.length
+          ? `<ul class="founder__track">${f.trajetoria.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+        ${f.reconhecimentos && f.reconhecimentos.length
+          ? `<div class="badges">${f.reconhecimentos.map(r => `<span class="badge badge--accent">${esc(r)}</span>`).join('')}</div>` : ''}
+        <div class="hstack mt-6">
+          ${botaoLinkedin(f.linkedin)}
+          ${f.github ? `<a class="btn btn--ghost" href="${esc(f.github)}" target="_blank" rel="noopener">${icon('github')} GitHub</a>` : ''}
+        </div>
       </div>
-    </div>`;
+    </article>`;
+
+  const pequeno = f => `
+    <article class="founder founder--sm reveal">
+      <p class="eyebrow">Fundador</p>
+      <h3 class="founder__name founder__name--sm">${esc(f.nome)}</h3>
+      ${f.titulo ? `<p class="founder__role">${esc(f.titulo)}</p>` : ''}
+      ${f.headline
+        ? `<p class="founder__headline">${esc(f.headline)}</p>`
+        : `<p class="founder__headline muted"><em>Apresentação em breve.</em></p>`}
+      ${f.trajetoria && f.trajetoria.length
+        ? `<ul class="founder__track">${f.trajetoria.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+      ${f.reconhecimentos && f.reconhecimentos.length
+        ? `<div class="badges">${f.reconhecimentos.map(r => `<span class="badge badge--accent">${esc(r)}</span>`).join('')}</div>` : ''}
+      <div class="hstack mt-4">${botaoLinkedin(f.linkedin, 'btn--sm')}</div>
+    </article>`;
+
+  box.innerHTML = `${grande(principal)}
+    ${demais.length ? `<div class="founders__col">${demais.map(pequeno).join('')}</div>` : ''}`;
 }
 
 /* ---------- metodologia e formato --------------------------------------- */
@@ -283,22 +319,41 @@ function renderFiltros(ms) {
 }
 
 /* ---------- projetos ----------------------------------------------------- */
+const STATUS_BADGE = { 'Em produção':'badge--ok', 'Em homologação':'badge--warn', 'Em desenvolvimento':'' };
+
 function renderProjetos() {
   const el = $('#projetosGrid'); if (!el) return;
-  el.innerHTML = DATA.projetos.projetos.map(p => `
+  el.innerHTML = DATA.projetos.projetos.map(p => {
+    // repoPublico:false esconde o botao mesmo com URL cadastrada — evita mandar
+    // o visitante para um 404 enquanto o repositorio nao esta no ar.
+    const disponivel = p.repoPublico !== false;
+    const link = disponivel ? ((p.links && (p.links.site || p.links.github)) || '') : '';
+    const ehGithub = !!(p.links && !p.links.site && p.links.github);
+    return `
     <article class="card pcard reveal" style="--accent:${esc(p.accent)}">
-      <div class="pcard__head">
-        <div>
-          <div class="pcard__name">${esc(p.nome)}${p.versao ? ` <span class="mono muted" style="font-size:var(--fs-xs)">${esc(p.versao)}</span>` : ''}</div>
-          <div class="pcard__tagline">${esc(p.tagline)}</div>
-        </div>
-        <span class="badge${p.status === 'Em uso' ? ' badge--ok' : ' badge--warn'}">${esc(p.status)}</span>
+      <div class="pcard__status">
+        <span class="badge ${STATUS_BADGE[p.status] || ''}">${esc(p.status)}</span>
+        ${p.versao ? `<span class="badge mono">${esc(p.versao)}</span>` : ''}
       </div>
-      <p style="color:var(--fg-1);font-size:var(--fs-sm)">${esc(p.desc)}</p>
-      <ul class="pcard__list">${p.destaques.map(d => `<li>${esc(d)}</li>`).join('')}</ul>
-      <div class="badges">${p.stack.slice(0, 6).map(s => `<span class="badge">${esc(s)}</span>`).join('')}</div>
-      ${p.links.github ? `<a class="btn btn--outline btn--sm" href="${esc(p.links.github)}" target="_blank" rel="noopener">${icon('github')} Ver no GitHub</a>` : ''}
-    </article>`).join('');
+      <div class="pcard__head">
+        <div class="pcard__name">${esc(p.nome)}</div>
+        <div class="pcard__tagline">${esc(p.tagline)}</div>
+      </div>
+      ${p.desc ? `<p style="color:var(--fg-1);font-size:var(--fs-sm)">${esc(p.desc)}</p>` : ''}
+      ${p.destaques && p.destaques.length
+        ? `<ul class="pcard__list">${p.destaques.map(d => `<li>${esc(d)}</li>`).join('')}</ul>` : ''}
+      ${!p.desc && !(p.destaques || []).length
+        ? `<p class="pcard__vazio">Detalhes técnicos em breve.</p>` : ''}
+      ${p.stack && p.stack.length
+        ? `<div class="badges">${p.stack.slice(0, 6).map(s => `<span class="badge">${esc(s)}</span>`).join('')}</div>` : ''}
+      <div class="pcard__foot">
+        ${link
+          ? `<a class="btn btn--outline btn--sm" href="${esc(link)}" target="_blank" rel="noopener">
+               ${icon(ehGithub ? 'github' : 'external')} ${ehGithub ? 'Ver no GitHub' : 'Acessar'}</a>`
+          : `<span class="pcard__soon">${p.repoPublico === false ? 'Repositório em breve' : 'Link em breve'}</span>`}
+      </div>
+    </article>`;
+  }).join('');
 }
 
 /* ---------- stack -------------------------------------------------------- */
@@ -388,11 +443,18 @@ async function renderSocial() {
   if (foot) foot.innerHTML = ['whatsapp','linkedinEmpresa','instagram','linkedin','github','blog','youtube','email']
     .filter(ativos).map(k => `<a href="${esc(L[k].url)}" target="_blank" rel="noopener">${esc(L[k].label)}</a>`).join('');
 
-  // CTA "entrar na comunidade" espalhado pela pagina
-  const destino = (L.whatsapp && L.whatsapp.url) || (L.linkedinEmpresa && L.linkedinEmpresa.url) || '';
-  $$('[data-community]').forEach(a => {
-    if (destino) { a.href = destino; a.target = '_blank'; a.rel = 'noopener'; } else a.hidden = true;
-  });
+  // dois CTAs distintos:
+  //   [data-community] -> grupo do WhatsApp (entrar na comunidade)
+  //   [data-contato]   -> pagina oficial no LinkedIn (falar com o mentor)
+  const aponta = (sel, chave, alternativa) => {
+    const alvo = (L[chave] && L[chave].url) || (L[alternativa] && L[alternativa].url) || '';
+    $$(sel).forEach(a => {
+      if (!alvo) { a.hidden = true; return; }
+      a.href = alvo; a.target = '_blank'; a.rel = 'noopener';
+    });
+  };
+  aponta('[data-community]', DATA.site.contato?.canalComunidade || 'whatsapp', 'linkedinEmpresa');
+  aponta('[data-contato]',   DATA.site.contato?.canalContato   || 'linkedinEmpresa', 'linkedin');
 
   const box = $('#canais'); if (!box) return;
 
@@ -722,7 +784,7 @@ async function boot() {
     return;
   }
 
-  renderTerminal(); renderStats(); renderSobre(); renderMentor(); renderMetodologia();
+  renderTerminal(); renderStats(); renderSobre(); renderFundadores(); renderMetodologia();
   renderMentorias(); renderProjetos(); renderStack(); renderRoadmap();
   renderFAQ(); renderFooter();
   await renderSocial();          // busca os SVG dos QR antes de revelar

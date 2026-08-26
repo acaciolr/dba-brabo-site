@@ -326,7 +326,7 @@ function paginaMentoria(m) {
           <span class="badge${preco ? ' badge--ok' : ''}">${icon('money')} ${esc(preco || site.investimento.fallback)}</span>
         </div>
         <div class="hstack">
-          <a class="btn btn--primary" href="${base}/#comunidade" data-community>${esc(site.investimento.ctaSemPreco)}</a>
+          <a class="btn btn--primary" href="${base}/#comunidade" data-contato>${esc(site.investimento.ctaSemPreco)}</a>
           <a class="btn btn--outline" href="${base}/mentorias/">Ver outras mentorias</a>
         </div>
       </div>
@@ -382,7 +382,7 @@ ${(m.modulos || []).length ? `
         ? esc(m.investimento.condicao || '')
         : 'Os valores são apresentados na conversa inicial, conforme a mentoria escolhida e o formato acordado.'}</p>
       <div class="hstack mt-6" style="justify-content:center">
-        <a class="btn btn--primary" href="${base}/#comunidade" data-community>${esc(site.investimento.ctaSemPreco)}</a>
+        <a class="btn btn--primary" href="${base}/#comunidade" data-contato>${esc(site.investimento.ctaSemPreco)}</a>
       </div>
     </div>
   </div>
@@ -393,7 +393,7 @@ ${(m.modulos || []).length ? `
     <h2>Começa por uma call de diagnóstico.</h2>
     <p>Mapear onde você está e onde quer chegar antes de montar o plano. Sem compromisso.</p>
     <div class="cta__btns">
-      <a class="btn btn--primary" href="${base}/#comunidade" data-community>Falar com o mentor</a>
+      <a class="btn btn--primary" href="${base}/#comunidade" data-contato>Falar com o mentor</a>
       <a class="btn btn--outline" href="${base}/mentorias/">Ver todas as mentorias</a>
     </div>
   </div>
@@ -475,7 +475,7 @@ ${catalogo.categorias.map(c => {
     <h2>Não sabe por onde começar?</h2>
     <p>A call de diagnóstico define a trilha. Se preferir se situar sozinho antes, o roadmap mostra a ordem que costuma funcionar.</p>
     <div class="cta__btns">
-      <a class="btn btn--primary" href="${base}/#comunidade" data-community>Falar com o mentor</a>
+      <a class="btn btn--primary" href="${base}/#comunidade" data-contato>Falar com o mentor</a>
       <a class="btn btn--outline" href="${base}/#roadmap">Ver o roadmap</a>
     </div>
   </div>

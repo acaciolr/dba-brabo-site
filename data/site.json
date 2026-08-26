@@ -19,12 +19,11 @@
     "handle": "acaciolr",
     "titulo": "Senior Database Administrator",
     "headline": "DBA sênior com mais de 12 anos em ambientes críticos de produção.",
-    "local": "Cotia / São Paulo — Brasil",
     "atuacao": "Consultor DBA Sênior na Dataside",
     "trajetoria": [
-      "Principal Advanced Support Engineer na Oracle Brasil",
+      "Principal Advanced Support Engineer",
       "MySQL Tech Lead",
-      "Consultor DBA Sênior na Dataside"
+      "Consultor DBA Sênior"
     ],
     "reconhecimentos": [
       "Oracle ACE Associate",
@@ -238,5 +237,61 @@
   "footer": {
     "copyright": "DBA BRABO. Todos os direitos reservados.",
     "anoInicio": 2025
+  },
+  "fundadores": {
+    "_nota": "principal:true renderiza o card grande com avatar. Os demais entram em cards menores empilhados ao lado. Campo linkedin vazio deixa o botao pronto porem desabilitado — basta preencher a URL depois.",
+    "lista": [
+      {
+        "id": "acacio",
+        "principal": true,
+        "nome": "Acácio Lima Rocha",
+        "titulo": "Senior Database Administrator",
+        "headline": "DBA sênior com mais de 12 anos em ambientes críticos de produção.",
+        "avatar": "assets/logo/avatar-256.png",
+        "trajetoria": [
+          "Principal Advanced Support Engineer",
+          "MySQL Tech Lead",
+          "Consultor DBA Sênior"
+        ],
+        "reconhecimentos": [
+          "Oracle ACE Associate",
+          "LinkedIn Top Database Administration Voice 2024"
+        ],
+        "linkedin": "https://www.linkedin.com/in/acaciolr",
+        "github": "https://github.com/acaciolr",
+        "confirmado": true
+      },
+      {
+        "id": "weverton",
+        "principal": false,
+        "nome": "Weverton",
+        "titulo": "",
+        "headline": "",
+        "trajetoria": [],
+        "reconhecimentos": [],
+        "linkedin": "",
+        "github": "",
+        "confirmado": false,
+        "_pendente": "Sobrenome, titulo, apresentacao e especialidades ainda nao informados pelo mentor."
+      },
+      {
+        "id": "luis",
+        "principal": false,
+        "nome": "Luis",
+        "titulo": "",
+        "headline": "",
+        "trajetoria": [],
+        "reconhecimentos": [],
+        "linkedin": "",
+        "github": "",
+        "confirmado": false,
+        "_pendente": "Sobrenome, titulo, apresentacao e especialidades ainda nao informados pelo mentor."
+      }
+    ]
+  },
+  "contato": {
+    "_nota": "data-community -> grupo do WhatsApp. data-contato -> pagina oficial no LinkedIn. Sao CTAs diferentes de proposito.",
+    "canalContato": "linkedinEmpresa",
+    "canalComunidade": "whatsapp"
   }
 }
