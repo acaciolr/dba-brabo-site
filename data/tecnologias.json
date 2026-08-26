@@ -1,0 +1,112 @@
+{
+  "_comment": "Stack do ecossistema. O build cruza cada item com data/mentorias.json (campo tecnologias[]) para dizer em quais mentorias a tecnologia aparece — nao editar essa relacao a mao.",
+  "grupos": [
+    {
+      "id": "database", "nome": "Database", "icone": "database", "accent": "#F0805A",
+      "desc": "Os motores. Arquitetura interna, processos, memória, log de transação e persistência.",
+      "itens": [
+        { "nome": "Oracle Database", "desc": "SGA/PGA, redo, undo, CBO e o ecossistema RAC/ASM/Data Guard." },
+        { "nome": "MySQL",           "desc": "InnoDB, buffer pool, redo log, Binary Log e o optimizer." },
+        { "nome": "SQL Server",      "desc": "Database Engine, recovery models, Query Store e wait statistics." },
+        { "nome": "PostgreSQL",      "desc": "MVCC, WAL, autovacuum, planner e extensões." },
+        { "nome": "MongoDB",         "desc": "Documentos, Replica Set, Write Concern e Aggregation Pipeline." },
+        { "nome": "Sybase ASE",      "desc": "Administração e recuperação em ambientes legados críticos." }
+      ]
+    },
+    {
+      "id": "ha", "nome": "Alta Disponibilidade", "icone": "ha", "accent": "#4FD1B0",
+      "desc": "O que mantém o serviço de pé quando um nó cai — e o que decide se você perde dado nesse instante.",
+      "itens": [
+        { "nome": "Oracle RAC",          "desc": "Cluster ativo-ativo com Grid Infrastructure e ASM." },
+        { "nome": "Data Guard",          "desc": "Standby físico sync/async, Far Sync e failover." },
+        { "nome": "Always On AG",        "desc": "Availability Groups sobre WSFC com quorum." },
+        { "nome": "InnoDB Cluster",      "desc": "Group Replication + MySQL Router + MySQL Shell." },
+        { "nome": "Group Replication",   "desc": "Consenso entre membros, single e multi-primary." },
+        { "nome": "Patroni",             "desc": "Failover PostgreSQL com DCS, sem split-brain." },
+        { "nome": "Sharded Cluster",     "desc": "Distribuição e balanceamento por shard key no MongoDB." }
+      ]
+    },
+    {
+      "id": "replication", "nome": "Replicação", "icone": "replication", "accent": "#B57BF5",
+      "desc": "Como a mesma informação chega a mais de um lugar — e o que fazer quando os lugares divergem.",
+      "itens": [
+        { "nome": "Binary Log / GTID",       "desc": "Posicionamento por arquivo/posição versus auto-position." },
+        { "nome": "Streaming Replication",   "desc": "WAL shipping, replication slots e lag no PostgreSQL." },
+        { "nome": "Logical Replication",     "desc": "Publicação/assinatura seletiva por tabela." },
+        { "nome": "Oracle GoldenGate",       "desc": "Extract, Trail, Replicat, CDR e replicação heterogênea." },
+        { "nome": "Geo-Replication",         "desc": "Réplicas entre regiões e grupos de failover automático." }
+      ]
+    },
+    {
+      "id": "backup", "nome": "Backup & Recovery", "icone": "backup", "accent": "#2ED8C3",
+      "desc": "Backup que nunca foi restaurado não é backup. Estratégia, teste e RPO real.",
+      "itens": [
+        { "nome": "RMAN",         "desc": "Full, incremental, archivelog, duplexação e validação." },
+        { "nome": "ZDLRA",        "desc": "Real-Time Redo e incremental forever com imutabilidade." },
+        { "nome": "Data Pump",    "desc": "Export/import lógico, remap e migração de schema." },
+        { "nome": "XtraBackup",   "desc": "Backup físico MySQL a quente com PITR." },
+        { "nome": "pgBackRest",   "desc": "Backup PostgreSQL com PITR e WAL archiving." },
+        { "nome": "Tail-Log Backup", "desc": "O último pedaço do log antes de um restore SQL Server." }
+      ]
+    },
+    {
+      "id": "performance", "nome": "Performance", "icone": "performance", "accent": "#E8B33C",
+      "desc": "Diagnóstico com evidência: onde o tempo foi gasto, não onde você acha que foi.",
+      "itens": [
+        { "nome": "AWR / ASH / ADDM",     "desc": "Snapshots, sessões ativas e diagnóstico automático no Oracle." },
+        { "nome": "Query Store",          "desc": "Histórico de planos e regressão de query no SQL Server." },
+        { "nome": "Performance Schema",   "desc": "Instrumentação interna do MySQL." },
+        { "nome": "EXPLAIN ANALYZE",      "desc": "Plano real versus plano estimado no PostgreSQL." },
+        { "nome": "Wait Statistics",      "desc": "O que a sessão estava esperando — a pergunta certa." },
+        { "nome": "Smart Scan",           "desc": "Offload de filtro para as storage cells do Exadata." }
+      ]
+    },
+    {
+      "id": "cloud", "nome": "Cloud", "icone": "cloud", "accent": "#4FA8E8",
+      "desc": "Banco gerenciado não elimina o DBA — redistribui a responsabilidade.",
+      "itens": [
+        { "nome": "OCI",   "desc": "Exadata Cloud, Autonomous, Base Database e MySQL HeatWave." },
+        { "nome": "AWS",   "desc": "RDS, Aurora, Multi-AZ e Aurora Global Database." },
+        { "nome": "Azure", "desc": "Azure SQL, Managed Instance e Auto-Failover Groups." },
+        { "nome": "GCP",   "desc": "Cloud SQL, AlloyDB e Spanner com TrueTime." }
+      ]
+    },
+    {
+      "id": "security", "nome": "Segurança", "icone": "security", "accent": "#F08A6E",
+      "desc": "Criptografia, controle de acesso e trilha de auditoria que sobrevive a uma inspeção.",
+      "itens": [
+        { "nome": "TDE",                 "desc": "Criptografia em repouso nos quatro principais bancos." },
+        { "nome": "Database Vault",      "desc": "Separação de deveres e proteção contra o próprio DBA." },
+        { "nome": "Row-Level Security",  "desc": "Filtro de linha aplicado no motor, não na aplicação." },
+        { "nome": "Auditoria",           "desc": "Unified Audit, SQL Audit, pgAudit e audit plugin." },
+        { "nome": "Gestão de segredos",  "desc": "KMS, Vault, Secrets Manager e CMEK." }
+      ]
+    },
+    {
+      "id": "automation", "nome": "Automação & DBRE", "icone": "automation", "accent": "#F08A3C",
+      "desc": "O ponto em que o DBA para de aplicar mudança à mão e passa a versioná-la.",
+      "itens": [
+        { "nome": "Shell",       "desc": "A cola de todo ambiente de produção." },
+        { "nome": "Python",      "desc": "Coleta, relatório, orquestração e ferramentas TUI." },
+        { "nome": "Terraform",   "desc": "Infraestrutura de banco declarada como código." },
+        { "nome": "Ansible",     "desc": "Configuração idempotente de fleet." },
+        { "nome": "Kubernetes",  "desc": "Operadores e bancos containerizados." },
+        { "nome": "GitHub Actions", "desc": "Pipeline de mudança de schema e validação." },
+        { "nome": "Prometheus / Grafana", "desc": "Métricas, alerta e SLO de banco de dados." },
+        { "nome": "MySQL Shell", "desc": "AdminAPI para cluster e automação em JS/Python." },
+        { "nome": "OCI CLI",     "desc": "Automação de provisionamento e operação na OCI." }
+      ]
+    },
+    {
+      "id": "infra", "nome": "Infraestrutura", "icone": "server", "accent": "#9AA9B8",
+      "desc": "Abaixo do banco existe sistema operacional, storage e rede — e o problema costuma estar lá.",
+      "itens": [
+        { "nome": "Linux",   "desc": "Kernel parameters, hugepages, I/O scheduler e limites." },
+        { "nome": "AIX",     "desc": "Ambientes SAP e workloads Oracle em produção." },
+        { "nome": "Solaris", "desc": "Bases legadas ainda em operação crítica." },
+        { "nome": "Exadata", "desc": "Engineered System — compute, cells, InfiniBand/RoCE." },
+        { "nome": "ODA",     "desc": "Oracle Database Appliance e seu ciclo de patch." }
+      ]
+    }
+  ]
+}

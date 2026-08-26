@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-base="../.." data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MySQL — Mentoria Técnica DBA BRABO</title>
+<meta name="description" content="Entenda como o MySQL processa transações, persiste dados no InnoDB, registra operações no Binary Log e mantém réplicas consistentes em diferentes arquit…">
+<meta name="theme-color" content="#07090D">
+<link rel="canonical" href="https://acaciolr.github.io/dba-brabo-site/mentorias/mysql/">
+<link rel="icon" href="../../assets/logo/favicon.ico" sizes="any">
+<link rel="icon" href="../../assets/logo/avatar-96.png" type="image/png">
+<link rel="apple-touch-icon" href="../../assets/logo/avatar-180.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DBA BRABO">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="MySQL — Mentoria Técnica DBA BRABO">
+<meta property="og:description" content="Entenda como o MySQL processa transações, persiste dados no InnoDB, registra operações no Binary Log e mantém réplicas consistentes em diferentes arquit…">
+<meta property="og:url" content="https://acaciolr.github.io/dba-brabo-site/mentorias/mysql/">
+<meta property="og:image" content="https://acaciolr.github.io/dba-brabo-site/assets/banners/mysql.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MySQL — Mentoria Técnica DBA BRABO">
+<meta name="twitter:description" content="Entenda como o MySQL processa transações, persiste dados no InnoDB, registra operações no Binary Log e mantém réplicas consistentes em diferentes arquit…">
+<meta name="twitter:image" content="https://acaciolr.github.io/dba-brabo-site/assets/banners/mysql.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../../style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Course","name":"MySQL — DBA BRABO","description":"Entenda como o MySQL processa transações, persiste dados no InnoDB, registra operações no Binary Log e mantém réplicas consistentes em diferentes arquit…","url":"https://acaciolr.github.io/dba-brabo-site/mentorias/mysql/","inLanguage":"pt-BR","image":"https://acaciolr.github.io/dba-brabo-site/assets/banners/mysql.webp","educationalLevel":"Intermediário → Avançado","teaches":["Administração","Replicação","Alta Disponibilidade","Backup & Restore","Performance & Tuning","Segurança"],"about":["MySQL","InnoDB","Binary Log","GTID","Semi-sync","Group Replication","InnoDB Cluster","MySQL Router","MySQL Shell","XtraBackup","Performance Schema","TDE"],"provider":{"@type":"EducationalOrganization","name":"DBA BRABO","url":"https://acaciolr.github.io/dba-brabo-site/"},"instructor":{"@type":"Person","name":"Acácio Lima Rocha","jobTitle":"Senior Database Administrator"},"hasCourseInstance":{"@type":"CourseInstance","courseMode":"online"}}</script>
+</head>
+<body>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<div class="backdrop" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true"></div>
+<header class="header">
+  <a class="brand" href="../../" aria-label="DBA BRABO — início">
+    <img class="brand__mark" src="../../assets/logo/avatar-96.png" width="38" height="38" alt="">
+    <span class="brand__name">DBA <span>BRABO</span><small class="brand__tag">Mentoria Técnica para DBAs</small></span>
+  </a>
+  <nav class="nav" id="nav" aria-label="Navegação principal">
+    <a class="nav__link" href="../../#sobre">Sobre</a>
+    <a class="nav__link" href="../../mentorias/">Mentorias</a>
+    <a class="nav__link" href="../../#metodologia">Metodologia</a>
+    <a class="nav__link" href="../../#projetos">Projetos</a>
+    <a class="nav__link" href="../../#tecnologias">Stack</a>
+    <a class="nav__link" href="../../#roadmap">Roadmap</a>
+    <a class="nav__link" href="../../#faq">FAQ</a>
+    <span class="nav__actions">
+      <a class="btn btn--primary btn--sm" href="../../#comunidade" data-community>Entrar na comunidade</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">
+        <svg data-icon="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg data-icon="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg data-icon="system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </button>
+    </span>
+  </nav>
+  <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+</header>
+<main id="conteudo" style="--accent:#34D3C4">
+
+<section class="mhero">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Você está em">
+      <a href="../../">Início</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      <a href="../../mentorias/">Mentorias</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      <span aria-current="page">MySQL</span>
+    </nav>
+    <div class="mhero__grid mt-6">
+      <div>
+        <p class="eyebrow">Mentoria Técnica Avançada</p>
+        <h1>MySQL</h1>
+        <p class="mhero__sub">Administração • Replicação • Alta Disponibilidade • Backup • Performance • Segurança</p>
+        <p class="lead mt-4">Entenda como o MySQL processa transações, persiste dados no InnoDB, registra operações no Binary Log e mantém réplicas consistentes em diferentes arquiteturas.</p>
+        <div class="mhero__meta">
+          <span class="badge badge--accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20h-20"/></svg> Intermediário → Avançado</span>
+          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> 6 módulos</span>
+          <span class="badge">46 tópicos</span>
+          
+          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15 9.5A3 3 0 0 0 12 8c-1.7 0-3 .9-3 2s1.3 2 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-3-1.5"/><path d="M12 6v12"/></svg> Sob consulta</span>
+        </div>
+        <div class="hstack">
+          <a class="btn btn--primary" href="../../#comunidade" data-community>Falar com o mentor</a>
+          <a class="btn btn--outline" href="../../mentorias/">Ver outras mentorias</a>
+        </div>
+      </div>
+      <div class="mhero__banner">
+        <img src="../../assets/banners/mysql.webp" alt="Banner da mentoria MySQL — DBA BRABO" width="1080" height="1350" loading="eager" fetchpriority="high">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">O que essa mentoria cobre</p>
+      <h2>Pilares</h2>
+      <p>Os eixos de trabalho desta formação — cada um vira teoria, lab e troubleshooting.</p>
+    </div>
+    <div class="pillars">
+      
+        <div class="pillar reveal">
+          <span class="pillar__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></span>
+          <div><div class="pillar__title">Administração</div>
+          <p class="pillar__desc">Implementação, gerenciamento geral</p></div>
+        </div>
+        <div class="pillar reveal">
+          <span class="pillar__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>
+          <div><div class="pillar__title">Replicação</div>
+          <p class="pillar__desc">GTID, Semi-sync e Group Replication sem downtime</p></div>
+        </div>
+        <div class="pillar reveal">
+          <span class="pillar__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="6" rx="2"/><rect x="2" y="15" width="20" height="6" rx="2"/><path d="M6 6h.01M6 18h.01"/><path d="M12 9v6"/></svg></span>
+          <div><div class="pillar__title">Alta Disponibilidade</div>
+          <p class="pillar__desc">InnoDB Cluster, MySQL Router e failover automático</p></div>
+        </div>
+        <div class="pillar reveal">
+          <span class="pillar__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg></span>
+          <div><div class="pillar__title">Backup &amp; Restore</div>
+          <p class="pillar__desc">XtraBackup, PITR e validação de restore</p></div>
+        </div>
+        <div class="pillar reveal">
+          <span class="pillar__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 15l4-5 3 3 5-7"/></svg></span>
+          <div><div class="pillar__title">Performance &amp; Tuning</div>
+          <p class="pillar__desc">Performance Schema, Optimizer e queries lentas</p></div>
+        </div>
+        <div class="pillar reveal">
+          <span class="pillar__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg></span>
+          <div><div class="pillar__title">Segurança</div>
+          <p class="pillar__desc">TDE, audit plugin, roles e criptografia em trânsito (TLS)</p></div>
+        </div>
+    </div>
+  </div>
+</section>
+
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Conteúdo programático</p>
+      <h2>Módulos e tópicos</h2>
+      <p>Clique para abrir. Os módulos marcados como <strong>detalhado</strong> trazem, por tópico, conceito, funcionamento, o que é implementado no lab, troubleshooting e comandos.</p>
+    </div>
+    
+  <div class="acc" id="mod-01">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">01</span>
+      <span class="acc__label">Replicação MySQL
+        <span class="acc__hint" style="display:block;margin-top:2px">Todas as arquiteturas de replicação do MySQL, do binlog posicional ao cluster com failover automático — incluindo o que cada uma garante e o que ela custa.</span></span>
+      <span class="badge">9 tópicos</span>
+      <span class="badge badge--accent">detalhado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      
+  <div class="acc acc--sub" id="t-binlog">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">01</span>
+      <span class="acc__label">Master–Replica com Binary Log
+        <span class="acc__hint" style="display:block;margin-top:2px">A replicação clássica, posicionada por arquivo e offset. É a base de tudo o que vem depois.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Replicação assíncrona em que a instância primária (source) registra toda alteração de dados no Binary Log e uma ou mais réplicas leem esse log e reaplicam as mesmas alterações localmente. A réplica identifica seu ponto de leitura por um par arquivo + posição — por exemplo mysql-bin.000042 e o offset 19483. O source não espera confirmação da réplica para dar COMMIT: por isso é assíncrona, e por isso existe a possibilidade real de perda de dados em um failover.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>A sessão executa a transação e faz COMMIT. Antes de responder ao cliente, o MySQL grava o evento no Binary Log da própria instância primária.</li><li>Na réplica, a thread de I/O abre uma conexão de replicação com o source, pede os eventos a partir do arquivo e posição que ela guarda, e grava o que recebe no Relay Log local.</li><li>A thread de aplicação (SQL thread, ou as worker threads quando há replicação paralela) lê o Relay Log e reexecuta os eventos no dado local.</li><li>A réplica persiste seu progresso — arquivo e posição já aplicados — para conseguir retomar do ponto certo após um restart.</li><li>O formato do binlog define o que é gravado: ROW registra a imagem das linhas alteradas, STATEMENT registra o SQL, MIXED alterna conforme a operação. ROW é o padrão e o único formato seguro para replicação com funções não determinísticas.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Habilitar log_bin, definir server_id único em cada instância e escolher binlog_format=ROW.</li><li>Criar o usuário de replicação com o privilégio REPLICATION SLAVE e conexão restrita.</li><li>Provisionar a réplica a partir de um backup consistente, anotando o arquivo e a posição correspondentes ao momento do backup.</li><li>Apontar a réplica com CHANGE REPLICATION SOURCE TO e iniciar com START REPLICA.</li><li>Validar o estado com SHOW REPLICA STATUS e acompanhar Seconds_Behind_Source.</li><li>Configurar retenção do binlog (binlog_expire_logs_seconds) com folga suficiente para o tempo de provisionamento de uma réplica nova.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">A réplica para com erro de chave duplicada ou linha não encontrada.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Divergência de dados entre source e réplica — normalmente escrita direta na réplica, ou provisionamento a partir de um backup inconsistente.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Diagnosticar a divergência de verdade (comparar as linhas envolvidas) antes de qualquer coisa. Pular o evento esconde o sintoma e aprofunda a divergência; na maioria dos casos a resposta correta é reconstruir a réplica.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Seconds_Behind_Source cresce continuamente.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">A aplicação na réplica não acompanha o volume do source — comumente por aplicação de eventos em thread única, por falta de índice em tabela alterada, ou por I/O saturado na réplica.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Verificar se a replicação paralela está ativa e dimensionada, conferir se as tabelas replicadas têm chave primária, e medir o I/O da réplica antes de culpar a rede.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Réplica não conecta após restart do source.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">O binlog em que a réplica estava posicionada foi purgado, ou o arquivo e posição guardados não existem mais.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Confirmar a retenção configurada. Se o ponto foi perdido, a réplica precisa ser reconstruída — e a retenção, revista.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Réplica retorna dado diferente do source em SELECTs, sem erro nenhum.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Divergência silenciosa, típica de binlog_format=STATEMENT com funções não determinísticas.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Migrar para ROW e comparar os dados com uma ferramenta de checksum de tabela.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Configuração mínima no source</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">ini</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>[mysqld]
+server_id        = 1
+log_bin          = /var/lib/mysql/mysql-bin
+binlog_format    = ROW
+binlog_expire_logs_seconds = 604800</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Usuário de replicação</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>CREATE USER &#39;repl&#39;@&#39;10.0.%&#39; IDENTIFIED BY &#39;&lt;senha&gt;&#39; REQUIRE SSL;
+GRANT REPLICATION SLAVE ON *.* TO &#39;repl&#39;@&#39;10.0.%&#39;;</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Apontar e iniciar a réplica</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>CHANGE REPLICATION SOURCE TO
+  SOURCE_HOST     = &#39;db01&#39;,
+  SOURCE_USER     = &#39;repl&#39;,
+  SOURCE_PASSWORD = &#39;&lt;senha&gt;&#39;,
+  SOURCE_LOG_FILE = &#39;mysql-bin.000042&#39;,
+  SOURCE_LOG_POS  = 19483,
+  SOURCE_SSL      = 1;
+
+START REPLICA;</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Verificar o estado da replicação</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>SHOW REPLICA STATUS\G
+-- olhar: Replica_IO_Running, Replica_SQL_Running,
+--        Seconds_Behind_Source, Last_Error</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">MySQL</span><span class="badge badge--accent">Binary Log</span><span class="badge badge--accent">Relay Log</span><span class="badge badge--accent">ROW format</span><span class="badge badge--accent">Replicação paralela</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-gtid">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">02</span>
+      <span class="acc__label">Master–Replica com GTID
+        <span class="acc__hint" style="display:block;margin-top:2px">Cada transação ganha um identificador global. Some a aritmética de arquivo e posição — e o failover deixa de ser artesanal.</span></span>
+      <span class="badge">Intermediário → Avançado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>GTID (Global Transaction Identifier) atribui a cada transação um identificador único e permanente no formato &lt;UUID do servidor de origem&gt;:&lt;número sequencial&gt;. Cada instância mantém o conjunto de GTIDs que já executou (gtid_executed). Como o identificador é global, uma réplica consegue dizer com precisão quais transações já aplicou e pedir exatamente o que falta — sem que ninguém precise calcular arquivo e offset.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>Ao dar COMMIT, o source gera o GTID da transação e o grava junto do evento no binlog.</li><li>A réplica registra em gtid_executed tudo o que aplicou. Esse conjunto é persistido na tabela mysql.gtid_executed, sobrevivendo a restart.</li><li>Com SOURCE_AUTO_POSITION=1, a réplica informa seu gtid_executed ao conectar e o source envia apenas as transações ausentes. Não existe mais arquivo e posição na configuração.</li><li>Em um failover, apontar as demais réplicas para o novo primário é a mesma operação de sempre: elas negociam pelo GTID. É isso que torna o failover automatizável.</li><li>GTIDs vazios (transações que não alteram dado) e a diretiva de transação vazia importam ao reconciliar réplicas — injetar uma transação vazia é o mecanismo suportado para marcar um GTID como aplicado quando você tem certeza de que o efeito já existe no destino.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Ativar gtid_mode=ON e enforce_gtid_consistency=ON em todas as instâncias — a mudança tem ordem definida quando feita online e não pode ser aplicada de qualquer jeito.</li><li>Reconfigurar as réplicas com SOURCE_AUTO_POSITION=1.</li><li>Provisionar réplica nova a partir de backup que preserve o gtid_purged correspondente.</li><li>Ensaiar um failover: promover uma réplica e reapontar as demais, medindo o tempo total.</li><li>Monitorar a diferença entre o gtid_executed do source e o das réplicas — é a medida honesta de atraso, mais confiável que Seconds_Behind_Source.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">ERROR 1236 informando que o source não tem os GTIDs necessários.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">As transações que a réplica precisa já foram purgadas do binlog do source.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Comparar gtid_executed da réplica com gtid_purged do source. Se o intervalo faltante foi purgado, a réplica precisa ser reconstruída a partir de um backup mais recente.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Réplica não inicia acusando inconsistência de GTID.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Operação não suportada sob enforce_gtid_consistency — como CREATE TABLE ... SELECT em versões que não permitem, ou tabela temporária dentro de transação.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Identificar a operação na aplicação e substituí-la; a restrição existe porque essas construções não são representáveis atomicamente como um GTID.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Após promover uma réplica, as demais divergem.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">A réplica promovida não tinha aplicado tudo o que outra réplica já tinha — promoveu-se o nó errado.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Antes de promover, comparar gtid_executed de todos os candidatos e escolher o mais avançado. Automatizar essa comparação é justamente o que ferramentas de orquestração fazem.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Conjunto de GTIDs cresce com UUIDs desconhecidos.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Alguém escreveu diretamente em uma réplica, gerando GTIDs de origem local.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Colocar as réplicas em super_read_only, não apenas read_only — read_only sozinho não impede usuário com SUPER.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Habilitar GTID</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">ini</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>[mysqld]
+gtid_mode                 = ON
+enforce_gtid_consistency  = ON
+log_replica_updates       = ON
+super_read_only           = ON   # nas réplicas</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Réplica com auto-position</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>CHANGE REPLICATION SOURCE TO
+  SOURCE_HOST          = &#39;db01&#39;,
+  SOURCE_USER          = &#39;repl&#39;,
+  SOURCE_PASSWORD      = &#39;&lt;senha&gt;&#39;,
+  SOURCE_AUTO_POSITION = 1;
+
+START REPLICA;</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Medir o atraso pelo conjunto de GTIDs</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>-- no source
+SELECT @@GLOBAL.gtid_executed;
+
+-- na réplica: o que ainda falta aplicar
+SELECT GTID_SUBTRACT(&#39;&lt;gtid_executed do source&gt;&#39;,
+                     @@GLOBAL.gtid_executed) AS faltando;</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Escolher o candidato mais avançado antes de promover</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>-- executar em cada réplica candidata e comparar
+SELECT @@GLOBAL.gtid_executed;
+-- promove-se a que contém o superconjunto das demais</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">MySQL</span><span class="badge badge--accent">GTID</span><span class="badge badge--accent">auto-position</span><span class="badge badge--accent">gtid_executed</span><span class="badge badge--accent">gtid_purged</span><span class="badge badge--accent">super_read_only</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-semisync">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">03</span>
+      <span class="acc__label">Replicação Semi-Síncrona
+        <span class="acc__hint" style="display:block;margin-top:2px">O meio-termo entre perder dado no failover e pagar o preço da confirmação remota.</span></span>
+      <span class="badge">Avançado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Na replicação assíncrona o source confirma o COMMIT ao cliente sem saber se alguma réplica recebeu a transação — se o source morrer nesse instante, a transação existe só nele. O semi-síncrono muda o contrato: antes de responder ao cliente, o source espera que pelo menos N réplicas confirmem ter gravado o evento no seu relay log. Confirmar recebimento não é o mesmo que ter aplicado: a réplica ainda pode estar atrás na aplicação, mas o dado não se perde com a morte do source.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>O plugin semissíncrono é carregado no source e nas réplicas; cada lado tem o seu.</li><li>Ao dar COMMIT, o source grava no binlog e bloqueia a resposta ao cliente aguardando o ACK de rpl_semi_sync_source_wait_for_replica_count réplicas.</li><li>O ponto de espera importa: com AFTER_SYNC o source espera antes de tornar a transação visível, o que evita transações fantasma; com AFTER_COMMIT a transação já está visível localmente antes do ACK.</li><li>Se nenhum ACK chegar dentro de rpl_semi_sync_source_timeout, o source degrada automaticamente para assíncrono e segue operando — a disponibilidade é preservada em detrimento da garantia.</li><li>Quando uma réplica volta a acompanhar, o source retoma o modo semi-síncrono sozinho.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Instalar e habilitar os plugins nos dois lados e definir o número de ACKs exigidos.</li><li>Dimensionar o timeout conscientemente: um valor baixo transforma o semi-síncrono em decoração; um valor alto propaga latência de rede para a aplicação.</li><li>Medir o impacto real no tempo de COMMIT antes e depois — a conta é sempre latência de rede somada por transação.</li><li>Monitorar Rpl_semi_sync_source_status para saber quando o cluster degradou para assíncrono, porque essa degradação é silenciosa para a aplicação.</li><li>Manter pelo menos duas réplicas semi-síncronas se a garantia precisa sobreviver à manutenção de uma delas.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Latência de escrita subiu de forma perceptível após habilitar.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Cada COMMIT agora paga um round-trip até a réplica.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Aproximar a réplica em topologia de rede, ou reavaliar se a garantia vale o custo para essa carga. Colocar a réplica semi-síncrona em outra região é a decisão que mais surpreende negativamente.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">O cluster está assíncrono sem ninguém saber.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">O timeout foi atingido e o source degradou automaticamente.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Alertar sobre Rpl_semi_sync_source_status = OFF. Sem esse alerta você acha que tem uma garantia que não tem.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Após failover apareceram transações no antigo primário que não existem no novo.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Uso de AFTER_COMMIT — a transação ficou visível localmente antes de ser confirmada remotamente.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Usar AFTER_SYNC, que é o padrão nas versões atuais justamente por causa desse cenário.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Habilitar no source e na réplica</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>-- source
+INSTALL PLUGIN rpl_semi_sync_source SONAME &#39;semisync_source.so&#39;;
+SET GLOBAL rpl_semi_sync_source_enabled = 1;
+SET GLOBAL rpl_semi_sync_source_timeout = 1000;   -- ms
+SET GLOBAL rpl_semi_sync_source_wait_point = &#39;AFTER_SYNC&#39;;
+
+-- réplica
+INSTALL PLUGIN rpl_semi_sync_replica SONAME &#39;semisync_replica.so&#39;;
+SET GLOBAL rpl_semi_sync_replica_enabled = 1;
+STOP REPLICA IO_THREAD; START REPLICA IO_THREAD;</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Confirmar que a garantia está ativa</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>SHOW STATUS LIKE &#39;Rpl_semi_sync_source_status&#39;;     -- ON = garantido
+SHOW STATUS LIKE &#39;Rpl_semi_sync_source_no_tx&#39;;      -- COMMITs sem ACK
+SHOW STATUS LIKE &#39;Rpl_semi_sync_source_avg_net_wait_time&#39;;</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">MySQL</span><span class="badge badge--accent">Semi-sync</span><span class="badge badge--accent">AFTER_SYNC</span><span class="badge badge--accent">rpl_semi_sync</span><span class="badge badge--accent">Rpl_semi_sync_source_status</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-group-replication">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">04</span>
+      <span class="acc__label">Group Replication
+        <span class="acc__hint" style="display:block;margin-top:2px">Replicação com consenso entre membros. Aqui aparecem quorum, certificação de conflito e failover automático de verdade.</span></span>
+      <span class="badge">Avançado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Group Replication é um plugin que transforma um conjunto de instâncias MySQL em um grupo que decide por consenso, usando uma implementação de Paxos. Cada transação, ao chegar no COMMIT, é enviada ao grupo e passa por certificação: o grupo verifica se ela conflita com outra transação concorrente já certificada. O grupo mantém membership dinâmico e só aceita escrita enquanto houver maioria — é isso que impede split-brain, ao custo de exigir quorum.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>Todos os membros compartilham a mesma visão de membership. Entradas e saídas geram uma mudança de visão acordada por todos.</li><li>No COMMIT, o writeset da transação é difundido ao grupo em ordem total. Cada membro executa a mesma certificação e chega, deterministicamente, à mesma decisão de aceitar ou abortar.</li><li>Aceita a transação, cada membro aplica localmente — de forma assíncrona em relação ao COMMIT do originador, o que significa que ler de um secundário logo após escrever pode não enxergar a escrita, a menos que se use um nível de consistência mais forte.</li><li>O grupo só permite escrita com maioria de membros vivos. Perdida a maioria, os remanescentes ficam bloqueados por decisão de projeto — preferir indisponibilidade a divergência.</li><li>Em modo single-primary o grupo elege automaticamente um novo primário quando o atual sai. Em multi-primary todos aceitam escrita, e conflitos entre nós passam a ser rotina a ser tratada pela aplicação.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Exigências não negociáveis: engine InnoDB, chave primária em toda tabela, binlog em ROW e GTID habilitado.</li><li>Dimensionar o grupo com número ímpar de membros — 3 ou 5 — porque quorum é maioria.</li><li>Configurar group_replication_group_seeds e a whitelist de IPs corretamente; a maior parte das falhas de bootstrap está aí.</li><li>Escolher conscientemente entre single-primary e multi-primary. Multi-primary não é um upgrade: é outro modelo de conflito.</li><li>Definir o nível de consistência de leitura conforme a aplicação, ciente de que consistência mais forte custa latência.</li><li>Testar a perda de quorum de propósito e documentar o procedimento de reconfiguração forçada antes de precisar dele às três da manhã.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Membro entra em ERROR e é expulso do grupo.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Divergência local, transação aplicada fora do grupo, ou perda de conectividade prolongada.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Ler o motivo no log de erro antes de tentar reingressar. Se o membro divergiu, o caminho é reprovisionar — o clone plugin resolve isso sem intervenção manual.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Grupo travado, sem aceitar escrita, com membros vivos.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Perda de quorum — sobraram menos que a maioria.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Confirmar quantos membros o grupo espera versus quantos respondem. A reconfiguração forçada de membership resolve, mas é uma operação perigosa: aplicada no conjunto errado, cria dois grupos divergentes.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Transações abortando com erro de certificação.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Conflito de writeset em modo multi-primary — dois nós alterando a mesma linha concorrentemente.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Rotear a escrita de cada conjunto de dados sempre para o mesmo nó, ou migrar para single-primary. Certificação não é bug, é o mecanismo funcionando.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Réplica secundária retorna dado antigo logo após uma escrita.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Aplicação assíncrona no secundário somada a nível de consistência EVENTUAL.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Ajustar group_replication_consistency para o nível adequado, medindo o impacto de latência que isso introduz.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Membro nunca conclui o ingresso, ficando em RECOVERING.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Recuperação distribuída não consegue alcançar o estado do grupo — normalmente binlog purgado no doador.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Usar o clone plugin para provisionamento físico em vez de recuperação por binlog.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Configuração base de um membro</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">ini</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>[mysqld]
+server_id                         = 1
+gtid_mode                         = ON
+enforce_gtid_consistency          = ON
+binlog_format                     = ROW
+plugin_load_add                   = group_replication.so
+
+group_replication_group_name      = &#39;aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee&#39;
+group_replication_local_address   = &#39;db01:33061&#39;
+group_replication_group_seeds     = &#39;db01:33061,db02:33061,db03:33061&#39;
+group_replication_single_primary_mode = ON</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Bootstrap do grupo — só no primeiro membro, uma única vez</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>SET GLOBAL group_replication_bootstrap_group = ON;
+START GROUP_REPLICATION;
+SET GLOBAL group_replication_bootstrap_group = OFF;
+-- deixar o bootstrap ligado em mais de um nó é como se cria dois grupos</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Inspecionar membership e quem é o primário</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>SELECT MEMBER_HOST, MEMBER_PORT, MEMBER_STATE, MEMBER_ROLE
+  FROM performance_schema.replication_group_members;
+
+SELECT * FROM performance_schema.replication_group_member_stats\G</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">MySQL</span><span class="badge badge--accent">Group Replication</span><span class="badge badge--accent">Paxos</span><span class="badge badge--accent">Quorum</span><span class="badge badge--accent">Certificação de conflito</span><span class="badge badge--accent">Clone Plugin</span><span class="badge badge--accent">single-primary</span><span class="badge badge--accent">multi-primary</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-innodb-cluster">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">05</span>
+      <span class="acc__label">InnoDB Cluster
+        <span class="acc__hint" style="display:block;margin-top:2px">Group Replication, MySQL Router e MySQL Shell embalados como um produto operável — sem esconder o que roda por baixo.</span></span>
+      <span class="badge">Avançado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>InnoDB Cluster não é um motor de replicação novo. É a composição de três peças: Group Replication fornecendo o consenso e o failover, MySQL Router fazendo o roteamento transparente das conexões, e MySQL Shell com a AdminAPI orquestrando provisionamento e operação. O ganho é operacional — provisionar, adicionar nó, promover e diagnosticar viram comandos de uma linha em vez de sequências manuais.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>A AdminAPI do MySQL Shell valida os pré-requisitos de cada instância e corrige configuração automaticamente antes de formar o cluster.</li><li>Formado o cluster, os metadados ficam em um schema dedicado, replicado entre os membros — é ele que o Router lê para saber a topologia.</li><li>O MySQL Router mantém uma cópia dessa topologia e expõe duas portas: uma de leitura e escrita, que sempre aponta para o primário atual, e uma somente de leitura, que balanceia entre os secundários.</li><li>Quando o primário cai, o Group Replication elege o substituto e o Router redireciona as conexões novas sem que a aplicação mude configuração — não é failover transparente para conexões abertas, que ainda recebem erro e precisam reconectar.</li><li>Adicionar uma instância nova usa o clone plugin: o provisionamento é uma cópia física, não uma reprodução de binlog.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Rodar dba.checkInstanceConfiguration() em cada nó e deixar a AdminAPI ajustar o que estiver fora do padrão.</li><li>Criar o cluster no primeiro nó e adicionar os demais com addInstance(), escolhendo clone como método de recuperação.</li><li>Instalar o Router em bootstrap contra o cluster — nunca configurá-lo à mão, porque o bootstrap gera a configuração e as credenciais corretas.</li><li>Decidir onde o Router roda: junto da aplicação reduz um salto de rede e elimina um ponto único de falha centralizado.</li><li>Ensaiar o failover com cluster.status() aberto, cronometrando quanto tempo a aplicação leva para voltar a escrever.</li><li>Tratar o reingresso de um nó que ficou fora por muito tempo como reprovisionamento, não como reconexão.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">addInstance falha na validação de configuração.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Instância sem GTID, sem chave primária em alguma tabela, ou com server_id repetido.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Ler o relatório do checkInstanceConfiguration por inteiro — ele nomeia exatamente o que falta. Tabela sem chave primária é a causa mais comum e exige mudança de schema.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Aplicação recebe erro de somente leitura de forma intermitente.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">A conexão está indo para a porta de leitura do Router, ou foi aberta antes de um failover e continua apontando para um nó que virou secundário.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Conferir a porta usada e garantir que o pool de conexões da aplicação reconecta em erro de escrita em vez de reutilizar a conexão morta.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">cluster.status() reporta o cluster sem tolerância a falha.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Número de membros ativos insuficiente para perder mais um sem perder quorum.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Restabelecer os membros ausentes. Um cluster de três nós com um fora não tolera mais nenhuma falha — o alerta precisa disparar aqui, não depois.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Router não enxerga a mudança de primário.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Metadados desatualizados ou Router sem conectividade com os membros.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Verificar a conectividade e o intervalo de atualização de metadados; um bootstrap novo do Router resolve o caso de configuração obsoleta.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Criar o cluster</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">js</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>// mysqlsh --js
+dba.checkInstanceConfiguration(&#39;admin@db01:3306&#39;);
+dba.configureInstance(&#39;admin@db01:3306&#39;);
+
+var cluster = dba.createCluster(&#39;dbabrabo&#39;);
+cluster.addInstance(&#39;admin@db02:3306&#39;, {recoveryMethod: &#39;clone&#39;});
+cluster.addInstance(&#39;admin@db03:3306&#39;, {recoveryMethod: &#39;clone&#39;});
+cluster.status();</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Bootstrap do Router</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>mysqlrouter --bootstrap admin@db01:3306 \
+            --directory /opt/router \
+            --conf-use-sockets
+# gera as portas de leitura/escrita e somente leitura já apontadas ao cluster</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Operação do dia a dia</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">js</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>cluster.status({extended:1});
+cluster.setPrimaryInstance(&#39;db02:3306&#39;);   // switchover planejado
+cluster.rejoinInstance(&#39;db03:3306&#39;);
+cluster.rescan();</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">MySQL</span><span class="badge badge--accent">InnoDB Cluster</span><span class="badge badge--accent">MySQL Shell</span><span class="badge badge--accent">AdminAPI</span><span class="badge badge--accent">MySQL Router</span><span class="badge badge--accent">Clone Plugin</span><span class="badge badge--accent">Group Replication</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-innodb-replicaset">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">06</span>
+      <span class="acc__label">InnoDB ReplicaSet
+        <span class="acc__hint" style="display:block;margin-top:2px">A mesma experiência de operação do InnoDB Cluster, porém sobre replicação assíncrona — e sem failover automático.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>InnoDB ReplicaSet usa MySQL Shell e MySQL Router para gerenciar uma topologia de replicação assíncrona clássica com um primário e réplicas. É importante ser exato aqui: ReplicaSet não usa Group Replication, não tem consenso, não tem quorum e não faz failover automático. A promoção de uma réplica é uma operação manual, disparada por comando. Em troca, ele não impõe o custo de latência do consenso e roda em cenários onde o Group Replication não é viável.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>O Shell cria os metadados de topologia e configura a replicação assíncrona entre primário e réplicas, tudo com GTID.</li><li>O Router lê esses metadados e roteia escrita para o primário e leitura para as réplicas, exatamente como faz no InnoDB Cluster.</li><li>Não existe eleição. Se o primário morre, o conjunto fica sem destino de escrita até que um humano — ou uma automação externa — execute a promoção.</li><li>A promoção planejada, com o primário vivo, é segura e ordenada. A promoção forçada, com o primário morto, aceita explicitamente a possibilidade de perda das transações que não chegaram à réplica escolhida.</li><li>Por ser assíncrono, o RPO no failover não é zero: é exatamente o atraso da réplica no instante da falha.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Escolher ReplicaSet conscientemente: quando a latência entre nós inviabiliza consenso, ou quando o requisito de disponibilidade admite intervenção.</li><li>Manter super_read_only nas réplicas para impedir escrita acidental que gere divergência.</li><li>Monitorar o atraso da réplica como métrica de RPO, e não como métrica de performance — é isso que ela é aqui.</li><li>Documentar e ensaiar o procedimento de promoção, porque ele será executado sob pressão.</li><li>Se o requisito for failover automático, a resposta é InnoDB Cluster, não ReplicaSet com um script em volta.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">O primário caiu e nada assumiu.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Comportamento esperado — ReplicaSet não faz failover automático.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Executar a promoção forçada na réplica mais avançada. Se essa espera é inaceitável para o negócio, a topologia escolhida está errada para o requisito.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Após promoção forçada, faltam transações.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">A réplica promovida não tinha recebido tudo — o atraso no instante da falha virou perda de dado.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Comparar gtid_executed do antigo primário, quando ele voltar, com o do novo. Reconciliar é trabalho manual e nem sempre possível: por isso a métrica de atraso precisa ter alerta.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Réplica não reingressa após voltar.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Ela contém transações que o novo primário não tem — divergiu.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Reprovisionar com clone. Não existe merge de histórias divergentes em replicação assíncrona.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Criar e popular o ReplicaSet</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">js</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>var rs = dba.createReplicaSet(&#39;dbabrabo_rs&#39;);
+rs.addInstance(&#39;admin@db02:3306&#39;, {recoveryMethod: &#39;clone&#39;});
+rs.addInstance(&#39;admin@db03:3306&#39;, {recoveryMethod: &#39;clone&#39;});
+rs.status();</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Promoção planejada e promoção forçada</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">js</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>// primário vivo — seguro, sem perda
+rs.setPrimaryInstance(&#39;db02:3306&#39;);
+
+// primário morto — assume o risco de perder o que não replicou
+rs.forcePrimaryInstance(&#39;db02:3306&#39;);</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">MySQL</span><span class="badge badge--accent">InnoDB ReplicaSet</span><span class="badge badge--accent">MySQL Shell</span><span class="badge badge--accent">MySQL Router</span><span class="badge badge--accent">GTID</span><span class="badge badge--accent">super_read_only</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-goldengate-mysql">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">07</span>
+      <span class="acc__label">GoldenGate para MySQL
+        <span class="acc__hint" style="display:block;margin-top:2px">Quando a replicação precisa atravessar tecnologias diferentes, transformar o dado no caminho, ou conviver com escrita nos dois lados.</span></span>
+      <span class="badge">Avançado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Oracle GoldenGate é replicação lógica baseada em captura de log, desacoplada do mecanismo nativo do banco. O Extract lê o log de transações da origem — no MySQL, o Binary Log — e grava as mudanças em arquivos de trail em formato próprio. O Replicat lê o trail no destino e aplica as mudanças. Como o formato intermediário é neutro, origem e destino podem ser bancos diferentes: MySQL para Oracle, Oracle para MySQL, ou qualquer combinação suportada.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>O Extract se conecta à origem e lê o log de transações, convertendo cada operação em um registro lógico no trail.</li><li>Os arquivos de trail podem ser transportados para o destino, o que desacopla origem e destino no tempo: uma indisponibilidade do destino não bloqueia a origem enquanto houver trail retido.</li><li>O Replicat lê o trail e aplica no destino, podendo transformar no caminho — mapear nomes de tabela e coluna, filtrar linhas, converter tipos.</li><li>Em topologia multi-master, a mesma linha pode ser alterada nos dois lados. O CDR (Conflict Detection and Resolution) define regras determinísticas de quem vence, comparando imagem anterior e posterior.</li><li>O Parallel Replicat divide a aplicação em múltiplos apply threads respeitando as dependências entre transações — é o mecanismo de throughput.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Garantir binlog em ROW com imagem completa da linha na origem; sem isso o CDR não tem como comparar valores anteriores.</li><li>Definir chave de identificação de linha para toda tabela replicada — GoldenGate precisa saber o que identifica unicamente cada linha.</li><li>Dimensionar a retenção do trail conforme a maior janela de indisponibilidade que o destino pode ter.</li><li>Estabelecer as regras de CDR antes de ligar multi-master, e não depois do primeiro conflito.</li><li>Monitorar lag por processo — Extract e Replicat têm atrasos independentes e o gargalo pode estar em qualquer um.</li><li>Criptografar trail files e credenciais: eles carregam dado de produção em repouso, fora do banco.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Replicat abortando com erro de dado.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Registro esperado não existe no destino, ou conflito não tratado.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Analisar o registro descartado antes de qualquer coisa. Configurar tratamento de exceção é o caminho para não parar a replicação inteira por uma linha, mas os descartes precisam ser revisados, não ignorados.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Lag crescendo só no Replicat.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Aplicação serializada no destino, falta de índice, ou contenção de lock.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Avaliar Parallel Replicat e conferir a indexação das tabelas de destino — o Replicat sofre dos mesmos problemas de qualquer sessão de escrita.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Trail crescendo sem parar.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Destino parado ou purga não configurada.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Verificar o estado do Replicat e a política de purga. Trail sem purga enche o filesystem e derruba o Extract junto.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Divergência silenciosa em multi-master.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Regras de CDR incompletas — existe um caso de conflito que ninguém previu.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Rodar comparação de dados entre os lados periodicamente. Em multi-master, verificação de consistência é rotina, não exceção.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Pré-requisito na origem MySQL</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">ini</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>[mysqld]
+log_bin           = /var/lib/mysql/mysql-bin
+binlog_format     = ROW
+binlog_row_image  = FULL   # imprescindível para CDR</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Extract e Replicat, esqueleto</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">text</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>-- Extract (origem)
+EXTRACT emysql
+SOURCEDB mysqldb USERIDALIAS ggadmin
+EXTTRAIL ./dirdat/em
+TABLE vendas.*;
+
+-- Replicat (destino)
+REPLICAT rmysql
+TARGETDB mysqldb USERIDALIAS ggadmin
+MAP vendas.*, TARGET dw.*;</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Acompanhar lag dos processos</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">text</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>GGSCI&gt; INFO ALL
+GGSCI&gt; LAG EXTRACT emysql
+GGSCI&gt; LAG REPLICAT rmysql
+GGSCI&gt; STATS REPLICAT rmysql, TOTALSONLY *</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">Oracle GoldenGate</span><span class="badge badge--accent">Extract</span><span class="badge badge--accent">Replicat</span><span class="badge badge--accent">Trail Files</span><span class="badge badge--accent">Parallel Replicat</span><span class="badge badge--accent">CDR</span><span class="badge badge--accent">Replicação heterogênea</span><span class="badge badge--accent">MySQL Binary Log</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-monitoramento-replicacao">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">08</span>
+      <span class="acc__label">Monitoramento de Replicação
+        <span class="acc__hint" style="display:block;margin-top:2px">Medir atraso de forma honesta e alertar sobre a garantia que você acha que tem.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Monitorar replicação é responder duas perguntas separadas: a replicação está funcionando, e quanto dado eu perderia agora. Seconds_Behind_Source responde mal as duas — ele mede a diferença de timestamp do evento em aplicação, zera quando a thread de I/O cai e mente quando há replicação em cascata. A medida confiável combina o conjunto de GTIDs pendentes com a distância entre o que a réplica recebeu e o que ela já aplicou.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>A thread de I/O e a de aplicação têm atrasos independentes: a réplica pode ter recebido tudo e ainda estar longe de aplicar, ou pode estar aplicando rápido porque parou de receber.</li><li>GTID_SUBTRACT entre o gtid_executed do source e o da réplica dá o conjunto exato de transações pendentes — é a métrica de RPO.</li><li>As tabelas de replicação em performance_schema separam status de conexão, de aplicação e de worker, permitindo dizer qual estágio é o gargalo.</li><li>Um heartbeat na origem, gravado periodicamente em uma tabela dedicada, dá uma medida de atraso em tempo real que não depende de haver tráfego.</li><li>Em semi-síncrono, o status do plugin precisa ser monitorado à parte: a degradação para assíncrono é silenciosa.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Alertar sobre thread de replicação parada — separando I/O de aplicação, porque a causa é diferente.</li><li>Alertar sobre atraso acima do limite de RPO acordado com o negócio, não sobre um número escolhido no chute.</li><li>Alertar sobre Rpl_semi_sync_source_status quando a topologia depende dessa garantia.</li><li>Instrumentar heartbeat para distinguir &#39;sem atraso&#39; de &#39;sem tráfego&#39;.</li><li>Verificar consistência de dados periodicamente com checksum de tabela — atraso zero não prova conteúdo igual.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Seconds_Behind_Source igual a zero mas o dado está desatualizado.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Thread de I/O parada — a réplica aplicou tudo o que tinha, que é pouco.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Sempre checar Replica_IO_Running junto. Zero de atraso com I/O parada é o pior falso negativo da operação MySQL.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Atraso oscila muito sem mudança de carga.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Transações grandes sendo aplicadas em bloco, ou DDL longo bloqueando a fila.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Identificar a transação em curso nas tabelas de worker. Transação grande em replicação é um problema de design da aplicação.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Réplica sem erro mas com dado divergente.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Divergência silenciosa acumulada.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Rodar checksum comparativo. Descoberto o desvio, reconstruir — corrigir linha a linha não escala e costuma esconder mais do que resolve.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Estado real das threads</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>SELECT SERVICE_STATE FROM performance_schema.replication_connection_status;
+SELECT SERVICE_STATE FROM performance_schema.replication_applier_status;
+
+SELECT WORKER_ID, LAST_ERROR_MESSAGE
+  FROM performance_schema.replication_applier_status_by_worker;</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">RPO em transações pendentes</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>SELECT GTID_SUBTRACT(
+         &#39;&lt;gtid_executed do source&gt;&#39;,
+         @@GLOBAL.gtid_executed
+       ) AS transacoes_pendentes;</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">MySQL</span><span class="badge badge--accent">performance_schema</span><span class="badge badge--accent">GTID_SUBTRACT</span><span class="badge badge--accent">Heartbeat</span><span class="badge badge--accent">Checksum de tabela</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-troubleshooting-replicacao">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">09</span>
+      <span class="acc__label">Troubleshooting de Replicação
+        <span class="acc__hint" style="display:block;margin-top:2px">O método: onde parou, por que parou, e qual a única ação que não piora a situação.</span></span>
+      <span class="badge">Avançado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Quase todo incidente de replicação cai em quatro famílias: a réplica parou com erro, a réplica está viva mas atrasada, a réplica está divergente sem erro, ou o cluster perdeu quorum. Cada família tem um caminho de diagnóstico diferente, e a ação errada — tipicamente pular eventos para &#39;destravar&#39; — transforma um problema visível em uma divergência invisível que só aparece meses depois, num relatório que não fecha.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>Primeiro isolar o estágio: recebimento, aplicação ou membership. As três falham por motivos distintos e as métricas são separadas.</li><li>Com erro na aplicação, o evento que falhou está identificado no status — ler o erro completo é obrigatório antes de qualquer ação.</li><li>Divergência sem erro só aparece por comparação ativa; nenhum contador vai denunciá-la.</li><li>Perda de quorum em Group Replication é uma decisão do produto, não uma falha: o grupo se recusa a aceitar escrita para não divergir.</li><li>Pular evento é aceitável em exatamente um cenário: quando você provou que o efeito da transação já existe no destino. Em qualquer outro caso é criação de divergência.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Coletar sempre o mesmo conjunto inicial: status das threads, último erro, coordenadas atuais, e o log de erro do período.</li><li>Reproduzir o efeito da transação problemática em ambiente de teste antes de decidir pular ou reconstruir.</li><li>Ter um procedimento escrito de reconstrução de réplica e o tempo dela medido — a decisão entre remediar e reconstruir depende desse número.</li><li>Manter super_read_only nas réplicas para eliminar a causa mais comum de divergência.</li><li>Registrar todo incidente com causa raiz; replicação que quebra repetidamente é sintoma de outra coisa.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Erro 1062, chave duplicada, na réplica.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">A linha já existe no destino — escrita local anterior ou reaplicação de evento.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Comparar a linha nos dois lados. Igual em conteúdo, o efeito já está lá e a transação vazia correspondente resolve; diferente, houve divergência e o caminho é reconstruir.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Erro 1032, linha não encontrada, na réplica.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">A linha que o UPDATE ou DELETE deveria atingir não existe no destino.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Mesma investigação. Um 1032 isolado costuma ser a ponta de uma divergência maior — vale um checksum da tabela inteira antes de dar o caso por encerrado.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Replicação para durante DDL longo.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">O DDL é aplicado serialmente e bloqueia a fila atrás dele.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Planejar DDL em janela, ou usar ferramenta de mudança de schema online que replica em passos pequenos.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Grupo sem escrita com metade dos nós vivos.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Empate não é maioria — sem quorum.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Restabelecer um membro. A reconfiguração forçada só é aceitável com certeza absoluta de que o outro lado está morto, sob risco de dois grupos escrevendo em paralelo.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Réplica reinicia e volta de um ponto anterior, reaplicando eventos.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Metadados de posição não estavam sendo persistidos de forma transacional.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Usar armazenamento transacional das informações de replicação e habilitar recuperação automática de posição.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Coleta inicial de um incidente</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>SHOW REPLICA STATUS\G
+
+SELECT CHANNEL_NAME, SERVICE_STATE, LAST_ERROR_NUMBER, LAST_ERROR_MESSAGE
+  FROM performance_schema.replication_applier_status_by_worker;
+
+SELECT * FROM performance_schema.replication_group_members;</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Transação vazia — só com prova de que o efeito já existe</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">sql</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>-- NAO use isto para &#39;destravar&#39; replicacao sem investigar.
+STOP REPLICA SQL_THREAD;
+SET GTID_NEXT = &#39;aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee:157&#39;;
+BEGIN; COMMIT;
+SET GTID_NEXT = &#39;AUTOMATIC&#39;;
+START REPLICA SQL_THREAD;</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">MySQL</span><span class="badge badge--accent">SHOW REPLICA STATUS</span><span class="badge badge--accent">performance_schema</span><span class="badge badge--accent">Checksum</span><span class="badge badge--accent">Group Replication</span><span class="badge badge--accent">super_read_only</span></div></div>
+    </div></div></div>
+  </div>
+    </div></div></div>
+  </div>
+  <div class="acc" id="mod-02">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">02</span>
+      <span class="acc__label">Arquitetura e InnoDB
+        <span class="acc__hint" style="display:block;margin-top:2px">O caminho de uma transação da sessão até o disco: buffer pool, redo log, undo, checkpoint e o modelo de isolamento.</span></span>
+      <span class="badge">8 tópicos</span>
+      
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <ul class="tblock" style="display:grid;gap:var(--s-2)"><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">01</span>
+               Camadas do servidor e o papel do storage engine</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">02</span>
+               Buffer pool: leitura, escrita suja e flush</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">03</span>
+               Redo log, LSN e checkpoint</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">04</span>
+               Undo, MVCC e read view</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">05</span>
+               Níveis de isolamento e o que cada um permite</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">06</span>
+               Locks de linha, gap lock e deadlock</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">07</span>
+               Estrutura física de tablespace e página</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">08</span>
+               Doublewrite buffer e durabilidade</li></ul>
+    </div></div></div>
+  </div>
+  <div class="acc" id="mod-03">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">03</span>
+      <span class="acc__label">Performance e Tuning
+        <span class="acc__hint" style="display:block;margin-top:2px">Instrumentação antes de palpite: Performance Schema, optimizer, índices e o custo real de cada query.</span></span>
+      <span class="badge">8 tópicos</span>
+      
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <ul class="tblock" style="display:grid;gap:var(--s-2)"><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">01</span>
+               Performance Schema: o que instrumentar e o que custa</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">02</span>
+               sys schema e as visões que resolvem 80% dos casos</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">03</span>
+               EXPLAIN e EXPLAIN ANALYZE</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">04</span>
+               Estatísticas, cardinalidade e escolha de índice</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">05</span>
+               Índices compostos, ordem das colunas e covering index</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">06</span>
+               Slow query log e identificação de padrão</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">07</span>
+               Contenção: locks, semáforos e fila de I/O</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">08</span>
+               Dimensionamento de buffer pool e memória</li></ul>
+    </div></div></div>
+  </div>
+  <div class="acc" id="mod-04">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">04</span>
+      <span class="acc__label">Backup e Recovery
+        <span class="acc__hint" style="display:block;margin-top:2px">Estratégia com RPO e RTO definidos, e o teste de restore que valida a promessa.</span></span>
+      <span class="badge">8 tópicos</span>
+      
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <ul class="tblock" style="display:grid;gap:var(--s-2)"><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">01</span>
+               Backup lógico versus físico: quando cada um</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">02</span>
+               XtraBackup: full, incremental e prepare</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">03</span>
+               Backup consistente com posição de binlog e GTID</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">04</span>
+               Point-in-time recovery aplicando binlog</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">05</span>
+               Clone Plugin para provisionamento de réplica</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">06</span>
+               Retenção, verificação e teste periódico de restore</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">07</span>
+               Recuperação de tabela isolada</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">08</span>
+               Documentação do procedimento e RTO medido</li></ul>
+    </div></div></div>
+  </div>
+  <div class="acc" id="mod-05">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">05</span>
+      <span class="acc__label">Segurança
+        <span class="acc__hint" style="display:block;margin-top:2px">Criptografia em repouso e em trânsito, controle de acesso por role e trilha de auditoria utilizável.</span></span>
+      <span class="badge">7 tópicos</span>
+      
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <ul class="tblock" style="display:grid;gap:var(--s-2)"><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">01</span>
+               Usuários, hosts e o modelo de privilégio</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">02</span>
+               Roles e menor privilégio na prática</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">03</span>
+               TLS obrigatório e certificados</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">04</span>
+               TDE: criptografia de tablespace e gestão de chave</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">05</span>
+               Audit plugin: o que registrar sem inviabilizar</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">06</span>
+               Hardening: contas padrão, arquivos e permissões de SO</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">07</span>
+               Gestão de segredos fora do arquivo de configuração</li></ul>
+    </div></div></div>
+  </div>
+  <div class="acc" id="mod-06">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">06</span>
+      <span class="acc__label">Operação e Automação
+        <span class="acc__hint" style="display:block;margin-top:2px">Upgrade, mudança de schema e as rotinas que precisam ser código, não memória.</span></span>
+      <span class="badge">6 tópicos</span>
+      
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <ul class="tblock" style="display:grid;gap:var(--s-2)"><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">01</span>
+               Estratégia de upgrade de versão maior</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">02</span>
+               Mudança de schema online em tabela grande</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">03</span>
+               MySQL Shell e AdminAPI para operação</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">04</span>
+               Automação de rotina em Python e Shell</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">05</span>
+               Monitoramento: métricas que valem alerta</li><li style="position:relative;padding-left:var(--s-6)">
+               <span class="mono" style="position:absolute;left:0;color:var(--accent);font-size:var(--fs-xs)">06</span>
+               Runbook de incidente e pós-mortem</li></ul>
+    </div></div></div>
+  </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Stack</p>
+      <h2>Tecnologias abordadas</h2>
+    </div>
+    <div class="badges"><span class="badge badge--accent">MySQL</span><span class="badge badge--accent">InnoDB</span><span class="badge badge--accent">Binary Log</span><span class="badge badge--accent">GTID</span><span class="badge badge--accent">Semi-sync</span><span class="badge badge--accent">Group Replication</span><span class="badge badge--accent">InnoDB Cluster</span><span class="badge badge--accent">MySQL Router</span><span class="badge badge--accent">MySQL Shell</span><span class="badge badge--accent">XtraBackup</span><span class="badge badge--accent">Performance Schema</span><span class="badge badge--accent">TDE</span><span class="badge badge--accent">TLS</span></div>
+
+    <div class="invest mt-12">
+      <p class="eyebrow">Investimento</p>
+      <p class="invest__value is-pending">Sob consulta</p>
+      <p class="invest__note">Os valores são apresentados na conversa inicial, conforme a mentoria escolhida e o formato acordado.</p>
+      <div class="hstack mt-6" style="justify-content:center">
+        <a class="btn btn--primary" href="../../#comunidade" data-community>Falar com o mentor</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="container">
+    <h2>Começa por uma call de diagnóstico.</h2>
+    <p>Mapear onde você está e onde quer chegar antes de montar o plano. Sem compromisso.</p>
+    <div class="cta__btns">
+      <a class="btn btn--primary" href="../../#comunidade" data-community>Falar com o mentor</a>
+      <a class="btn btn--outline" href="../../mentorias/">Ver todas as mentorias</a>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="../../">
+          <img class="brand__mark" src="../../assets/logo/avatar-96.png" width="38" height="38" alt="">
+          <span class="brand__name">DBA <span>BRABO</span></span>
+        </a>
+        <p>Conhecimento real de banco de dados, infraestrutura, performance, alta disponibilidade, cloud e automação.</p>
+      </div>
+      <div class="footer__col"><h4>Mentorias</h4>
+        <a href="../../mentorias/oracle-database/">Oracle Database</a><a href="../../mentorias/mysql/">MySQL</a><a href="../../mentorias/linguagem-sql/">Linguagem SQL</a><a href="../../mentorias/exadata/">Exadata</a><a href="../../mentorias/oci/">Oracle Cloud Infrastructure</a>
+        <a href="../../mentorias/">Ver todas →</a></div>
+      <div class="footer__col"><h4>Portal</h4>
+        <a href="../../#sobre">Sobre</a><a href="../../#metodologia">Metodologia</a>
+        <a href="../../#projetos">Projetos</a><a href="../../#tecnologias">Stack</a>
+        <a href="../../#roadmap">Roadmap</a><a href="../../#faq">FAQ</a></div>
+      <div class="footer__col"><h4>Redes</h4><div id="footerSocial"></div></div>
+    </div>
+    <div class="footer__bottom">
+      <span id="footerYear">© 2025–2026 DBA BRABO. Todos os direitos reservados.</span>
+      <span class="mono">Feito para quem administra banco de dados de verdade.</span>
+    </div>
+  </div>
+</footer>
+<script src="../../script.js" defer></script>
+</body>
+</html>

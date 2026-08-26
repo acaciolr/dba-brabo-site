@@ -1,0 +1,774 @@
+{
+  "_comment": "Modulos e topicos da mentoria MySQL. Este arquivo e o padrao-ouro de profundidade: cada topico traz conceito, como funciona, na pratica, troubleshooting, tecnologias e nivel. As demais mentorias seguem esta mesma estrutura.",
+  "slug": "mysql",
+  "modulos": [
+    {
+      "id": "01",
+      "titulo": "Replicação MySQL",
+      "resumo": "Todas as arquiteturas de replicação do MySQL, do binlog posicional ao cluster com failover automático — incluindo o que cada uma garante e o que ela custa.",
+      "nivel": "Intermediário → Avançado",
+      "topicos": [
+        {
+          "slug": "binlog",
+          "titulo": "Master–Replica com Binary Log",
+          "nivel": "Intermediário",
+          "resumo": "A replicação clássica, posicionada por arquivo e offset. É a base de tudo o que vem depois.",
+          "conceito": "Replicação assíncrona em que a instância primária (source) registra toda alteração de dados no Binary Log e uma ou mais réplicas leem esse log e reaplicam as mesmas alterações localmente. A réplica identifica seu ponto de leitura por um par arquivo + posição — por exemplo mysql-bin.000042 e o offset 19483. O source não espera confirmação da réplica para dar COMMIT: por isso é assíncrona, e por isso existe a possibilidade real de perda de dados em um failover.",
+          "comoFunciona": [
+            "A sessão executa a transação e faz COMMIT. Antes de responder ao cliente, o MySQL grava o evento no Binary Log da própria instância primária.",
+            "Na réplica, a thread de I/O abre uma conexão de replicação com o source, pede os eventos a partir do arquivo e posição que ela guarda, e grava o que recebe no Relay Log local.",
+            "A thread de aplicação (SQL thread, ou as worker threads quando há replicação paralela) lê o Relay Log e reexecuta os eventos no dado local.",
+            "A réplica persiste seu progresso — arquivo e posição já aplicados — para conseguir retomar do ponto certo após um restart.",
+            "O formato do binlog define o que é gravado: ROW registra a imagem das linhas alteradas, STATEMENT registra o SQL, MIXED alterna conforme a operação. ROW é o padrão e o único formato seguro para replicação com funções não determinísticas."
+          ],
+          "naPratica": [
+            "Habilitar log_bin, definir server_id único em cada instância e escolher binlog_format=ROW.",
+            "Criar o usuário de replicação com o privilégio REPLICATION SLAVE e conexão restrita.",
+            "Provisionar a réplica a partir de um backup consistente, anotando o arquivo e a posição correspondentes ao momento do backup.",
+            "Apontar a réplica com CHANGE REPLICATION SOURCE TO e iniciar com START REPLICA.",
+            "Validar o estado com SHOW REPLICA STATUS e acompanhar Seconds_Behind_Source.",
+            "Configurar retenção do binlog (binlog_expire_logs_seconds) com folga suficiente para o tempo de provisionamento de uma réplica nova."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "A réplica para com erro de chave duplicada ou linha não encontrada.",
+              "causa": "Divergência de dados entre source e réplica — normalmente escrita direta na réplica, ou provisionamento a partir de um backup inconsistente.",
+              "acao": "Diagnosticar a divergência de verdade (comparar as linhas envolvidas) antes de qualquer coisa. Pular o evento esconde o sintoma e aprofunda a divergência; na maioria dos casos a resposta correta é reconstruir a réplica."
+            },
+            {
+              "sintoma": "Seconds_Behind_Source cresce continuamente.",
+              "causa": "A aplicação na réplica não acompanha o volume do source — comumente por aplicação de eventos em thread única, por falta de índice em tabela alterada, ou por I/O saturado na réplica.",
+              "acao": "Verificar se a replicação paralela está ativa e dimensionada, conferir se as tabelas replicadas têm chave primária, e medir o I/O da réplica antes de culpar a rede."
+            },
+            {
+              "sintoma": "Réplica não conecta após restart do source.",
+              "causa": "O binlog em que a réplica estava posicionada foi purgado, ou o arquivo e posição guardados não existem mais.",
+              "acao": "Confirmar a retenção configurada. Se o ponto foi perdido, a réplica precisa ser reconstruída — e a retenção, revista."
+            },
+            {
+              "sintoma": "Réplica retorna dado diferente do source em SELECTs, sem erro nenhum.",
+              "causa": "Divergência silenciosa, típica de binlog_format=STATEMENT com funções não determinísticas.",
+              "acao": "Migrar para ROW e comparar os dados com uma ferramenta de checksum de tabela."
+            }
+          ],
+          "tecnologias": [
+            "MySQL",
+            "Binary Log",
+            "Relay Log",
+            "ROW format",
+            "Replicação paralela"
+          ],
+          "comandos": [
+            {
+              "desc": "Configuração mínima no source",
+              "lang": "ini",
+              "code": "[mysqld]\nserver_id        = 1\nlog_bin          = /var/lib/mysql/mysql-bin\nbinlog_format    = ROW\nbinlog_expire_logs_seconds = 604800"
+            },
+            {
+              "desc": "Usuário de replicação",
+              "lang": "sql",
+              "code": "CREATE USER 'repl'@'10.0.%' IDENTIFIED BY '<senha>' REQUIRE SSL;\nGRANT REPLICATION SLAVE ON *.* TO 'repl'@'10.0.%';"
+            },
+            {
+              "desc": "Apontar e iniciar a réplica",
+              "lang": "sql",
+              "code": "CHANGE REPLICATION SOURCE TO\n  SOURCE_HOST     = 'db01',\n  SOURCE_USER     = 'repl',\n  SOURCE_PASSWORD = '<senha>',\n  SOURCE_LOG_FILE = 'mysql-bin.000042',\n  SOURCE_LOG_POS  = 19483,\n  SOURCE_SSL      = 1;\n\nSTART REPLICA;"
+            },
+            {
+              "desc": "Verificar o estado da replicação",
+              "lang": "sql",
+              "code": "SHOW REPLICA STATUS\\G\n-- olhar: Replica_IO_Running, Replica_SQL_Running,\n--        Seconds_Behind_Source, Last_Error"
+            }
+          ]
+        },
+        {
+          "slug": "gtid",
+          "titulo": "Master–Replica com GTID",
+          "nivel": "Intermediário → Avançado",
+          "resumo": "Cada transação ganha um identificador global. Some a aritmética de arquivo e posição — e o failover deixa de ser artesanal.",
+          "conceito": "GTID (Global Transaction Identifier) atribui a cada transação um identificador único e permanente no formato <UUID do servidor de origem>:<número sequencial>. Cada instância mantém o conjunto de GTIDs que já executou (gtid_executed). Como o identificador é global, uma réplica consegue dizer com precisão quais transações já aplicou e pedir exatamente o que falta — sem que ninguém precise calcular arquivo e offset.",
+          "comoFunciona": [
+            "Ao dar COMMIT, o source gera o GTID da transação e o grava junto do evento no binlog.",
+            "A réplica registra em gtid_executed tudo o que aplicou. Esse conjunto é persistido na tabela mysql.gtid_executed, sobrevivendo a restart.",
+            "Com SOURCE_AUTO_POSITION=1, a réplica informa seu gtid_executed ao conectar e o source envia apenas as transações ausentes. Não existe mais arquivo e posição na configuração.",
+            "Em um failover, apontar as demais réplicas para o novo primário é a mesma operação de sempre: elas negociam pelo GTID. É isso que torna o failover automatizável.",
+            "GTIDs vazios (transações que não alteram dado) e a diretiva de transação vazia importam ao reconciliar réplicas — injetar uma transação vazia é o mecanismo suportado para marcar um GTID como aplicado quando você tem certeza de que o efeito já existe no destino."
+          ],
+          "naPratica": [
+            "Ativar gtid_mode=ON e enforce_gtid_consistency=ON em todas as instâncias — a mudança tem ordem definida quando feita online e não pode ser aplicada de qualquer jeito.",
+            "Reconfigurar as réplicas com SOURCE_AUTO_POSITION=1.",
+            "Provisionar réplica nova a partir de backup que preserve o gtid_purged correspondente.",
+            "Ensaiar um failover: promover uma réplica e reapontar as demais, medindo o tempo total.",
+            "Monitorar a diferença entre o gtid_executed do source e o das réplicas — é a medida honesta de atraso, mais confiável que Seconds_Behind_Source."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "ERROR 1236 informando que o source não tem os GTIDs necessários.",
+              "causa": "As transações que a réplica precisa já foram purgadas do binlog do source.",
+              "acao": "Comparar gtid_executed da réplica com gtid_purged do source. Se o intervalo faltante foi purgado, a réplica precisa ser reconstruída a partir de um backup mais recente."
+            },
+            {
+              "sintoma": "Réplica não inicia acusando inconsistência de GTID.",
+              "causa": "Operação não suportada sob enforce_gtid_consistency — como CREATE TABLE ... SELECT em versões que não permitem, ou tabela temporária dentro de transação.",
+              "acao": "Identificar a operação na aplicação e substituí-la; a restrição existe porque essas construções não são representáveis atomicamente como um GTID."
+            },
+            {
+              "sintoma": "Após promover uma réplica, as demais divergem.",
+              "causa": "A réplica promovida não tinha aplicado tudo o que outra réplica já tinha — promoveu-se o nó errado.",
+              "acao": "Antes de promover, comparar gtid_executed de todos os candidatos e escolher o mais avançado. Automatizar essa comparação é justamente o que ferramentas de orquestração fazem."
+            },
+            {
+              "sintoma": "Conjunto de GTIDs cresce com UUIDs desconhecidos.",
+              "causa": "Alguém escreveu diretamente em uma réplica, gerando GTIDs de origem local.",
+              "acao": "Colocar as réplicas em super_read_only, não apenas read_only — read_only sozinho não impede usuário com SUPER."
+            }
+          ],
+          "tecnologias": [
+            "MySQL",
+            "GTID",
+            "auto-position",
+            "gtid_executed",
+            "gtid_purged",
+            "super_read_only"
+          ],
+          "comandos": [
+            {
+              "desc": "Habilitar GTID",
+              "lang": "ini",
+              "code": "[mysqld]\ngtid_mode                 = ON\nenforce_gtid_consistency  = ON\nlog_replica_updates       = ON\nsuper_read_only           = ON   # nas réplicas"
+            },
+            {
+              "desc": "Réplica com auto-position",
+              "lang": "sql",
+              "code": "CHANGE REPLICATION SOURCE TO\n  SOURCE_HOST          = 'db01',\n  SOURCE_USER          = 'repl',\n  SOURCE_PASSWORD      = '<senha>',\n  SOURCE_AUTO_POSITION = 1;\n\nSTART REPLICA;"
+            },
+            {
+              "desc": "Medir o atraso pelo conjunto de GTIDs",
+              "lang": "sql",
+              "code": "-- no source\nSELECT @@GLOBAL.gtid_executed;\n\n-- na réplica: o que ainda falta aplicar\nSELECT GTID_SUBTRACT('<gtid_executed do source>',\n                     @@GLOBAL.gtid_executed) AS faltando;"
+            },
+            {
+              "desc": "Escolher o candidato mais avançado antes de promover",
+              "lang": "sql",
+              "code": "-- executar em cada réplica candidata e comparar\nSELECT @@GLOBAL.gtid_executed;\n-- promove-se a que contém o superconjunto das demais"
+            }
+          ]
+        },
+        {
+          "slug": "semisync",
+          "titulo": "Replicação Semi-Síncrona",
+          "nivel": "Avançado",
+          "resumo": "O meio-termo entre perder dado no failover e pagar o preço da confirmação remota.",
+          "conceito": "Na replicação assíncrona o source confirma o COMMIT ao cliente sem saber se alguma réplica recebeu a transação — se o source morrer nesse instante, a transação existe só nele. O semi-síncrono muda o contrato: antes de responder ao cliente, o source espera que pelo menos N réplicas confirmem ter gravado o evento no seu relay log. Confirmar recebimento não é o mesmo que ter aplicado: a réplica ainda pode estar atrás na aplicação, mas o dado não se perde com a morte do source.",
+          "comoFunciona": [
+            "O plugin semissíncrono é carregado no source e nas réplicas; cada lado tem o seu.",
+            "Ao dar COMMIT, o source grava no binlog e bloqueia a resposta ao cliente aguardando o ACK de rpl_semi_sync_source_wait_for_replica_count réplicas.",
+            "O ponto de espera importa: com AFTER_SYNC o source espera antes de tornar a transação visível, o que evita transações fantasma; com AFTER_COMMIT a transação já está visível localmente antes do ACK.",
+            "Se nenhum ACK chegar dentro de rpl_semi_sync_source_timeout, o source degrada automaticamente para assíncrono e segue operando — a disponibilidade é preservada em detrimento da garantia.",
+            "Quando uma réplica volta a acompanhar, o source retoma o modo semi-síncrono sozinho."
+          ],
+          "naPratica": [
+            "Instalar e habilitar os plugins nos dois lados e definir o número de ACKs exigidos.",
+            "Dimensionar o timeout conscientemente: um valor baixo transforma o semi-síncrono em decoração; um valor alto propaga latência de rede para a aplicação.",
+            "Medir o impacto real no tempo de COMMIT antes e depois — a conta é sempre latência de rede somada por transação.",
+            "Monitorar Rpl_semi_sync_source_status para saber quando o cluster degradou para assíncrono, porque essa degradação é silenciosa para a aplicação.",
+            "Manter pelo menos duas réplicas semi-síncronas se a garantia precisa sobreviver à manutenção de uma delas."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Latência de escrita subiu de forma perceptível após habilitar.",
+              "causa": "Cada COMMIT agora paga um round-trip até a réplica.",
+              "acao": "Aproximar a réplica em topologia de rede, ou reavaliar se a garantia vale o custo para essa carga. Colocar a réplica semi-síncrona em outra região é a decisão que mais surpreende negativamente."
+            },
+            {
+              "sintoma": "O cluster está assíncrono sem ninguém saber.",
+              "causa": "O timeout foi atingido e o source degradou automaticamente.",
+              "acao": "Alertar sobre Rpl_semi_sync_source_status = OFF. Sem esse alerta você acha que tem uma garantia que não tem."
+            },
+            {
+              "sintoma": "Após failover apareceram transações no antigo primário que não existem no novo.",
+              "causa": "Uso de AFTER_COMMIT — a transação ficou visível localmente antes de ser confirmada remotamente.",
+              "acao": "Usar AFTER_SYNC, que é o padrão nas versões atuais justamente por causa desse cenário."
+            }
+          ],
+          "tecnologias": [
+            "MySQL",
+            "Semi-sync",
+            "AFTER_SYNC",
+            "rpl_semi_sync",
+            "Rpl_semi_sync_source_status"
+          ],
+          "comandos": [
+            {
+              "desc": "Habilitar no source e na réplica",
+              "lang": "sql",
+              "code": "-- source\nINSTALL PLUGIN rpl_semi_sync_source SONAME 'semisync_source.so';\nSET GLOBAL rpl_semi_sync_source_enabled = 1;\nSET GLOBAL rpl_semi_sync_source_timeout = 1000;   -- ms\nSET GLOBAL rpl_semi_sync_source_wait_point = 'AFTER_SYNC';\n\n-- réplica\nINSTALL PLUGIN rpl_semi_sync_replica SONAME 'semisync_replica.so';\nSET GLOBAL rpl_semi_sync_replica_enabled = 1;\nSTOP REPLICA IO_THREAD; START REPLICA IO_THREAD;"
+            },
+            {
+              "desc": "Confirmar que a garantia está ativa",
+              "lang": "sql",
+              "code": "SHOW STATUS LIKE 'Rpl_semi_sync_source_status';     -- ON = garantido\nSHOW STATUS LIKE 'Rpl_semi_sync_source_no_tx';      -- COMMITs sem ACK\nSHOW STATUS LIKE 'Rpl_semi_sync_source_avg_net_wait_time';"
+            }
+          ]
+        },
+        {
+          "slug": "group-replication",
+          "titulo": "Group Replication",
+          "nivel": "Avançado",
+          "resumo": "Replicação com consenso entre membros. Aqui aparecem quorum, certificação de conflito e failover automático de verdade.",
+          "conceito": "Group Replication é um plugin que transforma um conjunto de instâncias MySQL em um grupo que decide por consenso, usando uma implementação de Paxos. Cada transação, ao chegar no COMMIT, é enviada ao grupo e passa por certificação: o grupo verifica se ela conflita com outra transação concorrente já certificada. O grupo mantém membership dinâmico e só aceita escrita enquanto houver maioria — é isso que impede split-brain, ao custo de exigir quorum.",
+          "comoFunciona": [
+            "Todos os membros compartilham a mesma visão de membership. Entradas e saídas geram uma mudança de visão acordada por todos.",
+            "No COMMIT, o writeset da transação é difundido ao grupo em ordem total. Cada membro executa a mesma certificação e chega, deterministicamente, à mesma decisão de aceitar ou abortar.",
+            "Aceita a transação, cada membro aplica localmente — de forma assíncrona em relação ao COMMIT do originador, o que significa que ler de um secundário logo após escrever pode não enxergar a escrita, a menos que se use um nível de consistência mais forte.",
+            "O grupo só permite escrita com maioria de membros vivos. Perdida a maioria, os remanescentes ficam bloqueados por decisão de projeto — preferir indisponibilidade a divergência.",
+            "Em modo single-primary o grupo elege automaticamente um novo primário quando o atual sai. Em multi-primary todos aceitam escrita, e conflitos entre nós passam a ser rotina a ser tratada pela aplicação."
+          ],
+          "naPratica": [
+            "Exigências não negociáveis: engine InnoDB, chave primária em toda tabela, binlog em ROW e GTID habilitado.",
+            "Dimensionar o grupo com número ímpar de membros — 3 ou 5 — porque quorum é maioria.",
+            "Configurar group_replication_group_seeds e a whitelist de IPs corretamente; a maior parte das falhas de bootstrap está aí.",
+            "Escolher conscientemente entre single-primary e multi-primary. Multi-primary não é um upgrade: é outro modelo de conflito.",
+            "Definir o nível de consistência de leitura conforme a aplicação, ciente de que consistência mais forte custa latência.",
+            "Testar a perda de quorum de propósito e documentar o procedimento de reconfiguração forçada antes de precisar dele às três da manhã."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Membro entra em ERROR e é expulso do grupo.",
+              "causa": "Divergência local, transação aplicada fora do grupo, ou perda de conectividade prolongada.",
+              "acao": "Ler o motivo no log de erro antes de tentar reingressar. Se o membro divergiu, o caminho é reprovisionar — o clone plugin resolve isso sem intervenção manual."
+            },
+            {
+              "sintoma": "Grupo travado, sem aceitar escrita, com membros vivos.",
+              "causa": "Perda de quorum — sobraram menos que a maioria.",
+              "acao": "Confirmar quantos membros o grupo espera versus quantos respondem. A reconfiguração forçada de membership resolve, mas é uma operação perigosa: aplicada no conjunto errado, cria dois grupos divergentes."
+            },
+            {
+              "sintoma": "Transações abortando com erro de certificação.",
+              "causa": "Conflito de writeset em modo multi-primary — dois nós alterando a mesma linha concorrentemente.",
+              "acao": "Rotear a escrita de cada conjunto de dados sempre para o mesmo nó, ou migrar para single-primary. Certificação não é bug, é o mecanismo funcionando."
+            },
+            {
+              "sintoma": "Réplica secundária retorna dado antigo logo após uma escrita.",
+              "causa": "Aplicação assíncrona no secundário somada a nível de consistência EVENTUAL.",
+              "acao": "Ajustar group_replication_consistency para o nível adequado, medindo o impacto de latência que isso introduz."
+            },
+            {
+              "sintoma": "Membro nunca conclui o ingresso, ficando em RECOVERING.",
+              "causa": "Recuperação distribuída não consegue alcançar o estado do grupo — normalmente binlog purgado no doador.",
+              "acao": "Usar o clone plugin para provisionamento físico em vez de recuperação por binlog."
+            }
+          ],
+          "tecnologias": [
+            "MySQL",
+            "Group Replication",
+            "Paxos",
+            "Quorum",
+            "Certificação de conflito",
+            "Clone Plugin",
+            "single-primary",
+            "multi-primary"
+          ],
+          "comandos": [
+            {
+              "desc": "Configuração base de um membro",
+              "lang": "ini",
+              "code": "[mysqld]\nserver_id                         = 1\ngtid_mode                         = ON\nenforce_gtid_consistency          = ON\nbinlog_format                     = ROW\nplugin_load_add                   = group_replication.so\n\ngroup_replication_group_name      = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'\ngroup_replication_local_address   = 'db01:33061'\ngroup_replication_group_seeds     = 'db01:33061,db02:33061,db03:33061'\ngroup_replication_single_primary_mode = ON"
+            },
+            {
+              "desc": "Bootstrap do grupo — só no primeiro membro, uma única vez",
+              "lang": "sql",
+              "code": "SET GLOBAL group_replication_bootstrap_group = ON;\nSTART GROUP_REPLICATION;\nSET GLOBAL group_replication_bootstrap_group = OFF;\n-- deixar o bootstrap ligado em mais de um nó é como se cria dois grupos"
+            },
+            {
+              "desc": "Inspecionar membership e quem é o primário",
+              "lang": "sql",
+              "code": "SELECT MEMBER_HOST, MEMBER_PORT, MEMBER_STATE, MEMBER_ROLE\n  FROM performance_schema.replication_group_members;\n\nSELECT * FROM performance_schema.replication_group_member_stats\\G"
+            }
+          ]
+        },
+        {
+          "slug": "innodb-cluster",
+          "titulo": "InnoDB Cluster",
+          "nivel": "Avançado",
+          "resumo": "Group Replication, MySQL Router e MySQL Shell embalados como um produto operável — sem esconder o que roda por baixo.",
+          "conceito": "InnoDB Cluster não é um motor de replicação novo. É a composição de três peças: Group Replication fornecendo o consenso e o failover, MySQL Router fazendo o roteamento transparente das conexões, e MySQL Shell com a AdminAPI orquestrando provisionamento e operação. O ganho é operacional — provisionar, adicionar nó, promover e diagnosticar viram comandos de uma linha em vez de sequências manuais.",
+          "comoFunciona": [
+            "A AdminAPI do MySQL Shell valida os pré-requisitos de cada instância e corrige configuração automaticamente antes de formar o cluster.",
+            "Formado o cluster, os metadados ficam em um schema dedicado, replicado entre os membros — é ele que o Router lê para saber a topologia.",
+            "O MySQL Router mantém uma cópia dessa topologia e expõe duas portas: uma de leitura e escrita, que sempre aponta para o primário atual, e uma somente de leitura, que balanceia entre os secundários.",
+            "Quando o primário cai, o Group Replication elege o substituto e o Router redireciona as conexões novas sem que a aplicação mude configuração — não é failover transparente para conexões abertas, que ainda recebem erro e precisam reconectar.",
+            "Adicionar uma instância nova usa o clone plugin: o provisionamento é uma cópia física, não uma reprodução de binlog."
+          ],
+          "naPratica": [
+            "Rodar dba.checkInstanceConfiguration() em cada nó e deixar a AdminAPI ajustar o que estiver fora do padrão.",
+            "Criar o cluster no primeiro nó e adicionar os demais com addInstance(), escolhendo clone como método de recuperação.",
+            "Instalar o Router em bootstrap contra o cluster — nunca configurá-lo à mão, porque o bootstrap gera a configuração e as credenciais corretas.",
+            "Decidir onde o Router roda: junto da aplicação reduz um salto de rede e elimina um ponto único de falha centralizado.",
+            "Ensaiar o failover com cluster.status() aberto, cronometrando quanto tempo a aplicação leva para voltar a escrever.",
+            "Tratar o reingresso de um nó que ficou fora por muito tempo como reprovisionamento, não como reconexão."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "addInstance falha na validação de configuração.",
+              "causa": "Instância sem GTID, sem chave primária em alguma tabela, ou com server_id repetido.",
+              "acao": "Ler o relatório do checkInstanceConfiguration por inteiro — ele nomeia exatamente o que falta. Tabela sem chave primária é a causa mais comum e exige mudança de schema."
+            },
+            {
+              "sintoma": "Aplicação recebe erro de somente leitura de forma intermitente.",
+              "causa": "A conexão está indo para a porta de leitura do Router, ou foi aberta antes de um failover e continua apontando para um nó que virou secundário.",
+              "acao": "Conferir a porta usada e garantir que o pool de conexões da aplicação reconecta em erro de escrita em vez de reutilizar a conexão morta."
+            },
+            {
+              "sintoma": "cluster.status() reporta o cluster sem tolerância a falha.",
+              "causa": "Número de membros ativos insuficiente para perder mais um sem perder quorum.",
+              "acao": "Restabelecer os membros ausentes. Um cluster de três nós com um fora não tolera mais nenhuma falha — o alerta precisa disparar aqui, não depois."
+            },
+            {
+              "sintoma": "Router não enxerga a mudança de primário.",
+              "causa": "Metadados desatualizados ou Router sem conectividade com os membros.",
+              "acao": "Verificar a conectividade e o intervalo de atualização de metadados; um bootstrap novo do Router resolve o caso de configuração obsoleta."
+            }
+          ],
+          "tecnologias": [
+            "MySQL",
+            "InnoDB Cluster",
+            "MySQL Shell",
+            "AdminAPI",
+            "MySQL Router",
+            "Clone Plugin",
+            "Group Replication"
+          ],
+          "comandos": [
+            {
+              "desc": "Criar o cluster",
+              "lang": "js",
+              "code": "// mysqlsh --js\ndba.checkInstanceConfiguration('admin@db01:3306');\ndba.configureInstance('admin@db01:3306');\n\nvar cluster = dba.createCluster('dbabrabo');\ncluster.addInstance('admin@db02:3306', {recoveryMethod: 'clone'});\ncluster.addInstance('admin@db03:3306', {recoveryMethod: 'clone'});\ncluster.status();"
+            },
+            {
+              "desc": "Bootstrap do Router",
+              "lang": "bash",
+              "code": "mysqlrouter --bootstrap admin@db01:3306 \\\n            --directory /opt/router \\\n            --conf-use-sockets\n# gera as portas de leitura/escrita e somente leitura já apontadas ao cluster"
+            },
+            {
+              "desc": "Operação do dia a dia",
+              "lang": "js",
+              "code": "cluster.status({extended:1});\ncluster.setPrimaryInstance('db02:3306');   // switchover planejado\ncluster.rejoinInstance('db03:3306');\ncluster.rescan();"
+            }
+          ]
+        },
+        {
+          "slug": "innodb-replicaset",
+          "titulo": "InnoDB ReplicaSet",
+          "nivel": "Intermediário",
+          "resumo": "A mesma experiência de operação do InnoDB Cluster, porém sobre replicação assíncrona — e sem failover automático.",
+          "conceito": "InnoDB ReplicaSet usa MySQL Shell e MySQL Router para gerenciar uma topologia de replicação assíncrona clássica com um primário e réplicas. É importante ser exato aqui: ReplicaSet não usa Group Replication, não tem consenso, não tem quorum e não faz failover automático. A promoção de uma réplica é uma operação manual, disparada por comando. Em troca, ele não impõe o custo de latência do consenso e roda em cenários onde o Group Replication não é viável.",
+          "comoFunciona": [
+            "O Shell cria os metadados de topologia e configura a replicação assíncrona entre primário e réplicas, tudo com GTID.",
+            "O Router lê esses metadados e roteia escrita para o primário e leitura para as réplicas, exatamente como faz no InnoDB Cluster.",
+            "Não existe eleição. Se o primário morre, o conjunto fica sem destino de escrita até que um humano — ou uma automação externa — execute a promoção.",
+            "A promoção planejada, com o primário vivo, é segura e ordenada. A promoção forçada, com o primário morto, aceita explicitamente a possibilidade de perda das transações que não chegaram à réplica escolhida.",
+            "Por ser assíncrono, o RPO no failover não é zero: é exatamente o atraso da réplica no instante da falha."
+          ],
+          "naPratica": [
+            "Escolher ReplicaSet conscientemente: quando a latência entre nós inviabiliza consenso, ou quando o requisito de disponibilidade admite intervenção.",
+            "Manter super_read_only nas réplicas para impedir escrita acidental que gere divergência.",
+            "Monitorar o atraso da réplica como métrica de RPO, e não como métrica de performance — é isso que ela é aqui.",
+            "Documentar e ensaiar o procedimento de promoção, porque ele será executado sob pressão.",
+            "Se o requisito for failover automático, a resposta é InnoDB Cluster, não ReplicaSet com um script em volta."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "O primário caiu e nada assumiu.",
+              "causa": "Comportamento esperado — ReplicaSet não faz failover automático.",
+              "acao": "Executar a promoção forçada na réplica mais avançada. Se essa espera é inaceitável para o negócio, a topologia escolhida está errada para o requisito."
+            },
+            {
+              "sintoma": "Após promoção forçada, faltam transações.",
+              "causa": "A réplica promovida não tinha recebido tudo — o atraso no instante da falha virou perda de dado.",
+              "acao": "Comparar gtid_executed do antigo primário, quando ele voltar, com o do novo. Reconciliar é trabalho manual e nem sempre possível: por isso a métrica de atraso precisa ter alerta."
+            },
+            {
+              "sintoma": "Réplica não reingressa após voltar.",
+              "causa": "Ela contém transações que o novo primário não tem — divergiu.",
+              "acao": "Reprovisionar com clone. Não existe merge de histórias divergentes em replicação assíncrona."
+            }
+          ],
+          "tecnologias": [
+            "MySQL",
+            "InnoDB ReplicaSet",
+            "MySQL Shell",
+            "MySQL Router",
+            "GTID",
+            "super_read_only"
+          ],
+          "comandos": [
+            {
+              "desc": "Criar e popular o ReplicaSet",
+              "lang": "js",
+              "code": "var rs = dba.createReplicaSet('dbabrabo_rs');\nrs.addInstance('admin@db02:3306', {recoveryMethod: 'clone'});\nrs.addInstance('admin@db03:3306', {recoveryMethod: 'clone'});\nrs.status();"
+            },
+            {
+              "desc": "Promoção planejada e promoção forçada",
+              "lang": "js",
+              "code": "// primário vivo — seguro, sem perda\nrs.setPrimaryInstance('db02:3306');\n\n// primário morto — assume o risco de perder o que não replicou\nrs.forcePrimaryInstance('db02:3306');"
+            }
+          ]
+        },
+        {
+          "slug": "goldengate-mysql",
+          "titulo": "GoldenGate para MySQL",
+          "nivel": "Avançado",
+          "resumo": "Quando a replicação precisa atravessar tecnologias diferentes, transformar o dado no caminho, ou conviver com escrita nos dois lados.",
+          "conceito": "Oracle GoldenGate é replicação lógica baseada em captura de log, desacoplada do mecanismo nativo do banco. O Extract lê o log de transações da origem — no MySQL, o Binary Log — e grava as mudanças em arquivos de trail em formato próprio. O Replicat lê o trail no destino e aplica as mudanças. Como o formato intermediário é neutro, origem e destino podem ser bancos diferentes: MySQL para Oracle, Oracle para MySQL, ou qualquer combinação suportada.",
+          "comoFunciona": [
+            "O Extract se conecta à origem e lê o log de transações, convertendo cada operação em um registro lógico no trail.",
+            "Os arquivos de trail podem ser transportados para o destino, o que desacopla origem e destino no tempo: uma indisponibilidade do destino não bloqueia a origem enquanto houver trail retido.",
+            "O Replicat lê o trail e aplica no destino, podendo transformar no caminho — mapear nomes de tabela e coluna, filtrar linhas, converter tipos.",
+            "Em topologia multi-master, a mesma linha pode ser alterada nos dois lados. O CDR (Conflict Detection and Resolution) define regras determinísticas de quem vence, comparando imagem anterior e posterior.",
+            "O Parallel Replicat divide a aplicação em múltiplos apply threads respeitando as dependências entre transações — é o mecanismo de throughput."
+          ],
+          "naPratica": [
+            "Garantir binlog em ROW com imagem completa da linha na origem; sem isso o CDR não tem como comparar valores anteriores.",
+            "Definir chave de identificação de linha para toda tabela replicada — GoldenGate precisa saber o que identifica unicamente cada linha.",
+            "Dimensionar a retenção do trail conforme a maior janela de indisponibilidade que o destino pode ter.",
+            "Estabelecer as regras de CDR antes de ligar multi-master, e não depois do primeiro conflito.",
+            "Monitorar lag por processo — Extract e Replicat têm atrasos independentes e o gargalo pode estar em qualquer um.",
+            "Criptografar trail files e credenciais: eles carregam dado de produção em repouso, fora do banco."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Replicat abortando com erro de dado.",
+              "causa": "Registro esperado não existe no destino, ou conflito não tratado.",
+              "acao": "Analisar o registro descartado antes de qualquer coisa. Configurar tratamento de exceção é o caminho para não parar a replicação inteira por uma linha, mas os descartes precisam ser revisados, não ignorados."
+            },
+            {
+              "sintoma": "Lag crescendo só no Replicat.",
+              "causa": "Aplicação serializada no destino, falta de índice, ou contenção de lock.",
+              "acao": "Avaliar Parallel Replicat e conferir a indexação das tabelas de destino — o Replicat sofre dos mesmos problemas de qualquer sessão de escrita."
+            },
+            {
+              "sintoma": "Trail crescendo sem parar.",
+              "causa": "Destino parado ou purga não configurada.",
+              "acao": "Verificar o estado do Replicat e a política de purga. Trail sem purga enche o filesystem e derruba o Extract junto."
+            },
+            {
+              "sintoma": "Divergência silenciosa em multi-master.",
+              "causa": "Regras de CDR incompletas — existe um caso de conflito que ninguém previu.",
+              "acao": "Rodar comparação de dados entre os lados periodicamente. Em multi-master, verificação de consistência é rotina, não exceção."
+            }
+          ],
+          "tecnologias": [
+            "Oracle GoldenGate",
+            "Extract",
+            "Replicat",
+            "Trail Files",
+            "Parallel Replicat",
+            "CDR",
+            "Replicação heterogênea",
+            "MySQL Binary Log"
+          ],
+          "comandos": [
+            {
+              "desc": "Pré-requisito na origem MySQL",
+              "lang": "ini",
+              "code": "[mysqld]\nlog_bin           = /var/lib/mysql/mysql-bin\nbinlog_format     = ROW\nbinlog_row_image  = FULL   # imprescindível para CDR"
+            },
+            {
+              "desc": "Extract e Replicat, esqueleto",
+              "lang": "text",
+              "code": "-- Extract (origem)\nEXTRACT emysql\nSOURCEDB mysqldb USERIDALIAS ggadmin\nEXTTRAIL ./dirdat/em\nTABLE vendas.*;\n\n-- Replicat (destino)\nREPLICAT rmysql\nTARGETDB mysqldb USERIDALIAS ggadmin\nMAP vendas.*, TARGET dw.*;"
+            },
+            {
+              "desc": "Acompanhar lag dos processos",
+              "lang": "text",
+              "code": "GGSCI> INFO ALL\nGGSCI> LAG EXTRACT emysql\nGGSCI> LAG REPLICAT rmysql\nGGSCI> STATS REPLICAT rmysql, TOTALSONLY *"
+            }
+          ]
+        },
+        {
+          "slug": "monitoramento-replicacao",
+          "titulo": "Monitoramento de Replicação",
+          "nivel": "Intermediário",
+          "resumo": "Medir atraso de forma honesta e alertar sobre a garantia que você acha que tem.",
+          "conceito": "Monitorar replicação é responder duas perguntas separadas: a replicação está funcionando, e quanto dado eu perderia agora. Seconds_Behind_Source responde mal as duas — ele mede a diferença de timestamp do evento em aplicação, zera quando a thread de I/O cai e mente quando há replicação em cascata. A medida confiável combina o conjunto de GTIDs pendentes com a distância entre o que a réplica recebeu e o que ela já aplicou.",
+          "comoFunciona": [
+            "A thread de I/O e a de aplicação têm atrasos independentes: a réplica pode ter recebido tudo e ainda estar longe de aplicar, ou pode estar aplicando rápido porque parou de receber.",
+            "GTID_SUBTRACT entre o gtid_executed do source e o da réplica dá o conjunto exato de transações pendentes — é a métrica de RPO.",
+            "As tabelas de replicação em performance_schema separam status de conexão, de aplicação e de worker, permitindo dizer qual estágio é o gargalo.",
+            "Um heartbeat na origem, gravado periodicamente em uma tabela dedicada, dá uma medida de atraso em tempo real que não depende de haver tráfego.",
+            "Em semi-síncrono, o status do plugin precisa ser monitorado à parte: a degradação para assíncrono é silenciosa."
+          ],
+          "naPratica": [
+            "Alertar sobre thread de replicação parada — separando I/O de aplicação, porque a causa é diferente.",
+            "Alertar sobre atraso acima do limite de RPO acordado com o negócio, não sobre um número escolhido no chute.",
+            "Alertar sobre Rpl_semi_sync_source_status quando a topologia depende dessa garantia.",
+            "Instrumentar heartbeat para distinguir 'sem atraso' de 'sem tráfego'.",
+            "Verificar consistência de dados periodicamente com checksum de tabela — atraso zero não prova conteúdo igual."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Seconds_Behind_Source igual a zero mas o dado está desatualizado.",
+              "causa": "Thread de I/O parada — a réplica aplicou tudo o que tinha, que é pouco.",
+              "acao": "Sempre checar Replica_IO_Running junto. Zero de atraso com I/O parada é o pior falso negativo da operação MySQL."
+            },
+            {
+              "sintoma": "Atraso oscila muito sem mudança de carga.",
+              "causa": "Transações grandes sendo aplicadas em bloco, ou DDL longo bloqueando a fila.",
+              "acao": "Identificar a transação em curso nas tabelas de worker. Transação grande em replicação é um problema de design da aplicação."
+            },
+            {
+              "sintoma": "Réplica sem erro mas com dado divergente.",
+              "causa": "Divergência silenciosa acumulada.",
+              "acao": "Rodar checksum comparativo. Descoberto o desvio, reconstruir — corrigir linha a linha não escala e costuma esconder mais do que resolve."
+            }
+          ],
+          "tecnologias": [
+            "MySQL",
+            "performance_schema",
+            "GTID_SUBTRACT",
+            "Heartbeat",
+            "Checksum de tabela"
+          ],
+          "comandos": [
+            {
+              "desc": "Estado real das threads",
+              "lang": "sql",
+              "code": "SELECT SERVICE_STATE FROM performance_schema.replication_connection_status;\nSELECT SERVICE_STATE FROM performance_schema.replication_applier_status;\n\nSELECT WORKER_ID, LAST_ERROR_MESSAGE\n  FROM performance_schema.replication_applier_status_by_worker;"
+            },
+            {
+              "desc": "RPO em transações pendentes",
+              "lang": "sql",
+              "code": "SELECT GTID_SUBTRACT(\n         '<gtid_executed do source>',\n         @@GLOBAL.gtid_executed\n       ) AS transacoes_pendentes;"
+            }
+          ]
+        },
+        {
+          "slug": "troubleshooting-replicacao",
+          "titulo": "Troubleshooting de Replicação",
+          "nivel": "Avançado",
+          "resumo": "O método: onde parou, por que parou, e qual a única ação que não piora a situação.",
+          "conceito": "Quase todo incidente de replicação cai em quatro famílias: a réplica parou com erro, a réplica está viva mas atrasada, a réplica está divergente sem erro, ou o cluster perdeu quorum. Cada família tem um caminho de diagnóstico diferente, e a ação errada — tipicamente pular eventos para 'destravar' — transforma um problema visível em uma divergência invisível que só aparece meses depois, num relatório que não fecha.",
+          "comoFunciona": [
+            "Primeiro isolar o estágio: recebimento, aplicação ou membership. As três falham por motivos distintos e as métricas são separadas.",
+            "Com erro na aplicação, o evento que falhou está identificado no status — ler o erro completo é obrigatório antes de qualquer ação.",
+            "Divergência sem erro só aparece por comparação ativa; nenhum contador vai denunciá-la.",
+            "Perda de quorum em Group Replication é uma decisão do produto, não uma falha: o grupo se recusa a aceitar escrita para não divergir.",
+            "Pular evento é aceitável em exatamente um cenário: quando você provou que o efeito da transação já existe no destino. Em qualquer outro caso é criação de divergência."
+          ],
+          "naPratica": [
+            "Coletar sempre o mesmo conjunto inicial: status das threads, último erro, coordenadas atuais, e o log de erro do período.",
+            "Reproduzir o efeito da transação problemática em ambiente de teste antes de decidir pular ou reconstruir.",
+            "Ter um procedimento escrito de reconstrução de réplica e o tempo dela medido — a decisão entre remediar e reconstruir depende desse número.",
+            "Manter super_read_only nas réplicas para eliminar a causa mais comum de divergência.",
+            "Registrar todo incidente com causa raiz; replicação que quebra repetidamente é sintoma de outra coisa."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Erro 1062, chave duplicada, na réplica.",
+              "causa": "A linha já existe no destino — escrita local anterior ou reaplicação de evento.",
+              "acao": "Comparar a linha nos dois lados. Igual em conteúdo, o efeito já está lá e a transação vazia correspondente resolve; diferente, houve divergência e o caminho é reconstruir."
+            },
+            {
+              "sintoma": "Erro 1032, linha não encontrada, na réplica.",
+              "causa": "A linha que o UPDATE ou DELETE deveria atingir não existe no destino.",
+              "acao": "Mesma investigação. Um 1032 isolado costuma ser a ponta de uma divergência maior — vale um checksum da tabela inteira antes de dar o caso por encerrado."
+            },
+            {
+              "sintoma": "Replicação para durante DDL longo.",
+              "causa": "O DDL é aplicado serialmente e bloqueia a fila atrás dele.",
+              "acao": "Planejar DDL em janela, ou usar ferramenta de mudança de schema online que replica em passos pequenos."
+            },
+            {
+              "sintoma": "Grupo sem escrita com metade dos nós vivos.",
+              "causa": "Empate não é maioria — sem quorum.",
+              "acao": "Restabelecer um membro. A reconfiguração forçada só é aceitável com certeza absoluta de que o outro lado está morto, sob risco de dois grupos escrevendo em paralelo."
+            },
+            {
+              "sintoma": "Réplica reinicia e volta de um ponto anterior, reaplicando eventos.",
+              "causa": "Metadados de posição não estavam sendo persistidos de forma transacional.",
+              "acao": "Usar armazenamento transacional das informações de replicação e habilitar recuperação automática de posição."
+            }
+          ],
+          "tecnologias": [
+            "MySQL",
+            "SHOW REPLICA STATUS",
+            "performance_schema",
+            "Checksum",
+            "Group Replication",
+            "super_read_only"
+          ],
+          "comandos": [
+            {
+              "desc": "Coleta inicial de um incidente",
+              "lang": "sql",
+              "code": "SHOW REPLICA STATUS\\G\n\nSELECT CHANNEL_NAME, SERVICE_STATE, LAST_ERROR_NUMBER, LAST_ERROR_MESSAGE\n  FROM performance_schema.replication_applier_status_by_worker;\n\nSELECT * FROM performance_schema.replication_group_members;"
+            },
+            {
+              "desc": "Transação vazia — só com prova de que o efeito já existe",
+              "lang": "sql",
+              "code": "-- NAO use isto para 'destravar' replicacao sem investigar.\nSTOP REPLICA SQL_THREAD;\nSET GTID_NEXT = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee:157';\nBEGIN; COMMIT;\nSET GTID_NEXT = 'AUTOMATIC';\nSTART REPLICA SQL_THREAD;"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "02",
+      "titulo": "Arquitetura e InnoDB",
+      "resumo": "O caminho de uma transação da sessão até o disco: buffer pool, redo log, undo, checkpoint e o modelo de isolamento.",
+      "nivel": "Intermediário",
+      "topicos": [
+        {
+          "titulo": "Camadas do servidor e o papel do storage engine"
+        },
+        {
+          "titulo": "Buffer pool: leitura, escrita suja e flush"
+        },
+        {
+          "titulo": "Redo log, LSN e checkpoint"
+        },
+        {
+          "titulo": "Undo, MVCC e read view"
+        },
+        {
+          "titulo": "Níveis de isolamento e o que cada um permite"
+        },
+        {
+          "titulo": "Locks de linha, gap lock e deadlock"
+        },
+        {
+          "titulo": "Estrutura física de tablespace e página"
+        },
+        {
+          "titulo": "Doublewrite buffer e durabilidade"
+        }
+      ],
+      "detalhado": false
+    },
+    {
+      "id": "03",
+      "titulo": "Performance e Tuning",
+      "resumo": "Instrumentação antes de palpite: Performance Schema, optimizer, índices e o custo real de cada query.",
+      "nivel": "Avançado",
+      "topicos": [
+        {
+          "titulo": "Performance Schema: o que instrumentar e o que custa"
+        },
+        {
+          "titulo": "sys schema e as visões que resolvem 80% dos casos"
+        },
+        {
+          "titulo": "EXPLAIN e EXPLAIN ANALYZE"
+        },
+        {
+          "titulo": "Estatísticas, cardinalidade e escolha de índice"
+        },
+        {
+          "titulo": "Índices compostos, ordem das colunas e covering index"
+        },
+        {
+          "titulo": "Slow query log e identificação de padrão"
+        },
+        {
+          "titulo": "Contenção: locks, semáforos e fila de I/O"
+        },
+        {
+          "titulo": "Dimensionamento de buffer pool e memória"
+        }
+      ],
+      "detalhado": false
+    },
+    {
+      "id": "04",
+      "titulo": "Backup e Recovery",
+      "resumo": "Estratégia com RPO e RTO definidos, e o teste de restore que valida a promessa.",
+      "nivel": "Intermediário → Avançado",
+      "topicos": [
+        {
+          "titulo": "Backup lógico versus físico: quando cada um"
+        },
+        {
+          "titulo": "XtraBackup: full, incremental e prepare"
+        },
+        {
+          "titulo": "Backup consistente com posição de binlog e GTID"
+        },
+        {
+          "titulo": "Point-in-time recovery aplicando binlog"
+        },
+        {
+          "titulo": "Clone Plugin para provisionamento de réplica"
+        },
+        {
+          "titulo": "Retenção, verificação e teste periódico de restore"
+        },
+        {
+          "titulo": "Recuperação de tabela isolada"
+        },
+        {
+          "titulo": "Documentação do procedimento e RTO medido"
+        }
+      ],
+      "detalhado": false
+    },
+    {
+      "id": "05",
+      "titulo": "Segurança",
+      "resumo": "Criptografia em repouso e em trânsito, controle de acesso por role e trilha de auditoria utilizável.",
+      "nivel": "Intermediário",
+      "topicos": [
+        {
+          "titulo": "Usuários, hosts e o modelo de privilégio"
+        },
+        {
+          "titulo": "Roles e menor privilégio na prática"
+        },
+        {
+          "titulo": "TLS obrigatório e certificados"
+        },
+        {
+          "titulo": "TDE: criptografia de tablespace e gestão de chave"
+        },
+        {
+          "titulo": "Audit plugin: o que registrar sem inviabilizar"
+        },
+        {
+          "titulo": "Hardening: contas padrão, arquivos e permissões de SO"
+        },
+        {
+          "titulo": "Gestão de segredos fora do arquivo de configuração"
+        }
+      ],
+      "detalhado": false
+    },
+    {
+      "id": "06",
+      "titulo": "Operação e Automação",
+      "resumo": "Upgrade, mudança de schema e as rotinas que precisam ser código, não memória.",
+      "nivel": "Avançado",
+      "topicos": [
+        {
+          "titulo": "Estratégia de upgrade de versão maior"
+        },
+        {
+          "titulo": "Mudança de schema online em tabela grande"
+        },
+        {
+          "titulo": "MySQL Shell e AdminAPI para operação"
+        },
+        {
+          "titulo": "Automação de rotina em Python e Shell"
+        },
+        {
+          "titulo": "Monitoramento: métricas que valem alerta"
+        },
+        {
+          "titulo": "Runbook de incidente e pós-mortem"
+        }
+      ],
+      "detalhado": false
+    }
+  ]
+}

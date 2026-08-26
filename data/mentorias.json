@@ -1,0 +1,1567 @@
+{
+  "_comment": "Catalogo de mentorias DBA BRABO. Os pilares de cada mentoria foram extraidos literalmente dos banners oficiais em Banners/ — nada aqui foi inventado. Campos com null aguardam informacao do mentor e o site trata a ausencia sem quebrar.",
+  "_camposPendentes": [
+    "duracao",
+    "cargaHoraria",
+    "investimento.valor",
+    "modulos (exceto mysql-replication)"
+  ],
+  "categorias": [
+    {
+      "id": "tecnica",
+      "nome": "Mentorias Técnicas",
+      "desc": "Formação por tecnologia — arquitetura, administração, HA, backup, performance e segurança."
+    },
+    {
+      "id": "programa",
+      "nome": "Programas",
+      "desc": "Trilhas de acompanhamento que atravessam tecnologias — carreira, certificação e a jornada completa."
+    }
+  ],
+  "filtros": [
+    {
+      "id": "all",
+      "label": "Todos"
+    },
+    {
+      "id": "oracle",
+      "label": "Oracle"
+    },
+    {
+      "id": "mysql",
+      "label": "MySQL"
+    },
+    {
+      "id": "sqlserver",
+      "label": "SQL Server"
+    },
+    {
+      "id": "postgresql",
+      "label": "PostgreSQL"
+    },
+    {
+      "id": "nosql",
+      "label": "NoSQL"
+    },
+    {
+      "id": "cloud",
+      "label": "Cloud"
+    },
+    {
+      "id": "ha",
+      "label": "Alta Disponibilidade"
+    },
+    {
+      "id": "replication",
+      "label": "Replicação"
+    },
+    {
+      "id": "backup",
+      "label": "Backup"
+    },
+    {
+      "id": "performance",
+      "label": "Performance"
+    },
+    {
+      "id": "security",
+      "label": "Segurança"
+    },
+    {
+      "id": "automacao",
+      "label": "Automação"
+    },
+    {
+      "id": "carreira",
+      "label": "Carreira"
+    }
+  ],
+  "mentorias": [
+    {
+      "slug": "oracle-database",
+      "nome": "Oracle Database",
+      "tituloBanner": "EM ORACLE DATABASE",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Administração • Replicação • Alta Disponibilidade • Backup • Performance • Segurança",
+      "desc": "Entenda como o Oracle gerencia memória, processos, redo e undo — e a partir daí opere RAC, Data Guard, ASM e RMAN com segurança em produção.",
+      "accent": "#F0805A",
+      "tint": "#5D231A",
+      "nivel": "Avançado",
+      "destaque": true,
+      "tags": [
+        "oracle",
+        "ha",
+        "replication",
+        "backup",
+        "performance",
+        "security"
+      ],
+      "tecnologias": [
+        "Oracle Database",
+        "RAC",
+        "Grid Infrastructure",
+        "ASM",
+        "Data Guard",
+        "Far Sync",
+        "RMAN",
+        "Flashback",
+        "Data Pump",
+        "AWR",
+        "ASH",
+        "CBO",
+        "SQL Plan Baselines",
+        "TDE",
+        "Database Vault",
+        "Unified Audit"
+      ],
+      "pilares": [
+        {
+          "icone": "admin",
+          "titulo": "Administração",
+          "desc": "Implementação, gerenciamento geral"
+        },
+        {
+          "icone": "replication",
+          "titulo": "Replicação",
+          "desc": "Data Guard sync/async e Far Sync sem perda de dados"
+        },
+        {
+          "icone": "ha",
+          "titulo": "Alta Disponibilidade",
+          "desc": "RAC, Grid Infrastructure e ASM com zero downtime"
+        },
+        {
+          "icone": "backup",
+          "titulo": "Backup & Restore",
+          "desc": "RMAN, Flashback e Data Pump para DR completo"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance & Tuning",
+          "desc": "AWR/ASH, CBO e SQL Plan Baselines"
+        },
+        {
+          "icone": "security",
+          "titulo": "Segurança",
+          "desc": "TDE, Data Redaction, Database Vault e Unified Audit"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/oracle-database.webp",
+        "card": "assets/banners/oracle-database-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria Oracle Database — DBA BRABO"
+      }
+    },
+    {
+      "slug": "mysql",
+      "nome": "MySQL",
+      "tituloBanner": "EM MYSQL",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Administração • Replicação • Alta Disponibilidade • Backup • Performance • Segurança",
+      "desc": "Entenda como o MySQL processa transações, persiste dados no InnoDB, registra operações no Binary Log e mantém réplicas consistentes em diferentes arquiteturas.",
+      "accent": "#34D3C4",
+      "tint": "#114F67",
+      "nivel": "Intermediário → Avançado",
+      "destaque": true,
+      "tags": [
+        "mysql",
+        "ha",
+        "replication",
+        "backup",
+        "performance",
+        "security"
+      ],
+      "tecnologias": [
+        "MySQL",
+        "InnoDB",
+        "Binary Log",
+        "GTID",
+        "Semi-sync",
+        "Group Replication",
+        "InnoDB Cluster",
+        "MySQL Router",
+        "MySQL Shell",
+        "XtraBackup",
+        "Performance Schema",
+        "TDE",
+        "TLS"
+      ],
+      "pilares": [
+        {
+          "icone": "admin",
+          "titulo": "Administração",
+          "desc": "Implementação, gerenciamento geral"
+        },
+        {
+          "icone": "replication",
+          "titulo": "Replicação",
+          "desc": "GTID, Semi-sync e Group Replication sem downtime"
+        },
+        {
+          "icone": "ha",
+          "titulo": "Alta Disponibilidade",
+          "desc": "InnoDB Cluster, MySQL Router e failover automático"
+        },
+        {
+          "icone": "backup",
+          "titulo": "Backup & Restore",
+          "desc": "XtraBackup, PITR e validação de restore"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance & Tuning",
+          "desc": "Performance Schema, Optimizer e queries lentas"
+        },
+        {
+          "icone": "security",
+          "titulo": "Segurança",
+          "desc": "TDE, audit plugin, roles e criptografia em trânsito (TLS)"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/mysql.webp",
+        "card": "assets/banners/mysql-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria MySQL — DBA BRABO"
+      }
+    },
+    {
+      "slug": "sql-server",
+      "nome": "SQL Server",
+      "tituloBanner": "EM SQL SERVER",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Administração • Replicação • Alta Disponibilidade • Backup • Performance • Segurança",
+      "desc": "Do Database Engine ao Always On: entenda recovery models, wait statistics e o comportamento real do otimizador antes de sair ajustando índice.",
+      "accent": "#F08A6E",
+      "tint": "#5E2029",
+      "nivel": "Intermediário → Avançado",
+      "destaque": false,
+      "tags": [
+        "sqlserver",
+        "ha",
+        "replication",
+        "backup",
+        "performance",
+        "security"
+      ],
+      "tecnologias": [
+        "SQL Server",
+        "T-SQL",
+        "Always On AG",
+        "WSFC",
+        "Log Stream",
+        "Recovery Models",
+        "Tail-Log Backup",
+        "Ola Hallengren",
+        "Query Store",
+        "DMVs",
+        "Wait Stats",
+        "TDE",
+        "Always Encrypted",
+        "Row-Level Security",
+        "SQL Audit"
+      ],
+      "pilares": [
+        {
+          "icone": "admin",
+          "titulo": "Administração",
+          "desc": "Implementação, gerenciamento geral"
+        },
+        {
+          "icone": "replication",
+          "titulo": "Replicação",
+          "desc": "Always On AG e Log Stream entre réplicas"
+        },
+        {
+          "icone": "ha",
+          "titulo": "Alta Disponibilidade",
+          "desc": "WSFC, quorum e failover automático multi-nó"
+        },
+        {
+          "icone": "backup",
+          "titulo": "Backup & Restore",
+          "desc": "Recovery models, Tail-Log Backup e Ola Hallengren scripts"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance & Tuning",
+          "desc": "Query Store, DMVs e Wait Stats"
+        },
+        {
+          "icone": "security",
+          "titulo": "Segurança",
+          "desc": "TDE, Always Encrypted, Row-Level Security e SQL Audit"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/sql-server.webp",
+        "card": "assets/banners/sql-server-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria SQL Server — DBA BRABO"
+      }
+    },
+    {
+      "slug": "postgresql",
+      "nome": "PostgreSQL",
+      "tituloBanner": "EM POSTGRESQL",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Administração • Replicação • Alta Disponibilidade • Backup • Performance • Segurança",
+      "desc": "MVCC, WAL e VACUUM não são detalhe de implementação — são o que decide se o seu cluster sobrevive. Comece por eles e chegue em Patroni sem susto.",
+      "accent": "#4FD1B0",
+      "tint": "#114766",
+      "nivel": "Intermediário → Avançado",
+      "destaque": false,
+      "tags": [
+        "postgresql",
+        "ha",
+        "replication",
+        "backup",
+        "performance",
+        "security"
+      ],
+      "tecnologias": [
+        "PostgreSQL",
+        "WAL",
+        "MVCC",
+        "Streaming Replication",
+        "Replication Slots",
+        "Logical Replication",
+        "Patroni",
+        "pgBouncer",
+        "pgBackRest",
+        "PITR",
+        "EXPLAIN ANALYZE",
+        "VACUUM",
+        "pg_hba.conf",
+        "Row-Level Security",
+        "pgAudit"
+      ],
+      "pilares": [
+        {
+          "icone": "admin",
+          "titulo": "Administração",
+          "desc": "Implementação, gerenciamento geral"
+        },
+        {
+          "icone": "replication",
+          "titulo": "Replicação",
+          "desc": "Streaming replication, slots e WAL archiving"
+        },
+        {
+          "icone": "ha",
+          "titulo": "Alta Disponibilidade",
+          "desc": "Patroni, pgBouncer e failover sem split-brain"
+        },
+        {
+          "icone": "backup",
+          "titulo": "Backup & Restore",
+          "desc": "pgBackRest, PITR e WAL archiving"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance & Tuning",
+          "desc": "EXPLAIN ANALYZE, indexação e VACUUM"
+        },
+        {
+          "icone": "security",
+          "titulo": "Segurança",
+          "desc": "pg_hba.conf, Row-Level Security, SSL e pgAudit"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/postgresql.webp",
+        "card": "assets/banners/postgresql-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria PostgreSQL — DBA BRABO"
+      }
+    },
+    {
+      "slug": "mongodb",
+      "nome": "MongoDB",
+      "tituloBanner": "EM MONGODB",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Administração • Replicação • Alta Disponibilidade • Backup • Performance • Segurança",
+      "desc": "Replica Set, Write Concern e Shard Key com critério — o modelo de consistência do MongoDB é uma escolha de arquitetura, não um default.",
+      "accent": "#47C98E",
+      "tint": "#114B37",
+      "nivel": "Intermediário",
+      "destaque": false,
+      "tags": [
+        "mongodb",
+        "nosql",
+        "ha",
+        "replication",
+        "backup",
+        "performance",
+        "security"
+      ],
+      "tecnologias": [
+        "MongoDB",
+        "Replica Set",
+        "Write Concern",
+        "Sharded Cluster",
+        "Shard Key",
+        "Oplog",
+        "Atlas Backup",
+        "mongodump",
+        "Aggregation Pipeline",
+        "RBAC"
+      ],
+      "pilares": [
+        {
+          "icone": "admin",
+          "titulo": "Administração",
+          "desc": "Implementação, gerenciamento geral"
+        },
+        {
+          "icone": "replication",
+          "titulo": "Replicação",
+          "desc": "Replica Set, Write Concern e failover automático"
+        },
+        {
+          "icone": "ha",
+          "titulo": "Alta Disponibilidade",
+          "desc": "Sharded Cluster, Shard Key e balanceamento"
+        },
+        {
+          "icone": "backup",
+          "titulo": "Backup & Restore",
+          "desc": "PITR via Oplog, Atlas Backup e mongodump"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance & Tuning",
+          "desc": "Aggregation Pipeline, explain() e índices"
+        },
+        {
+          "icone": "security",
+          "titulo": "Segurança",
+          "desc": "RBAC, criptografia at-rest/in-transit e auditoria"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/mongodb.webp",
+        "card": "assets/banners/mongodb-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria MongoDB — DBA BRABO"
+      }
+    },
+    {
+      "slug": "linguagem-sql",
+      "nome": "Linguagem SQL",
+      "tituloBanner": "LINGUAGEM SQL",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Domine SQL de verdade e leve suas habilidades ao próximo nível",
+      "subtitulo2": "Escreva melhor • Consulte mais rápido • Analise com precisão • Tome decisões com dados",
+      "desc": "SQL não termina no SELECT. Termina quando você lê um plano de execução e sabe por que aquele índice não foi usado.",
+      "accent": "#4B93FF",
+      "tint": "#0C223A",
+      "nivel": "Básico → Avançado",
+      "destaque": true,
+      "tags": [
+        "performance"
+      ],
+      "tecnologias": [
+        "SQL",
+        "SELECT",
+        "JOIN",
+        "GROUP BY",
+        "Subqueries",
+        "Window Functions",
+        "Índices",
+        "Planos de Execução",
+        "SARGability",
+        "MERGE",
+        "Transações",
+        "Views"
+      ],
+      "pilares": [
+        {
+          "icone": "code",
+          "titulo": "Fundamentos do SQL",
+          "desc": "Sintaxe básica, tipos de dados, operadores, aliases e boas práticas"
+        },
+        {
+          "icone": "select",
+          "titulo": "Consultas com SELECT",
+          "desc": "Cláusulas WHERE, ORDER BY, DISTINCT, LIMIT/OFFSET, filtros e ordenações"
+        },
+        {
+          "icone": "function",
+          "titulo": "Funções e Expressões",
+          "desc": "Funções agregadas (SUM, AVG, COUNT, MIN, MAX), funções de string, data e numéricas"
+        },
+        {
+          "icone": "group",
+          "titulo": "Agrupamentos",
+          "desc": "GROUP BY, HAVING e análise de dados com agregações"
+        },
+        {
+          "icone": "join",
+          "titulo": "Junções (JOINs)",
+          "desc": "INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL JOIN e CROSS JOIN"
+        },
+        {
+          "icone": "subquery",
+          "titulo": "Subconsultas",
+          "desc": "Subqueries, correlated subqueries, EXISTS, IN e ANY/ALL"
+        },
+        {
+          "icone": "window",
+          "titulo": "Funções de Janela",
+          "desc": "ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD e análises avançadas"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance e Otimização",
+          "desc": "Leitura de planos de execução, índices, estatísticas, SARGability e tuning de consultas"
+        },
+        {
+          "icone": "dml",
+          "titulo": "Manipulação de Dados",
+          "desc": "INSERT, UPDATE, DELETE, MERGE e controle de transações"
+        },
+        {
+          "icone": "security",
+          "titulo": "Boas Práticas e Segurança",
+          "desc": "Prevenção de SQL Injection, permissões, roles e views"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/linguagem-sql.webp",
+        "card": "assets/banners/linguagem-sql-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria Linguagem SQL — DBA BRABO"
+      }
+    },
+    {
+      "slug": "exadata",
+      "nome": "Exadata",
+      "tituloBanner": "EM EXADATA",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Engineered System — Administração, Performance e Alta Disponibilidade",
+      "desc": "Exadata não é 'Oracle num hardware melhor'. Smart Scan, Storage Indexes e HCC mudam o que o otimizador decide — e você precisa saber quando isso acontece.",
+      "accent": "#FF7A4A",
+      "tint": "#4C2216",
+      "nivel": "Avançado",
+      "destaque": true,
+      "tags": [
+        "oracle",
+        "ha",
+        "performance",
+        "backup",
+        "security"
+      ],
+      "tecnologias": [
+        "Exadata",
+        "Storage Cells",
+        "Smart Scan",
+        "Storage Indexes",
+        "Hybrid Columnar Compression",
+        "RAC",
+        "Grid Infrastructure",
+        "ASM",
+        "Data Guard",
+        "RMAN",
+        "ZDLRA",
+        "QFSDP",
+        "TDE",
+        "Database Vault"
+      ],
+      "pilares": [
+        {
+          "icone": "admin",
+          "titulo": "Administração",
+          "desc": "Implementação, gerenciamento geral"
+        },
+        {
+          "icone": "replication",
+          "titulo": "Replicação",
+          "desc": "Data Guard entre racks com Smart Sync"
+        },
+        {
+          "icone": "ha",
+          "titulo": "Alta Disponibilidade",
+          "desc": "RAC multi-nó, Grid Infrastructure e ASM"
+        },
+        {
+          "icone": "backup",
+          "titulo": "Backup & Restore",
+          "desc": "RMAN integrado ao ZDLRA e Fast Recovery Area"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance & Tuning",
+          "desc": "Smart Scan, Storage Indexes e Hybrid Columnar Compression"
+        },
+        {
+          "icone": "security",
+          "titulo": "Segurança",
+          "desc": "Patches QFSDP, TDE e Database Vault"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/exadata.webp",
+        "card": "assets/banners/exadata-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria Exadata — DBA BRABO"
+      }
+    },
+    {
+      "slug": "goldengate",
+      "nome": "GoldenGate",
+      "tituloBanner": "EM GOLDENGATE",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Replicação de Dados em Tempo Real — Extract, Replicat e CDR",
+      "desc": "Captura no redo, entrega no destino e o que fazer quando os dois lados escrevem a mesma linha. GoldenGate ponta a ponta, inclusive heterogêneo.",
+      "accent": "#B57BF5",
+      "tint": "#341A54",
+      "nivel": "Avançado",
+      "destaque": false,
+      "tags": [
+        "oracle",
+        "replication",
+        "ha"
+      ],
+      "tecnologias": [
+        "Oracle GoldenGate",
+        "Extract",
+        "Replicat",
+        "Trail Files",
+        "Parallel Replicat",
+        "CDR",
+        "Replicação heterogênea",
+        "Multi-master"
+      ],
+      "pilares": [
+        {
+          "icone": "admin",
+          "titulo": "Administração",
+          "desc": "Implementação, gerenciamento geral"
+        },
+        {
+          "icone": "capture",
+          "titulo": "Captura & Entrega",
+          "desc": "Extract, Replicat e Trail Files"
+        },
+        {
+          "icone": "ha",
+          "titulo": "Alta Disponibilidade",
+          "desc": "Replicação multi-master e failover automático"
+        },
+        {
+          "icone": "conflict",
+          "titulo": "Consistência & Conflitos",
+          "desc": "Conflict Detection and Resolution (CDR)"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance & Tuning",
+          "desc": "Parallel Replicat e tuning de throughput"
+        },
+        {
+          "icone": "security",
+          "titulo": "Segurança",
+          "desc": "Criptografia de trail files e credenciais"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/goldengate.webp",
+        "card": "assets/banners/goldengate-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria GoldenGate — DBA BRABO"
+      }
+    },
+    {
+      "slug": "oda",
+      "nome": "ODA",
+      "nomeCompleto": "Oracle Database Appliance",
+      "tituloBanner": "EM ODA",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Oracle Database Appliance — Administração e Alta Disponibilidade",
+      "desc": "O appliance esconde complexidade até o dia do patch. Aprenda o ciclo de vida do ODA — deploy, bundle patch, cluster e DR — sem depender de sorte.",
+      "accent": "#4ADE80",
+      "tint": "#113C25",
+      "nivel": "Avançado",
+      "destaque": false,
+      "tags": [
+        "oracle",
+        "ha",
+        "backup"
+      ],
+      "tecnologias": [
+        "Oracle Database Appliance",
+        "odacli",
+        "ACFS",
+        "ASM",
+        "Data Guard",
+        "RMAN",
+        "Object Storage",
+        "Bundle Patch",
+        "TDE"
+      ],
+      "pilares": [
+        {
+          "icone": "admin",
+          "titulo": "Administração",
+          "desc": "Implementação, gerenciamento geral"
+        },
+        {
+          "icone": "replication",
+          "titulo": "Replicação",
+          "desc": "Data Guard entre appliances ODA"
+        },
+        {
+          "icone": "ha",
+          "titulo": "Alta Disponibilidade",
+          "desc": "Cluster ativo-passivo e ODA HA"
+        },
+        {
+          "icone": "backup",
+          "titulo": "Backup & Restore",
+          "desc": "RMAN, snapshots e integração com Object Storage"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance & Tuning",
+          "desc": "ACFS, ASM e dimensionamento de recursos"
+        },
+        {
+          "icone": "security",
+          "titulo": "Segurança",
+          "desc": "Patches (bundle), TDE e hardening de SO"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/oda.webp",
+        "card": "assets/banners/oda-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria ODA — DBA BRABO"
+      }
+    },
+    {
+      "slug": "zdlra",
+      "nome": "ZDLRA",
+      "nomeCompleto": "Zero Data Loss Recovery Appliance",
+      "tituloBanner": "EM ZDLRA",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Zero Data Loss Recovery Appliance — Backup e Recovery sem perda de dados",
+      "desc": "Real-Time Redo muda a conta do RPO: o backup deixa de ser uma foto periódica e passa a acompanhar o redo. Entenda a arquitetura antes de confiar nela.",
+      "accent": "#2ED8C3",
+      "tint": "#0D3640",
+      "nivel": "Avançado",
+      "destaque": false,
+      "tags": [
+        "oracle",
+        "backup",
+        "ha",
+        "security"
+      ],
+      "tecnologias": [
+        "ZDLRA",
+        "Real-Time Redo",
+        "Incremental Forever",
+        "Storage Cells",
+        "Replicação inter-ZDLRA",
+        "RMAN",
+        "Imutabilidade",
+        "Compliance"
+      ],
+      "pilares": [
+        {
+          "icone": "admin",
+          "titulo": "Administração",
+          "desc": "Implementação, gerenciamento geral"
+        },
+        {
+          "icone": "replication",
+          "titulo": "Replicação",
+          "desc": "Replicação entre appliances (inter-ZDLRA) e DR"
+        },
+        {
+          "icone": "ha",
+          "titulo": "Alta Disponibilidade",
+          "desc": "Arquitetura redundante com storage cells"
+        },
+        {
+          "icone": "backup",
+          "titulo": "Backup & Restore",
+          "desc": "Real-Time Redo e backups incrementais para sempre"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance & Tuning",
+          "desc": "Validação automática e throughput de ingestão"
+        },
+        {
+          "icone": "security",
+          "titulo": "Segurança",
+          "desc": "Criptografia, imutabilidade e retenção para compliance"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/zdlra.webp",
+        "card": "assets/banners/zdlra-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria ZDLRA — DBA BRABO"
+      }
+    },
+    {
+      "slug": "oci",
+      "nome": "Oracle Cloud Infrastructure",
+      "nomeCurto": "OCI",
+      "tituloBanner": "EM ORACLE CLOUD INFRASTRUCTURE",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Bancos suportados: Exadata • Autonomous • Base Database • MySQL HeatWave",
+      "desc": "Banco gerenciado não elimina o DBA — muda o que ele controla. Veja o que a OCI assume por você e o que continua sendo sua responsabilidade.",
+      "accent": "#FF9A6B",
+      "tint": "#4D2419",
+      "nivel": "Intermediário → Avançado",
+      "destaque": true,
+      "tags": [
+        "cloud",
+        "oracle",
+        "ha",
+        "replication",
+        "backup",
+        "performance",
+        "security"
+      ],
+      "tecnologias": [
+        "OCI",
+        "Exadata Cloud",
+        "Autonomous Database",
+        "Base Database",
+        "MySQL HeatWave",
+        "Data Guard cross-region",
+        "GoldenGate gerenciado",
+        "Object Storage",
+        "Ops Insights",
+        "Auto Indexing",
+        "IAM",
+        "KMS",
+        "Vault",
+        "Security Zones"
+      ],
+      "pilares": [
+        {
+          "icone": "admin",
+          "titulo": "Administração",
+          "desc": "Implementação, gerenciamento geral"
+        },
+        {
+          "icone": "replication",
+          "titulo": "Replicação",
+          "desc": "Data Guard cross-region e GoldenGate gerenciado"
+        },
+        {
+          "icone": "ha",
+          "titulo": "Alta Disponibilidade",
+          "desc": "RAC + ASM multi-AD com failover automático"
+        },
+        {
+          "icone": "backup",
+          "titulo": "Backup & Restore",
+          "desc": "RMAN + Object Storage com retenção configurável"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance & Tuning",
+          "desc": "AWR/ADDM, Ops Insights e Auto Indexing"
+        },
+        {
+          "icone": "security",
+          "titulo": "Segurança",
+          "desc": "IAM Policies, KMS, Vault e Security Zones"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/oci.webp",
+        "card": "assets/banners/oci-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria Oracle Cloud Infrastructure — DBA BRABO"
+      }
+    },
+    {
+      "slug": "aws",
+      "nome": "Amazon Web Services",
+      "nomeCurto": "AWS",
+      "tituloBanner": "EM AMAZON WEB SERVICES",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Managed Database Services — DBA Perspective",
+      "desc": "RDS e Aurora pela ótica de quem responde pelo RPO: o que o Multi-AZ garante de fato, quanto custa um failover e onde o storage quorum entra na conta.",
+      "accent": "#5FB8DE",
+      "tint": "#5A3E0C",
+      "nivel": "Intermediário",
+      "destaque": false,
+      "tags": [
+        "cloud",
+        "ha",
+        "replication",
+        "backup",
+        "performance",
+        "security"
+      ],
+      "tecnologias": [
+        "AWS",
+        "RDS",
+        "Aurora",
+        "Multi-AZ",
+        "Aurora Global Database",
+        "Snapshots",
+        "PITR",
+        "Backup Vault",
+        "Performance Insights",
+        "CloudWatch",
+        "Aurora Parallel Query",
+        "IAM",
+        "KMS",
+        "Secrets Manager"
+      ],
+      "pilares": [
+        {
+          "icone": "admin",
+          "titulo": "Administração",
+          "desc": "Implementação, gerenciamento geral"
+        },
+        {
+          "icone": "replication",
+          "titulo": "Replicação",
+          "desc": "Multi-AZ sync e Aurora Global DB com baixa latência"
+        },
+        {
+          "icone": "ha",
+          "titulo": "Alta Disponibilidade",
+          "desc": "Failover automático (~60s) e quorum de storage (4/6)"
+        },
+        {
+          "icone": "backup",
+          "titulo": "Backup & Restore",
+          "desc": "Snapshots automatizados, PITR e Backup Vault"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance & Tuning",
+          "desc": "Performance Insights, CloudWatch e Aurora Parallel Query"
+        },
+        {
+          "icone": "security",
+          "titulo": "Segurança",
+          "desc": "IAM Authentication, KMS, Security Groups e Secrets Manager"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/aws.webp",
+        "card": "assets/banners/aws-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria Amazon Web Services — DBA BRABO"
+      }
+    },
+    {
+      "slug": "azure",
+      "nome": "Microsoft Azure",
+      "nomeCurto": "Azure",
+      "tituloBanner": "EM MICROSOFT AZURE",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Cloud Database Services — DBA Perspective",
+      "desc": "Azure SQL, Managed Instance e as tiers que decidem sua disponibilidade. Geo-Replication e Auto-Failover Groups explicados pelo comportamento, não pelo marketing.",
+      "accent": "#4FA8E8",
+      "tint": "#11445C",
+      "nivel": "Intermediário",
+      "destaque": false,
+      "tags": [
+        "cloud",
+        "sqlserver",
+        "ha",
+        "replication",
+        "backup",
+        "performance",
+        "security"
+      ],
+      "tecnologias": [
+        "Azure",
+        "Azure SQL Database",
+        "SQL Managed Instance",
+        "Geo-Replication",
+        "Auto-Failover Groups",
+        "Business Critical",
+        "Geo-Restore",
+        "LTR",
+        "Query Store",
+        "Automatic Tuning",
+        "Azure Monitor",
+        "Private Endpoints",
+        "Microsoft Entra ID",
+        "Defender for SQL"
+      ],
+      "pilares": [
+        {
+          "icone": "admin",
+          "titulo": "Administração",
+          "desc": "Implementação, gerenciamento geral"
+        },
+        {
+          "icone": "replication",
+          "titulo": "Replicação",
+          "desc": "Geo-Replication e Auto-Failover Groups"
+        },
+        {
+          "icone": "ha",
+          "titulo": "Alta Disponibilidade",
+          "desc": "Business Critical AG com 3 réplicas síncronas"
+        },
+        {
+          "icone": "backup",
+          "titulo": "Backup & Restore",
+          "desc": "Backup automatizado, Geo-Restore e LTR"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance & Tuning",
+          "desc": "Query Store, Automatic Tuning e Azure Monitor"
+        },
+        {
+          "icone": "security",
+          "titulo": "Segurança",
+          "desc": "TDE nativo, Private Endpoints, Azure AD e Defender for SQL"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/azure.webp",
+        "card": "assets/banners/azure-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria Microsoft Azure — DBA BRABO"
+      }
+    },
+    {
+      "slug": "gcp",
+      "nome": "Google Cloud Platform",
+      "nomeCurto": "GCP",
+      "tituloBanner": "EM GOOGLE CLOUD PLATFORM",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Cloud Database Services — DBA Perspective",
+      "desc": "Cloud SQL, AlloyDB e Spanner. Consistência forte via TrueTime é uma decisão de arquitetura com preço — entenda o trade-off antes de escolher.",
+      "accent": "#43C285",
+      "tint": "#194174",
+      "nivel": "Intermediário",
+      "destaque": false,
+      "tags": [
+        "cloud",
+        "ha",
+        "replication",
+        "backup",
+        "performance",
+        "security"
+      ],
+      "tecnologias": [
+        "GCP",
+        "Cloud SQL",
+        "AlloyDB",
+        "Cloud Spanner",
+        "TrueTime",
+        "Read Replicas",
+        "PITR",
+        "Cloud Storage",
+        "Query Insights",
+        "CMEK",
+        "Cloud KMS",
+        "IAM Roles",
+        "VPC Service Controls",
+        "Cloud Audit Logs"
+      ],
+      "pilares": [
+        {
+          "icone": "admin",
+          "titulo": "Administração",
+          "desc": "Implementação, gerenciamento geral"
+        },
+        {
+          "icone": "replication",
+          "titulo": "Replicação",
+          "desc": "Read Replicas e Spanner com consistência forte (TrueTime)"
+        },
+        {
+          "icone": "ha",
+          "titulo": "Alta Disponibilidade",
+          "desc": "Multi-zone e failover automático com 99.999% SLA"
+        },
+        {
+          "icone": "backup",
+          "titulo": "Backup & Restore",
+          "desc": "Backup automatizado, PITR e export para GCS"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance & Tuning",
+          "desc": "Query Insights, autoscaling e monitoramento contínuo"
+        },
+        {
+          "icone": "security",
+          "titulo": "Segurança",
+          "desc": "CMEK (Cloud KMS), IAM Roles, VPC-SC e Cloud Audit Logs"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/gcp.webp",
+        "card": "assets/banners/gcp-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria Google Cloud Platform — DBA BRABO"
+      }
+    },
+    {
+      "slug": "dbre",
+      "nome": "DBRE",
+      "nomeCompleto": "Database Reliability Engineering",
+      "tituloBanner": "EM DBRE",
+      "categoria": "tecnica",
+      "chamada": "Mentoria Técnica Avançada",
+      "subtitulo": "Database Reliability Engineering — Terraform, Ansible, Kubernetes e mais",
+      "desc": "O ponto em que o DBA para de aplicar mudança à mão. Infra como código, pipeline, observabilidade e teste de caos aplicados a banco de dados.",
+      "accent": "#F08A3C",
+      "tint": "#1E2349",
+      "nivel": "Avançado",
+      "destaque": true,
+      "tags": [
+        "automacao",
+        "ha"
+      ],
+      "tecnologias": [
+        "Terraform",
+        "CloudFormation",
+        "Bicep",
+        "Ansible",
+        "Bash",
+        "Python",
+        "Kubernetes",
+        "Docker",
+        "Helm",
+        "GitHub Actions",
+        "GitLab CI",
+        "ArgoCD",
+        "Prometheus",
+        "Grafana",
+        "Datadog",
+        "SLO/SLI",
+        "Chaos Engineering"
+      ],
+      "pilares": [
+        {
+          "icone": "iac",
+          "titulo": "Infraestrutura como Código",
+          "desc": "Terraform, CloudFormation e Bicep"
+        },
+        {
+          "icone": "automation",
+          "titulo": "Automação & Configuração",
+          "desc": "Ansible, Bash e Python"
+        },
+        {
+          "icone": "containers",
+          "titulo": "Orquestração & Containers",
+          "desc": "Kubernetes, Docker e Helm"
+        },
+        {
+          "icone": "cicd",
+          "titulo": "CI/CD & GitOps",
+          "desc": "GitHub Actions, GitLab CI e ArgoCD"
+        },
+        {
+          "icone": "observability",
+          "titulo": "Observabilidade",
+          "desc": "Prometheus, Grafana e Datadog"
+        },
+        {
+          "icone": "chaos",
+          "titulo": "Confiabilidade & Chaos Engineering",
+          "desc": "SLO/SLI, runbooks e testes de caos"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/dbre.webp",
+        "card": "assets/banners/dbre-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria DBRE — DBA BRABO"
+      }
+    },
+    {
+      "slug": "tecnica",
+      "nome": "Mentoria Técnica",
+      "tituloBanner": "TÉCNICA",
+      "categoria": "programa",
+      "chamada": "Mentoria",
+      "subtitulo": "Arquitetura • Lab Prático • Performance • Cloud",
+      "desc": "O programa técnico transversal: começa na arquitetura interna, passa pelo lab no seu ambiente e termina com tuning baseado em evidência.",
+      "accent": "#2DD4A0",
+      "tint": "#134A3D",
+      "nivel": "Do seu nível atual em diante",
+      "destaque": true,
+      "tags": [
+        "performance",
+        "ha",
+        "backup"
+      ],
+      "tecnologias": [
+        "Oracle",
+        "MySQL",
+        "SQL Server",
+        "PostgreSQL",
+        "MongoDB",
+        "Cloud"
+      ],
+      "pilares": [
+        {
+          "icone": "phone",
+          "titulo": "Diagnóstico",
+          "desc": "Call inicial de até 1h para mapear nível atual e objetivo"
+        },
+        {
+          "icone": "book",
+          "titulo": "Teoria",
+          "desc": "Arquitetura interna e fundamentos antes de qualquer lab"
+        },
+        {
+          "icone": "lab",
+          "titulo": "Lab Prático",
+          "desc": "Administração, replicação e alta disponibilidade no seu ambiente"
+        },
+        {
+          "icone": "backup",
+          "titulo": "Backup & DR",
+          "desc": "Estratégia completa com teste real de restore"
+        },
+        {
+          "icone": "performance",
+          "titulo": "Performance",
+          "desc": "Diagnóstico de gargalos e tuning com evidências"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/tecnica.webp",
+        "card": "assets/banners/tecnica-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria Mentoria Técnica — DBA BRABO"
+      }
+    },
+    {
+      "slug": "carreira",
+      "nome": "Mentoria Carreira",
+      "tituloBanner": "CARREIRA",
+      "categoria": "programa",
+      "chamada": "Mentoria",
+      "subtitulo": "LinkedIn • Currículo • Plano de Crescimento",
+      "desc": "Competência técnica que ninguém enxerga não vira oportunidade. Posicionamento, currículo e plano de crescimento com métrica de progresso.",
+      "accent": "#A855F7",
+      "tint": "#411B59",
+      "nivel": "Todos os níveis",
+      "destaque": false,
+      "tags": [
+        "carreira"
+      ],
+      "tecnologias": [
+        "LinkedIn",
+        "Currículo",
+        "Entrevistas",
+        "Plano de Carreira"
+      ],
+      "pilares": [
+        {
+          "icone": "phone",
+          "titulo": "Diagnóstico",
+          "desc": "Call inicial para mapear cargo atual, gaps e objetivos"
+        },
+        {
+          "icone": "linkedin",
+          "titulo": "LinkedIn",
+          "desc": "Foto, headline, destaques e certificações bem posicionados"
+        },
+        {
+          "icone": "doc",
+          "titulo": "Currículo",
+          "desc": "CV revisado para o mercado de DBA, orientado a resultados"
+        },
+        {
+          "icone": "growth",
+          "titulo": "Plano de Crescimento",
+          "desc": "Próximos passos concretos com forma de medir progresso"
+        },
+        {
+          "icone": "chat",
+          "titulo": "Suporte Contínuo",
+          "desc": "Acompanhamento entre sessões via grupo e calls"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/carreira.webp",
+        "card": "assets/banners/carreira-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria Mentoria Carreira — DBA BRABO"
+      }
+    },
+    {
+      "slug": "certificacao-skills",
+      "nome": "Certificação & Skills",
+      "tituloBanner": "CERTIFICAÇÃO & SKILLS",
+      "categoria": "programa",
+      "chamada": "Mentoria",
+      "subtitulo": "Plano Personalizado • Labs Práticos • Simulados",
+      "desc": "Preparação para certificação sem decoreba: plano nos domínios reais da prova, labs no padrão do exame e simulado em condição de prova.",
+      "accent": "#4FA8E8",
+      "tint": "#0E2F4E",
+      "nivel": "Conforme a certificação alvo",
+      "destaque": false,
+      "tags": [
+        "carreira"
+      ],
+      "tecnologias": [
+        "Oracle",
+        "MySQL",
+        "AWS",
+        "OCI"
+      ],
+      "pilares": [
+        {
+          "icone": "phone",
+          "titulo": "Diagnóstico",
+          "desc": "Certificação alvo, gaps e pontos fortes mapeados"
+        },
+        {
+          "icone": "doc",
+          "titulo": "Plano de Aulas",
+          "desc": "Estrutura personalizada nos domínios da prova"
+        },
+        {
+          "icone": "lab",
+          "titulo": "Labs no Padrão do Exame",
+          "desc": "Oracle, MySQL, AWS, OCI e mais"
+        },
+        {
+          "icone": "exam",
+          "titulo": "Simulado Real",
+          "desc": "Mesmas condições, tempo e estrutura da prova"
+        },
+        {
+          "icone": "search",
+          "titulo": "Revisão sem Decoreba",
+          "desc": "Entendimento real, não memorização"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/certificacao-skills.webp",
+        "card": "assets/banners/certificacao-skills-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria Certificação & Skills — DBA BRABO"
+      }
+    },
+    {
+      "slug": "completa",
+      "nome": "Mentoria Completa",
+      "tituloBanner": "COMPLETA",
+      "categoria": "programa",
+      "chamada": "Mentoria",
+      "subtitulo": "Técnica • Carreira • Certificação • Certificado de Conclusão",
+      "desc": "As três trilhas integradas, com ritmo e ordem definidos pelo mentor conforme o seu momento. É o programa mais completo do ecossistema.",
+      "accent": "#E8B33C",
+      "tint": "#5F4613",
+      "nivel": "Todos os níveis",
+      "destaque": true,
+      "flagship": true,
+      "tags": [
+        "carreira",
+        "performance",
+        "ha",
+        "backup"
+      ],
+      "tecnologias": [
+        "Oracle",
+        "MySQL",
+        "SQL Server",
+        "PostgreSQL",
+        "MongoDB",
+        "Cloud",
+        "Carreira",
+        "Certificação"
+      ],
+      "pilares": [
+        {
+          "icone": "lab",
+          "titulo": "Técnica",
+          "desc": "Arquitetura, administração, HA, backup e Cloud"
+        },
+        {
+          "icone": "growth",
+          "titulo": "Carreira",
+          "desc": "LinkedIn, CV, entrevistas e plano de crescimento"
+        },
+        {
+          "icone": "cap",
+          "titulo": "Certificação",
+          "desc": "Plano de estudos, labs e simulados"
+        },
+        {
+          "icone": "mix",
+          "titulo": "Integração Inteligente",
+          "desc": "Ritmo e ordem personalizados pelo mentor"
+        },
+        {
+          "icone": "medal",
+          "titulo": "Certificado de Conclusão",
+          "desc": "Exclusivo da Mentoria Completa DBA BRABO"
+        }
+      ],
+      "duracao": null,
+      "cargaHoraria": null,
+      "investimento": {
+        "valor": null,
+        "condicao": null
+      },
+      "modulos": [],
+      "banner": {
+        "full": "assets/banners/completa.webp",
+        "card": "assets/banners/completa-card.webp",
+        "original": null,
+        "alt": "Banner da mentoria Mentoria Completa — DBA BRABO"
+      }
+    }
+  ]
+}

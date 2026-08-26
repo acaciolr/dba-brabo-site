@@ -1,0 +1,26 @@
+{
+  "_comment": "Somente informacoes presentes nos materiais oficiais (banners) ou fornecidas pelo mentor. Nada de politica comercial inventada.",
+  "perguntas": [
+    { "q": "Para quem são as mentorias?",
+      "a": "Para profissionais e estudantes de tecnologia que trabalham com banco de dados e querem ir além do uso — administrar, diagnosticar e responder por ambientes de produção. Há trilhas técnicas por tecnologia e programas de carreira e certificação." },
+    { "q": "Preciso já ter experiência como DBA?",
+      "a": "Não. A primeira etapa de toda mentoria é uma call de diagnóstico para mapear o seu nível atual e o objetivo. O plano é montado a partir daí — quem está começando entra pela Linguagem SQL e pelos fundamentos de arquitetura." },
+    { "q": "Como funcionam as aulas?",
+      "a": "Calls sob demanda, marcadas conforme a sua necessidade, e não turmas com data fixa. Entre as sessões o acompanhamento acontece no grupo de WhatsApp." },
+    { "q": "As mentorias são práticas?",
+      "a": "Sim. O formato previsto em todas as mentorias é teoria primeiro — arquitetura interna e fundamentos — e depois lab prático de administração, replicação e alta disponibilidade, sempre que possível no seu próprio ambiente." },
+    { "q": "Quais bancos de dados são abordados?",
+      "a": "Oracle Database, MySQL, SQL Server, PostgreSQL e MongoDB, além de Linguagem SQL. Há também mentorias de Engineered Systems (Exadata, ODA, ZDLRA), replicação com GoldenGate, as quatro principais clouds (OCI, AWS, Azure, GCP) e DBRE." },
+    { "q": "Existe certificado?",
+      "a": "Sim, na Mentoria Completa: o Certificado de Conclusão é exclusivo desse programa." },
+    { "q": "Qual a diferença entre a Mentoria Técnica e a Completa?",
+      "a": "A Técnica cobre arquitetura, lab prático, backup e DR, e performance. A Completa integra três frentes — Técnica, Carreira e Certificação — com ritmo e ordem personalizados pelo mentor, e inclui o Certificado de Conclusão." },
+    { "q": "Como funciona a comunidade?",
+      "a": "É um grupo de WhatsApp de DBAs para dúvidas, troca de conhecimento e networking, e também o canal direto com o mentor entre as sessões." },
+    { "q": "Como faço para participar?",
+      "a": "Fale diretamente com o mentor pelos canais da seção Comunidade. A conversa começa pela call de diagnóstico, sem compromisso." },
+    { "q": "Qual o investimento?",
+      "a": "Os valores são apresentados na conversa inicial, conforme a mentoria escolhida e o formato acordado.",
+      "_pendente": "Substituir por tabela de precos assim que o mentor informar; ate la esta resposta nao afirma valor nenhum." }
+  ]
+}

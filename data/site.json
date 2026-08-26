@@ -1,6 +1,5 @@
 {
   "_comment": "Configuracao central do portal DBA BRABO. Todo link, texto de marca e dado do mentor vive aqui. Nada de URL espalhada pelo codigo.",
-
   "site": {
     "name": "DBA BRABO",
     "shortName": "DBA BRABO",
@@ -15,7 +14,6 @@
     "logo": "assets/logo/dba-brabo-avatar.png",
     "ogImage": "assets/banners/completa.webp"
   },
-
   "mentor": {
     "nome": "Acácio Lima Rocha",
     "handle": "acaciolr",
@@ -33,53 +31,181 @@
       "LinkedIn Top Database Administration Voice 2024"
     ],
     "especialidades": [
-      "Oracle RAC", "Exadata", "Data Guard", "Grid Infrastructure", "ASM", "RMAN", "AutoUpgrade",
-      "MySQL InnoDB Cluster", "MySQL NDB", "Percona XtraDB Cluster",
-      "SQL Server", "PostgreSQL", "Sybase ASE",
-      "OCI", "AWS", "Azure", "GCP",
-      "Shell", "Python", "Automação"
+      "Oracle RAC",
+      "Exadata",
+      "Data Guard",
+      "Grid Infrastructure",
+      "ASM",
+      "RMAN",
+      "AutoUpgrade",
+      "MySQL InnoDB Cluster",
+      "MySQL NDB",
+      "Percona XtraDB Cluster",
+      "SQL Server",
+      "PostgreSQL",
+      "Sybase ASE",
+      "OCI",
+      "AWS",
+      "Azure",
+      "GCP",
+      "Shell",
+      "Python",
+      "Automação"
     ],
-    "_pendente_bio_longa": "Se quiser um parágrafo autoral de apresentação, escreva aqui e ele substitui o texto derivado dos campos acima."
+    "_pendente_bio_longa": "Se quiser um parágrafo autoral de apresentação, escreva aqui e ele substitui o texto derivado dos campos acima.",
+    "anosExperiencia": "12+"
   },
-
   "links": {
-    "_nota": "Confirmar cada URL antes de publicar. Campos vazios simplesmente nao renderizam card nenhum.",
-    "linkedin":        { "url": "https://www.linkedin.com/in/acaciolr",        "label": "LinkedIn",  "desc": "Artigos técnicos, bastidores de projeto e a rede profissional do mentor.", "confirmado": false },
-    "linkedinEmpresa": { "url": "https://www.linkedin.com/company/dbabrabo",   "label": "LinkedIn DBA BRABO", "desc": "Página oficial do ecossistema.", "confirmado": false },
-    "instagram":       { "url": "https://www.instagram.com/dbabrabo",          "label": "Instagram", "desc": "Conteúdo curto, dicas rápidas e agenda das mentorias.", "confirmado": false },
-    "github":          { "url": "https://github.com/acaciolr",                 "label": "GitHub",    "desc": "Scripts, ferramentas e projetos open-source do ecossistema.", "confirmado": false },
-    "blog":            { "url": "https://acaciolrdba.wordpress.com",           "label": "Blog",      "desc": "Estudos de caso, troubleshooting real e deep dives técnicos.", "confirmado": false },
-    "whatsapp":        { "url": "",                                            "label": "Comunidade WhatsApp", "desc": "Grupo de DBAs para dúvidas, troca de conhecimento e networking.", "confirmado": false },
-    "youtube":         { "url": "",                                            "label": "YouTube",   "desc": "", "confirmado": false },
-    "email":           { "url": "",                                            "label": "E-mail",    "desc": "Falar diretamente com o mentor.", "confirmado": false }
+    "_nota": "URLs marcadas com confirmado:true foram informadas pelo mentor. As demais aguardam confirmacao e podem ser esvaziadas sem quebrar o site.",
+    "linkedin": {
+      "url": "https://www.linkedin.com/in/acaciolr",
+      "label": "LinkedIn",
+      "desc": "Artigos técnicos, bastidores de projeto e a rede profissional do mentor.",
+      "confirmado": false,
+      "qr": true,
+      "accent": "#4FA8E8",
+      "qrPlate": "#E9F2FA",
+      "qrInk": "#0C3A5E"
+    },
+    "linkedinEmpresa": {
+      "url": "https://www.linkedin.com/company/dbabrabo",
+      "label": "LinkedIn DBA BRABO",
+      "desc": "Página oficial do ecossistema — conteúdo técnico e novidades das mentorias.",
+      "confirmado": true,
+      "qr": true,
+      "accent": "#4FA8E8",
+      "qrPlate": "#E9F2FA",
+      "qrInk": "#0C3A5E"
+    },
+    "instagram": {
+      "url": "https://www.instagram.com/dbabrabo",
+      "label": "Instagram",
+      "desc": "Dicas rápidas, bastidores e agenda das mentorias.",
+      "confirmado": true,
+      "handle": "@dbabrabo",
+      "qr": true,
+      "accent": "#B57BF5",
+      "qrPlate": "#F3EDFB",
+      "qrInk": "#3D1E63"
+    },
+    "github": {
+      "url": "https://github.com/acaciolr",
+      "label": "GitHub",
+      "desc": "Scripts, ferramentas e projetos open-source do ecossistema.",
+      "confirmado": false,
+      "qr": false,
+      "accent": "#A8B6C6",
+      "qrPlate": "#EEF1F4",
+      "qrInk": "#1B2129"
+    },
+    "blog": {
+      "url": "https://acaciolrdba.wordpress.com",
+      "label": "Blog",
+      "desc": "Estudos de caso, troubleshooting real e deep dives técnicos.",
+      "confirmado": false,
+      "qr": false,
+      "accent": "#FF8A4C",
+      "qrPlate": "#FDF0E8",
+      "qrInk": "#6B2C0C"
+    },
+    "whatsapp": {
+      "url": "https://chat.whatsapp.com/FkSQn51247h5mDV6DFsW5t?s=cl&p=i&mlu=4",
+      "label": "Comunidade WhatsApp",
+      "desc": "Grupo oficial de DBAs: dúvidas, troca de conhecimento e canal direto com o mentor.",
+      "confirmado": true,
+      "qr": true,
+      "destaque": true,
+      "accent": "#4ADE80",
+      "qrPlate": "#EAF7EF",
+      "qrInk": "#0F4A2A"
+    },
+    "youtube": {
+      "url": "",
+      "label": "YouTube",
+      "desc": "",
+      "confirmado": false,
+      "accent": "#F0705A",
+      "qrPlate": "#FDECEA",
+      "qrInk": "#631B12"
+    },
+    "email": {
+      "url": "",
+      "label": "E-mail",
+      "desc": "Falar diretamente com o mentor.",
+      "confirmado": false,
+      "accent": "#2ED8C3",
+      "qrPlate": "#E6F8F6",
+      "qrInk": "#0B463F"
+    },
+    "_notaQR": "QR sempre com modulos escuros sobre placa clara (qrInk sobre qrPlate). QR invertido nao e lido por boa parte dos leitores — testado e reprovado. A placa usa um tom da cor do canal para nao ficar preto e branco."
   },
-
   "comunidades": [
-    { "nome": "Comunidade MySQL Brasil", "url": "https://comunidademysql.com.br", "confirmado": false },
-    { "nome": "GUOB — Grupo de Usuários Oracle do Brasil", "url": "https://www.guob.com.br", "confirmado": false }
+    {
+      "nome": "Comunidade MySQL Brasil",
+      "url": "https://comunidademysql.com.br",
+      "confirmado": false
+    },
+    {
+      "nome": "GUOB — Grupo de Usuários Oracle do Brasil",
+      "url": "https://www.guob.com.br",
+      "confirmado": false
+    }
   ],
-
   "formato": {
     "_fonte": "Extraído do rodapé e das seções presentes em todos os 19 banners oficiais.",
     "itens": [
-      { "icone": "chat",     "titulo": "Grupo WhatsApp",   "desc": "Canal direto com o mentor entre as sessões." },
-      { "icone": "phone",    "titulo": "Calls sob demanda", "desc": "Sessões ao vivo marcadas conforme sua necessidade." },
-      { "icone": "flask",    "titulo": "Lab Prático",       "desc": "Implementação real, no seu ambiente, não só slide." }
+      {
+        "icone": "chat",
+        "titulo": "Grupo WhatsApp",
+        "desc": "Canal direto com o mentor entre as sessões."
+      },
+      {
+        "icone": "phone",
+        "titulo": "Calls sob demanda",
+        "desc": "Sessões ao vivo marcadas conforme sua necessidade."
+      },
+      {
+        "icone": "flask",
+        "titulo": "Lab Prático",
+        "desc": "Implementação real, no seu ambiente, não só slide."
+      }
     ]
   },
-
   "metodologia": {
     "_fonte": "Derivado da estrutura das mentorias Técnica, Carreira e Certificação & Skills.",
     "etapas": [
-      { "n": "01", "titulo": "Diagnóstico",     "desc": "Call inicial de até 1h para mapear nível atual e objetivo." },
-      { "n": "02", "titulo": "Teoria",          "desc": "Arquitetura interna e fundamentos antes de qualquer lab." },
-      { "n": "03", "titulo": "Lab Prático",     "desc": "Administração, replicação e alta disponibilidade no seu ambiente." },
-      { "n": "04", "titulo": "Backup & DR",     "desc": "Estratégia completa com teste real de restore." },
-      { "n": "05", "titulo": "Performance",     "desc": "Diagnóstico de gargalos e tuning com evidências." },
-      { "n": "06", "titulo": "Suporte Contínuo","desc": "Acompanhamento entre sessões via grupo e calls." }
+      {
+        "n": "01",
+        "titulo": "Diagnóstico",
+        "desc": "Call inicial de até 1h para mapear nível atual e objetivo."
+      },
+      {
+        "n": "02",
+        "titulo": "Teoria",
+        "desc": "Arquitetura interna e fundamentos antes de qualquer lab."
+      },
+      {
+        "n": "03",
+        "titulo": "Lab Prático",
+        "desc": "Administração, replicação e alta disponibilidade no seu ambiente."
+      },
+      {
+        "n": "04",
+        "titulo": "Backup & DR",
+        "desc": "Estratégia completa com teste real de restore."
+      },
+      {
+        "n": "05",
+        "titulo": "Performance",
+        "desc": "Diagnóstico de gargalos e tuning com evidências."
+      },
+      {
+        "n": "06",
+        "titulo": "Suporte Contínuo",
+        "desc": "Acompanhamento entre sessões via grupo e calls."
+      }
     ]
   },
-
   "investimento": {
     "_pendente": "Valores ainda nao informados. Enquanto 'valor' estiver vazio o site exibe o texto de fallback abaixo e nenhum preco e inventado.",
     "exibirPrecos": false,
@@ -87,13 +213,28 @@
     "fallback": "Sob consulta",
     "ctaSemPreco": "Falar com o mentor"
   },
-
   "seo": {
     "twitterCard": "summary_large_image",
     "themeColor": "#0A0D12",
-    "keywords": ["DBA", "Oracle", "MySQL", "SQL Server", "PostgreSQL", "MongoDB", "Exadata", "RAC", "Data Guard", "GoldenGate", "ZDLRA", "ODA", "alta disponibilidade", "performance", "backup", "mentoria DBA"]
+    "keywords": [
+      "DBA",
+      "Oracle",
+      "MySQL",
+      "SQL Server",
+      "PostgreSQL",
+      "MongoDB",
+      "Exadata",
+      "RAC",
+      "Data Guard",
+      "GoldenGate",
+      "ZDLRA",
+      "ODA",
+      "alta disponibilidade",
+      "performance",
+      "backup",
+      "mentoria DBA"
+    ]
   },
-
   "footer": {
     "copyright": "DBA BRABO. Todos os direitos reservados.",
     "anoInicio": 2025

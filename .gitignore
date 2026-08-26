@@ -1,0 +1,17 @@
+# artefatos locais que nao vao para o repositorio
+.DS_Store
+Thumbs.db
+node_modules/
+*.log
+
+# duplicatas criadas pelo iCloud em conflito de sincronizacao
+*" 2".*
+*" 2"
+.git/_stale_locks/
+
+# backup automatico do index.html original, feito antes da reformulacao
+index.html.bak-original
+
+# cache do Python gerado ao importar os scripts de tools/
+__pycache__/
+*.pyc

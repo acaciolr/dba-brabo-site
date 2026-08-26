@@ -1,0 +1,105 @@
+{
+  "_comment": "Projetos e ferramentas do ecossistema DBA BRABO. 'confirmado:false' = descricao derivada de registros da sessao e ainda nao revisada pelo mentor. URLs vazias nao renderizam botao.",
+  "projetos": [
+    {
+      "slug": "ora-brabo",
+      "nome": "ORA BRABO",
+      "tagline": "Monitoramento Oracle em TUI",
+      "desc": "Ferramenta de monitoramento Oracle em terminal, construída em Textual, com painéis dedicados para RAC, Data Guard, ASM e Exadata e coletores assíncronos.",
+      "stack": ["Python", "Textual", "Oracle", "RAC", "Data Guard", "ASM", "Exadata"],
+      "destaques": [
+        "12 painéis acessíveis por teclas de função",
+        "Coletores assíncronos — a interface não trava esperando query",
+        "Cobertura de RAC, Data Guard, ASM e Exadata"
+      ],
+      "status": "Em desenvolvimento",
+      "accent": "#F0805A",
+      "links": { "github": "", "docs": "" },
+      "confirmado": false
+    },
+    {
+      "slug": "mysql-super-dba",
+      "nome": "MySQL Super DBA",
+      "tagline": "Plataforma de laboratório MySQL",
+      "desc": "Orquestrador de laboratório baseado em VMs Multipass que provisiona topologias MySQL completas para estudo e treinamento — incluindo cenários de falha e recuperação.",
+      "stack": ["Python", "Rich", "Multipass", "tmux", "MySQL", "InnoDB Cluster", "Group Replication", "NDB", "Percona XtraDB Cluster"],
+      "destaques": [
+        "19 topologias MySQL provisionáveis",
+        "Menus TUI em Rich e painéis de log em tmux",
+        "Cenários de caos e recuperação para treinar troubleshooting",
+        "Documentação completa acompanhando cada topologia"
+      ],
+      "status": "Em desenvolvimento",
+      "versao": "v3.0",
+      "accent": "#34D3C4",
+      "destaque": true,
+      "links": { "github": "", "docs": "" },
+      "confirmado": false
+    },
+    {
+      "slug": "sql-brabo",
+      "nome": "SQL BRABO",
+      "tagline": "Automação e diagnóstico SQL Server",
+      "desc": "Conjunto de scripts e procedimentos para administração SQL Server — diagnóstico de tempdb, automação de restore com stored procedures próprias e rotinas de import/export via BCP.",
+      "stack": ["SQL Server", "T-SQL", "PowerShell", "BCP"],
+      "destaques": [
+        "Diagnóstico de tempdb",
+        "Automação de restore com stored procedures dedicadas",
+        "Scripts de import/export via BCP"
+      ],
+      "status": "Em desenvolvimento",
+      "accent": "#F08A6E",
+      "links": { "github": "", "docs": "" },
+      "confirmado": false
+    },
+    {
+      "slug": "pg-brabo",
+      "nome": "PG BRABO",
+      "tagline": "Administração e auditoria PostgreSQL",
+      "desc": "Scripts de administração PostgreSQL seguindo as mesmas convenções das ferramentas MySQL do ecossistema — auditoria de sessões, backup, performance e segurança.",
+      "stack": ["PostgreSQL", "Shell", "Python", "SQL"],
+      "destaques": [
+        "Auditoria de sessões espelhando as convenções das ferramentas MySQL",
+        "Rotinas de backup e verificação",
+        "Coleta para análise de performance"
+      ],
+      "status": "Em desenvolvimento",
+      "accent": "#4FD1B0",
+      "links": { "github": "", "docs": "" },
+      "confirmado": false
+    },
+    {
+      "slug": "oracle-backup-megaboga",
+      "nome": "oracle_backup_megaboga.sh",
+      "tagline": "RMAN com duplexação dupla",
+      "desc": "Script de backup RMAN cobrindo FULL, INCREMENTAL, ARCHIVELOG e ALL, com duplexação em dois destinos NFS e geração automática do agendamento.",
+      "stack": ["Shell", "Oracle", "RMAN", "NFS"],
+      "destaques": [
+        "Modos FULL, INCREMENTAL, ARCHIVELOG e ALL",
+        "Duplexação simultânea em dois destinos NFS",
+        "Geração automática de agendamento"
+      ],
+      "status": "Em uso",
+      "versao": "v2.4",
+      "accent": "#FF7A4A",
+      "links": { "github": "", "docs": "" },
+      "confirmado": false
+    },
+    {
+      "slug": "dba-brabo-diskinfo",
+      "nome": "dba-brabo-diskinfo",
+      "tagline": "Saúde de disco em TUI",
+      "desc": "Ferramenta TUI para inspeção de saúde de disco no Windows, com coleta de dados SMART via PowerShell e interface em Textual.",
+      "stack": ["Python", "Textual", "PowerShell", "SMART", "Windows"],
+      "destaques": [
+        "Leitura de dados SMART via PowerShell",
+        "Interface de terminal navegável",
+        "Diagnóstico rápido antes de investigar I/O no banco"
+      ],
+      "status": "Em uso",
+      "accent": "#4B93FF",
+      "links": { "github": "", "docs": "" },
+      "confirmado": false
+    }
+  ]
+}

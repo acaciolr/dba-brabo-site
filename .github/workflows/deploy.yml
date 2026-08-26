@@ -1,0 +1,66 @@
+# DBA BRABO — publicacao automatica no GitHub Pages.
+#
+# A cada push na main: valida os dados, regenera as paginas de mentoria a partir
+# de data/*.json e publica. Nenhum HTML gerado precisa ser commitado a mao.
+#
+# Requisito, uma unica vez: em Settings > Pages, trocar "Source" para
+# "GitHub Actions". Enquanto isso nao for feito, o site continua servindo os
+# arquivos commitados na branch (que tambem ficam corretos, porque o build
+# roda local antes do commit).
+
+name: Deploy do portal
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validar dados
+        run: node tools/build.mjs --check
+
+      - name: Gerar paginas, sitemap e robots
+        run: node tools/build.mjs
+
+      - name: Conferir que nenhuma imagem referenciada esta faltando
+        run: |
+          node -e "
+            const fs=require('fs');
+            const d=JSON.parse(fs.readFileSync('data/mentorias.json','utf8'));
+            const faltando=d.mentorias.flatMap(m=>[m.banner.full,m.banner.card]).filter(p=>!fs.existsSync(p));
+            if(faltando.length){ console.error('banners ausentes:'); faltando.forEach(f=>console.error(' '+f)); process.exit(1); }
+            console.log('todos os '+(d.mentorias.length*2)+' banners presentes');
+          "
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

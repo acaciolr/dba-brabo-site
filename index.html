@@ -1,1557 +1,264 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-base="." data-theme="dark">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DBA BRABO | Mentorias, Banco de Dados, Cloud e Alta Disponibilidade</title>
-    <meta name="description" content="DBA BRABO - Portal de mentorias, banco de dados, cloud, alta disponibilidade e automação. Conhecimento real para administradores de banco de dados." />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
-    <meta property="og:title" content="DBA BRABO | Mentorias, Banco de Dados, Cloud e Alta Disponibilidade" />
-    <meta property="og:description" content="Portal oficial do DBA BRABO - Conhecimento real de banco de dados, infraestrutura, performance, alta disponibilidade, cloud e automação." />
-    <meta property="og:type" content="website" />
-    <style>
-        /* ===== RESET & BASE ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        :root {
-            --bg: #0b0d0f;
-            --bg2: #131619;
-            --bg3: #1b1f23;
-            --bg4: #242a30;
-            --text: #e6edf3;
-            --text2: #9aa9b8;
-            --text3: #6e7e8d;
-            --border: #2d353d;
-            --accent: #58a6ff;
-            --accent2: #1f6feb;
-            --green: #3fb950;
-            --orange: #d29922;
-            --red: #f85149;
-            --font: 'Segoe UI', 'SF Pro Display', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-            --radius: 8px;
-            --shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
-            --transition: 0.25s ease;
-        }
-        html {
-            scroll-behavior: smooth;
-        }
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: var(--font);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
-        a {
-            color: var(--accent);
-            text-decoration: none;
-        }
-        a:hover {
-            color: var(--text);
-        }
-        img {
-            max-width: 100%;
-            display: block;
-        }
-        .container {
-            max-width: 1240px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-        /* ===== SCROLLBAR ===== */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg2);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text3);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DBA BRABO — Mentoria Técnica para DBAs | Oracle, MySQL, SQL Server, PostgreSQL</title>
+<meta name="description" content="Ecossistema de formação técnica para administradores de banco de dados. Oracle, MySQL, SQL Server, PostgreSQL, MongoDB, alta disponibilidade, performance, cloud e automação — com lab prático e mentoria individual.">
+<meta name="author" content="Acácio Lima Rocha">
+<meta name="theme-color" content="#07090D">
+<link rel="canonical" href="https://acaciolr.github.io/dba-brabo-site/">
 
-        /* ===== HEADER ===== */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(11, 13, 15, 0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-            padding: 0 24px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: var(--transition);
-        }
-        .header .logo {
-            font-weight: 700;
-            font-size: 1.25rem;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text);
-        }
-        .header .logo span {
-            color: var(--accent);
-        }
-        .header .logo small {
-            font-weight: 400;
-            font-size: 0.7rem;
-            color: var(--text3);
-            letter-spacing: 0.3px;
-        }
-        .nav {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .nav a {
-            padding: 6px 14px;
-            border-radius: var(--radius);
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text2);
-            transition: var(--transition);
-        }
-        .nav a:hover,
-        .nav a.active {
-            color: var(--text);
-            background: var(--bg3);
-        }
-        .nav .btn-community {
-            background: var(--accent);
-            color: #fff;
-            padding: 6px 18px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            transition: var(--transition);
-        }
-        .nav .btn-community:hover {
-            background: var(--accent2);
-            color: #fff;
-        }
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 4px 8px;
-        }
+<link rel="icon" href="assets/logo/favicon.ico" sizes="any">
+<link rel="icon" href="assets/logo/avatar-96.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/logo/avatar-180.png">
 
-        /* ===== HERO ===== */
-        .hero {
-            padding: 120px 0 80px;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .hero::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at 70% 30%, rgba(88, 166, 255, 0.06), transparent 60%);
-            pointer-events: none;
-        }
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 48px;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-        }
-        .hero h1 {
-            font-size: 3.8rem;
-            font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: -1.5px;
-        }
-        .hero h1 span {
-            color: var(--accent);
-        }
-        .hero .sub {
-            font-size: 1.25rem;
-            color: var(--text2);
-            margin: 16px 0 8px;
-            font-weight: 400;
-        }
-        .hero .desc {
-            color: var(--text3);
-            font-size: 1rem;
-            max-width: 480px;
-            margin: 8px 0 28px;
-        }
-        .hero .btns {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .btn {
-            display: inline-block;
-            padding: 12px 28px;
-            border-radius: var(--radius);
-            font-weight: 600;
-            font-size: 0.9rem;
-            border: none;
-            cursor: pointer;
-            transition: var(--transition);
-            background: var(--bg3);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-        .btn-primary {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
-        .btn-primary:hover {
-            background: var(--accent2);
-            border-color: var(--accent2);
-            color: #fff;
-        }
-        .btn-outline {
-            background: transparent;
-            border-color: var(--border);
-        }
-        .btn-outline:hover {
-            background: var(--bg3);
-            border-color: var(--text3);
-        }
-        /* terminal */
-        .terminal-box {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px 24px;
-            font-family: var(--mono);
-            font-size: 0.85rem;
-            box-shadow: var(--shadow);
-        }
-        .terminal-box .line {
-            display: flex;
-            gap: 12px;
-            padding: 4px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-        }
-        .terminal-box .line:last-child {
-            border-bottom: none;
-        }
-        .terminal-box .prompt {
-            color: var(--green);
-            white-space: nowrap;
-        }
-        .terminal-box .cmd {
-            color: var(--text);
-        }
-        .terminal-box .out {
-            color: var(--text2);
-        }
-        .terminal-box .out .highlight {
-            color: var(--accent);
-            font-weight: 600;
-        }
-        .terminal-box .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px 12px;
-            margin-top: 6px;
-        }
-        .terminal-box .tags span {
-            background: var(--bg3);
-            padding: 2px 12px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            color: var(--text2);
-            border: 1px solid var(--border);
-        }
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DBA BRABO">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="DBA BRABO — Mentoria Técnica para DBAs">
+<meta property="og:description" content="Não basta saber usar banco de dados. É preciso saber administrá-lo. Mentoria técnica em Oracle, MySQL, SQL Server, PostgreSQL, cloud e alta disponibilidade.">
+<meta property="og:url" content="https://acaciolr.github.io/dba-brabo-site/">
+<meta property="og:image" content="https://acaciolr.github.io/dba-brabo-site/assets/banners/completa.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DBA BRABO — Mentoria Técnica para DBAs">
+<meta name="twitter:description" content="Não basta saber usar banco de dados. É preciso saber administrá-lo.">
+<meta name="twitter:image" content="https://acaciolr.github.io/dba-brabo-site/assets/banners/completa.webp">
 
-        /* ===== SECTIONS ===== */
-        section {
-            padding: 72px 0;
-            border-top: 1px solid var(--border);
-        }
-        .section-title {
-            font-size: 2.4rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 12px;
-        }
-        .section-title span {
-            color: var(--accent);
-        }
-        .section-sub {
-            color: var(--text2);
-            font-size: 1.05rem;
-            max-width: 640px;
-            margin-bottom: 40px;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
 
-        /* ===== CARDS ===== */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
-        }
-        .card {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            transition: var(--transition);
-            cursor: default;
-        }
-        .card:hover {
-            border-color: var(--text3);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-        .card .icon {
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-        }
-        .card h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .card p {
-            color: var(--text2);
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-        }
-        .card .badge {
-            display: inline-block;
-            background: var(--bg3);
-            padding: 2px 12px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            color: var(--text3);
-            border: 1px solid var(--border);
-            margin-right: 4px;
-            margin-bottom: 4px;
-        }
-        .card .badge.green {
-            color: var(--green);
-            border-color: var(--green);
-        }
-        .card .badge.orange {
-            color: var(--orange);
-            border-color: var(--orange);
-        }
-        .card .badge.blue {
-            color: var(--accent);
-            border-color: var(--accent);
-        }
-
-        /* ===== MENTORIAS ===== */
-        .mentoria-card {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            transition: var(--transition);
-        }
-        .mentoria-card:hover {
-            border-color: var(--text3);
-            transform: translateY(-3px);
-            box-shadow: var(--shadow);
-        }
-        .mentoria-card .banner {
-            height: 140px;
-            background: var(--bg3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            color: var(--text3);
-            font-weight: 500;
-            overflow: hidden;
-        }
-        .mentoria-card .banner img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .mentoria-card .body {
-            padding: 20px;
-        }
-        .mentoria-card .body h3 {
-            font-size: 1.1rem;
-            margin-bottom: 4px;
-        }
-        .mentoria-card .body p {
-            color: var(--text2);
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
-        .mentoria-card .body .meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px 12px;
-            font-size: 0.8rem;
-            color: var(--text3);
-            margin-bottom: 12px;
-        }
-        .mentoria-card .body .meta span {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .mentoria-card .body .btn {
-            width: 100%;
-            text-align: center;
-            padding: 10px;
-            font-size: 0.85rem;
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            color: var(--text);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .mentoria-card .body .btn:hover {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
-
-        /* ===== FILTERS ===== */
-        .filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 28px;
-        }
-        .filters .filter-btn {
-            padding: 6px 18px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text2);
-            font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .filters .filter-btn:hover {
-            background: var(--bg3);
-            color: var(--text);
-        }
-        .filters .filter-btn.active {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
-
-        /* ===== ACCORDION ===== */
-        .accordion {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            background: var(--bg2);
-            margin-bottom: 12px;
-        }
-        .accordion-header {
-            padding: 16px 20px;
-            background: var(--bg3);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            transition: var(--transition);
-            border: none;
-            width: 100%;
-            text-align: left;
-            color: var(--text);
-            font-size: 1rem;
-        }
-        .accordion-header:hover {
-            background: var(--bg4);
-        }
-        .accordion-header .arrow {
-            transition: transform 0.3s;
-        }
-        .accordion-header.open .arrow {
-            transform: rotate(180deg);
-        }
-        .accordion-body {
-            padding: 0 20px 20px;
-            display: none;
-            color: var(--text2);
-            font-size: 0.95rem;
-        }
-        .accordion-body.open {
-            display: block;
-        }
-        .accordion-body ul {
-            list-style: none;
-            padding: 0;
-            margin: 8px 0;
-        }
-        .accordion-body ul li {
-            padding: 4px 0 4px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            position: relative;
-        }
-        .accordion-body ul li::before {
-            content: '›';
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-            font-weight: 700;
-        }
-
-        /* ===== ROADMAP ===== */
-        .roadmap {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            max-width: 600px;
-        }
-        .roadmap-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 12px 20px;
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            transition: var(--transition);
-            cursor: pointer;
-        }
-        .roadmap-item:hover {
-            border-color: var(--accent);
-            background: var(--bg3);
-        }
-        .roadmap-item .step {
-            font-weight: 700;
-            color: var(--accent);
-            font-size: 0.8rem;
-            min-width: 32px;
-        }
-        .roadmap-item .label {
-            font-weight: 500;
-        }
-        .roadmap-item .desc {
-            color: var(--text3);
-            font-size: 0.85rem;
-            margin-left: auto;
-        }
-
-        /* ===== SEARCH ===== */
-        .search-wrap {
-            position: relative;
-            max-width: 480px;
-            margin-bottom: 32px;
-        }
-        .search-wrap input {
-            width: 100%;
-            padding: 12px 20px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            background: var(--bg2);
-            color: var(--text);
-            font-size: 1rem;
-            outline: none;
-            transition: var(--transition);
-        }
-        .search-wrap input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
-        }
-        .search-wrap input::placeholder {
-            color: var(--text3);
-        }
-        .search-results {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            margin-top: 8px;
-            max-height: 320px;
-            overflow-y: auto;
-            display: none;
-        }
-        .search-results .result-item {
-            padding: 10px 16px;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .search-results .result-item:hover {
-            background: var(--bg3);
-        }
-        .search-results .result-item:last-child {
-            border-bottom: none;
-        }
-
-        /* ===== FOOTER ===== */
-        .footer {
-            background: var(--bg2);
-            border-top: 1px solid var(--border);
-            padding: 48px 0 24px;
-        }
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 32px;
-            margin-bottom: 32px;
-        }
-        .footer h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--text);
-        }
-        .footer a {
-            display: block;
-            color: var(--text2);
-            font-size: 0.85rem;
-            padding: 3px 0;
-            transition: var(--transition);
-        }
-        .footer a:hover {
-            color: var(--text);
-        }
-        .footer .social {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 8px;
-        }
-        .footer .social a {
-            padding: 6px 14px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            font-size: 0.8rem;
-        }
-        .footer .social a:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-        .footer .copy {
-            border-top: 1px solid var(--border);
-            padding-top: 20px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--text3);
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1024px) {
-            .hero-grid {
-                grid-template-columns: 1fr;
-                gap: 32px;
-            }
-            .hero h1 {
-                font-size: 2.8rem;
-            }
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        @media (max-width: 768px) {
-            .nav {
-                display: none;
-                flex-direction: column;
-                background: var(--bg);
-                position: absolute;
-                top: 64px;
-                left: 0;
-                right: 0;
-                padding: 16px 24px;
-                border-bottom: 1px solid var(--border);
-                gap: 4px;
-            }
-            .nav.open {
-                display: flex;
-            }
-            .menu-toggle {
-                display: block;
-            }
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-            .section-title {
-                font-size: 1.8rem;
-            }
-            .cards-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        @media (max-width: 480px) {
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-            .hero .btns {
-                flex-direction: column;
-            }
-            .btn {
-                text-align: center;
-            }
-            .terminal-box {
-                font-size: 0.75rem;
-                padding: 14px 16px;
-            }
-        }
-
-        /* ===== THEME TOGGLE ===== */
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text2);
-            font-size: 1.1rem;
-            cursor: pointer;
-            padding: 4px 10px;
-            border-radius: var(--radius);
-            transition: var(--transition);
-        }
-        .theme-toggle:hover {
-            background: var(--bg3);
-            color: var(--text);
-        }
-
-        /* ===== MISC ===== */
-        .text-center {
-            text-align: center;
-        }
-        .mt-8 {
-            margin-top: 8px;
-        }
-        .mt-16 {
-            margin-top: 16px;
-        }
-        .mb-16 {
-            margin-bottom: 16px;
-        }
-        .gap-8 {
-            gap: 8px;
-        }
-        .flex-wrap {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .flex-center {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .hidden {
-            display: none !important;
-        }
-        .w-full {
-            width: 100%;
-        }
-
-        /* ===== LIGHT THEME ===== */
-        .light {
-            --bg: #f6f8fa;
-            --bg2: #ffffff;
-            --bg3: #f0f2f5;
-            --bg4: #e1e4e8;
-            --text: #1f2328;
-            --text2: #484f58;
-            --text3: #6e7e8d;
-            --border: #d0d7de;
-            --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-        }
-        .light .header {
-            background: rgba(246, 248, 250, 0.85);
-            backdrop-filter: blur(12px);
-        }
-        .light .terminal-box {
-            background: #fff;
-        }
-        .light .card,
-        .light .mentoria-card,
-        .light .accordion,
-        .light .footer {
-            background: #fff;
-        }
-        .light .accordion-header {
-            background: var(--bg3);
-        }
-    </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "EducationalOrganization", "@id": "https://acaciolr.github.io/dba-brabo-site/#org",
+      "name": "DBA BRABO", "url": "https://acaciolr.github.io/dba-brabo-site/",
+      "logo": "https://acaciolr.github.io/dba-brabo-site/assets/logo/dba-brabo-avatar.png",
+      "description": "Mentoria técnica para administradores de banco de dados.",
+      "sameAs": ["https://www.linkedin.com/company/dbabrabo", "https://www.instagram.com/dbabrabo"] },
+    { "@type": "Person", "@id": "https://acaciolr.github.io/dba-brabo-site/#mentor",
+      "name": "Acácio Lima Rocha", "jobTitle": "Senior Database Administrator",
+      "worksFor": { "@id": "https://acaciolr.github.io/dba-brabo-site/#org" },
+      "knowsAbout": ["Oracle Database","MySQL","SQL Server","PostgreSQL","MongoDB","Oracle RAC","Data Guard","Exadata","Alta disponibilidade","Performance tuning"],
+      "sameAs": ["https://www.linkedin.com/in/acaciolr"] },
+    { "@type": "WebSite", "url": "https://acaciolr.github.io/dba-brabo-site/", "name": "DBA BRABO",
+      "inLanguage": "pt-BR", "publisher": { "@id": "https://acaciolr.github.io/dba-brabo-site/#org" } }
+  ]
+}
+</script>
 </head>
 <body>
 
-    <!-- ===== HEADER ===== -->
-    <header class="header" role="banner">
-        <div class="logo">
-            DBA<span>BRABO</span>
-            <small>⚡</small>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<div class="backdrop" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true"></div>
+
+<!-- ===================== HEADER ===================== -->
+<header class="header">
+  <a class="brand" href="#topo" aria-label="DBA BRABO — início">
+    <img class="brand__mark" src="assets/logo/avatar-96.png" width="38" height="38" alt="">
+    <span class="brand__name">DBA <span>BRABO</span>
+      <small class="brand__tag">Mentoria Técnica para DBAs</small></span>
+  </a>
+
+  <nav class="nav" id="nav" aria-label="Navegação principal">
+    <a class="nav__link is-active" href="#sobre">Sobre</a>
+    <a class="nav__link" href="#mentorias">Mentorias</a>
+    <a class="nav__link" href="#metodologia">Metodologia</a>
+    <a class="nav__link" href="#projetos">Projetos</a>
+    <a class="nav__link" href="#tecnologias">Stack</a>
+    <a class="nav__link" href="#roadmap">Roadmap</a>
+    <a class="nav__link" href="#faq">FAQ</a>
+    <span class="nav__actions">
+      <a class="btn btn--primary btn--sm" href="#comunidade" data-community>Entrar na comunidade</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">
+        <svg data-icon="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg data-icon="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg data-icon="system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </button>
+    </span>
+  </nav>
+
+  <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+</header>
+
+<main id="conteudo">
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="topo">
+  <div class="container">
+    <div class="hero__grid">
+      <div>
+        <p class="eyebrow">Ecossistema de formação técnica</p>
+        <h1>DBA <span class="accent">BRABO</span></h1>
+        <p class="hero__claim">“Não basta saber usar banco de dados.<br>É preciso saber administrá-lo.”</p>
+        <p class="hero__desc">Mentoria individual em Oracle, MySQL, SQL&nbsp;Server, PostgreSQL e MongoDB — da arquitetura interna à alta disponibilidade, com lab prático no seu ambiente e troubleshooting de cenário real.</p>
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="#mentorias">Conhecer as mentorias</a>
+          <a class="btn btn--outline" href="#sobre">Conhecer o ecossistema</a>
         </div>
-        <nav class="nav" id="mainNav" role="navigation" aria-label="Navegação principal">
-            <a href="#home" class="active">INÍCIO</a>
-            <a href="#sobre">SOBRE</a>
-            <a href="#mentorias">MENTORIAS</a>
-            <a href="#projetos">PROJETOS</a>
-            <a href="#tecnologias">TECNOLOGIAS</a>
-            <a href="#roadmap">ROADMAP</a>
-            <a href="#comunidade">COMUNIDADE</a>
-            <a href="#comunidade" class="btn-community">ENTRAR NA COMUNIDADE</a>
-            <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">🌓</button>
-        </nav>
-        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
-    </header>
+        <div class="hero__stats" id="heroStats"></div>
+      </div>
+      <div class="terminal" id="terminal"></div>
+    </div>
+  </div>
+</section>
 
-    <!-- ===== HERO ===== -->
-    <section class="hero" id="home">
-        <div class="container">
-            <div class="hero-grid">
-                <div>
-                    <h1>DBA <span>BRABO</span></h1>
-                    <p class="sub">"Não basta saber usar banco de dados.<br />É preciso saber administrá-lo."</p>
-                    <p class="desc">Ecossistema de conhecimento e formação técnica para administradores de banco de dados que querem dominar infraestrutura, performance, cloud e automação.</p>
-                    <div class="btns">
-                        <a href="#mentorias" class="btn btn-primary">CONHECER MENTORIAS</a>
-                        <a href="#sobre" class="btn btn-outline">CONHECER O ECOSSISTEMA</a>
-                    </div>
-                </div>
-                <div>
-                    <div class="terminal-box">
-                        <div class="line">
-                            <span class="prompt">$</span>
-                            <span class="cmd">whoami</span>
-                        </div>
-                        <div class="line">
-                            <span class="prompt">→</span>
-                            <span class="out"><span class="highlight">DBA BRABO</span> — Database Administration &amp; Cloud</span>
-                        </div>
-                        <div class="line" style="margin-top:8px;">
-                            <span class="prompt">$</span>
-                            <span class="cmd">skills</span>
-                        </div>
-                        <div class="tags">
-                            <span>Oracle</span>
-                            <span>MySQL</span>
-                            <span>SQL Server</span>
-                            <span>PostgreSQL</span>
-                            <span>Exadata</span>
-                            <span>Cloud</span>
-                            <span>Automation</span>
-                        </div>
-                        <div class="line" style="margin-top:8px;">
-                            <span class="prompt">$</span>
-                            <span class="cmd" style="color:var(--green);">ready</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- ===================== SOBRE ===================== -->
+<section id="sobre">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">O que é o DBA BRABO</p>
+      <h2>Conhecimento de produção,<br>não de slide.</h2>
+      <p>Um ecossistema para quem precisa responder por banco de dados em ambiente crítico: administração, replicação, alta disponibilidade, backup, performance, segurança, cloud e automação. Cada trilha começa pela arquitetura interna — porque sem entender o que acontece por baixo, todo diagnóstico vira chute.</p>
+    </div>
+    <div class="grid grid--4" id="sobreGrid"></div>
+    <div class="mentor mt-12" id="mentorBox"></div>
+  </div>
+</section>
 
-    <!-- ===== SOBRE ===== -->
-    <section id="sobre">
-        <div class="container">
-            <h2 class="section-title">SOBRE O <span>DBA BRABO</span></h2>
-            <p class="section-sub">Um ecossistema completo para quem quer ir além do básico em banco de dados, infraestrutura e engenharia de dados.</p>
-            <div class="cards-grid" id="sobreCards">
-                <!-- preenchido via JS -->
-            </div>
-            <div style="margin-top:40px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
-                <h3 style="font-size:1.2rem;margin-bottom:4px;">Fundador / Mentor</h3>
-                <p style="color:var(--text2);" id="mentorInfo">[Informações do mentor — editável via config]</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== MENTORIAS ===== -->
-    <section id="mentorias">
-        <div class="container">
-            <h2 class="section-title"><span>MENTORIAS</span> DBA BRABO</h2>
-            <p class="section-sub">Formações técnicas com profundidade real, baseadas em experiência prática com bancos de dados em produção.</p>
-
-            <div class="search-wrap">
-                <input type="text" id="searchInput" placeholder="Pesquisar no DBA BRABO..." aria-label="Pesquisar mentorias, módulos, tecnologias" />
-                <div class="search-results" id="searchResults"></div>
-            </div>
-
-            <div class="filters" id="filterContainer">
-                <button class="filter-btn active" data-filter="all">TODOS</button>
-                <button class="filter-btn" data-filter="oracle">ORACLE</button>
-                <button class="filter-btn" data-filter="mysql">MYSQL</button>
-                <button class="filter-btn" data-filter="sqlserver">SQL SERVER</button>
-                <button class="filter-btn" data-filter="postgresql">POSTGRESQL</button>
-                <button class="filter-btn" data-filter="cloud">CLOUD</button>
-                <button class="filter-btn" data-filter="performance">PERFORMANCE</button>
-                <button class="filter-btn" data-filter="ha">HA</button>
-                <button class="filter-btn" data-filter="backup">BACKUP</button>
-                <button class="filter-btn" data-filter="replication">REPLICATION</button>
-            </div>
-
-            <div class="cards-grid" id="mentoriasGrid">
-                <!-- preenchido via JS -->
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== MENTORIA DETALHE (modal) ===== -->
-    <div id="mentoriaModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);padding:24px;overflow-y:auto;">
-        <div style="max-width:820px;margin:40px auto;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:32px;position:relative;">
-            <button onclick="closeModal()" style="position:absolute;top:16px;right:20px;background:none;border:none;font-size:1.8rem;color:var(--text2);cursor:pointer;">×</button>
-            <div id="modalContent"></div>
-        </div>
+<!-- ===================== MENTORIAS ===================== -->
+<section id="mentorias">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Catálogo</p>
+      <h2>Mentorias DBA BRABO</h2>
+      <p>Trilhas técnicas por tecnologia e programas de acompanhamento. Busque por tema — <span class="mono">GTID</span>, <span class="mono">RMAN</span>, <span class="mono">Patroni</span>, <span class="mono">Always On</span> — ou filtre pela stack que você opera.</p>
     </div>
 
-    <!-- ===== PROJETOS ===== -->
-    <section id="projetos">
-        <div class="container">
-            <h2 class="section-title"><span>PROJETOS</span> DBA BRABO</h2>
-            <p class="section-sub">Iniciativas open-source e materiais técnicos para a comunidade.</p>
-            <div class="cards-grid" id="projetosGrid">
-                <!-- preenchido via JS -->
-            </div>
-        </div>
-    </section>
+    <div class="toolbar">
+      <div class="search">
+        <svg class="search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" id="search" placeholder="Buscar mentoria, módulo, tópico ou tecnologia…"
+               aria-label="Buscar no portal" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="searchResults">
+        <span class="search__kbd">/</span>
+        <div class="search__results" id="searchResults" role="listbox" aria-label="Resultados"></div>
+      </div>
+      <div class="filters" id="filtros" role="group" aria-label="Filtrar mentorias"></div>
+      <p class="results-note" id="resultsNote"></p>
+    </div>
 
-    <!-- ===== TECNOLOGIAS ===== -->
-    <section id="tecnologias">
-        <div class="container">
-            <h2 class="section-title"><span>STACK</span> DBA BRABO</h2>
-            <p class="section-sub">Tecnologias que fazem parte do ecossistema.</p>
-            <div class="cards-grid" id="tecnologiasGrid">
-                <!-- preenchido via JS -->
-            </div>
-        </div>
-    </section>
+    <div class="mentorias-grid" id="mentoriasGrid"></div>
+  </div>
+</section>
 
-    <!-- ===== ROADMAP ===== -->
-    <section id="roadmap">
-        <div class="container">
-            <h2 class="section-title"><span>ROADMAP</span> DO DBA</h2>
-            <p class="section-sub">A jornada de evolução técnica — cada etapa é um pilar fundamental.</p>
-            <div class="roadmap" id="roadmapContainer">
-                <!-- preenchido via JS -->
-            </div>
-        </div>
-    </section>
+<!-- ===================== METODOLOGIA ===================== -->
+<section id="metodologia">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Como você vai aprender</p>
+      <h2>A proposta não é assistir aula.</h2>
+      <p>É sair com o ambiente montado, o problema reproduzido e o diagnóstico feito por você — com o mentor do lado.</p>
+    </div>
+    <div class="method" id="metodologiaGrid"></div>
+    <div class="format mt-12" id="formato"></div>
+  </div>
+</section>
 
-    <!-- ===== COMUNIDADE ===== -->
-    <section id="comunidade">
-        <div class="container text-center">
-            <h2 class="section-title"><span>COMUNIDADE</span> DBA BRABO</h2>
-            <p style="max-width:640px;margin:0 auto 24px;color:var(--text2);">
-                Um espaço para DBA's compartilharem conhecimento, tirarem dúvidas e crescerem juntos. 
-                A comunidade é o coração do ecossistema.
-            </p>
-            <a href="#" id="communityLink" class="btn btn-primary" style="font-size:1.1rem;padding:14px 48px;">ENTRAR NA COMUNIDADE</a>
-        </div>
-    </section>
+<!-- ===================== PROJETOS ===================== -->
+<section id="projetos">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Ferramentas e open-source</p>
+      <h2>Projetos do ecossistema</h2>
+      <p>O que foi construído resolvendo problema real em produção — e virou ferramenta.</p>
+    </div>
+    <div class="grid grid--3" id="projetosGrid"></div>
+  </div>
+</section>
 
-    <!-- ===== CTA FINAL ===== -->
-    <section style="border-top:1px solid var(--border);padding:64px 0;text-align:center;">
-        <div class="container">
-            <h2 style="font-size:2.2rem;font-weight:700;max-width:700px;margin:0 auto 16px;">
-                "Pare de apenas executar comandos.<br />Comece a entender o que acontece por trás deles."
-            </h2>
-            <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px;">
-                <a href="#mentorias" class="btn btn-primary">CONHECER MENTORIAS</a>
-                <a href="#comunidade" class="btn btn-outline">ENTRAR NA COMUNIDADE</a>
-            </div>
-        </div>
-    </section>
+<!-- ===================== STACK ===================== -->
+<section id="tecnologias">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Stack DBA BRABO</p>
+      <h2>As tecnologias cobertas</h2>
+      <p>Clique em qualquer tecnologia para ver o que ela significa aqui dentro e em quais mentorias ela aparece.</p>
+    </div>
+    <div class="stack" id="stackGrid"></div>
+  </div>
+</section>
 
-    <!-- ===== FAQ ===== -->
-    <section id="faq" style="border-top:1px solid var(--border);">
-        <div class="container">
-            <h2 class="section-title">FAQ <span>INTERATIVO</span></h2>
-            <div id="faqContainer">
-                <!-- preenchido via JS -->
-            </div>
-        </div>
-    </section>
+<!-- ===================== ROADMAP ===================== -->
+<section id="roadmap">
+  <div class="container container--narrow">
+    <div class="section-head section-head--center">
+      <p class="eyebrow">A jornada</p>
+      <h2>Roadmap do DBA</h2>
+      <p>A ordem importa. Cada etapa só faz sentido depois que a anterior parou de te surpreender. Clique para abrir.</p>
+    </div>
+    <div class="roadmap" id="roadmapList"></div>
+  </div>
+</section>
 
-    <!-- ===== FOOTER ===== -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div>
-                    <h4>DBA BRABO</h4>
-                    <p style="color:var(--text2);font-size:0.9rem;max-width:280px;">Conhecimento real de banco de dados, infraestrutura, performance, alta disponibilidade, cloud e automação.</p>
-                    <div class="social" id="socialLinks">
-                        <!-- preenchido via JS -->
-                    </div>
-                </div>
-                <div>
-                    <h4>Navegação</h4>
-                    <a href="#home">Início</a>
-                    <a href="#sobre">Sobre</a>
-                    <a href="#mentorias">Mentorias</a>
-                    <a href="#projetos">Projetos</a>
-                </div>
-                <div>
-                    <h4>Recursos</h4>
-                    <a href="#tecnologias">Tecnologias</a>
-                    <a href="#roadmap">Roadmap</a>
-                    <a href="#comunidade">Comunidade</a>
-                    <a href="#faq">FAQ</a>
-                </div>
-                <div>
-                    <h4>Redes</h4>
-                    <div id="footerSocialLinks">
-                        <!-- preenchido via JS -->
-                    </div>
-                </div>
-            </div>
-            <div class="copy">
-                &copy; 2025 DBA BRABO. Todos os direitos reservados.
-            </div>
-        </div>
-    </footer>
+<!-- ===================== COMUNIDADE ===================== -->
+<section id="comunidade">
+  <div class="container">
+    <div class="section-head section-head--center">
+      <p class="eyebrow">Conecte-se</p>
+      <h2>Comunidade DBA BRABO</h2>
+      <p>Um espaço para DBAs trocarem conhecimento, tirarem dúvida e crescerem juntos — e o canal direto com o mentor entre as sessões. Aponte a câmera do celular para entrar.</p>
+    </div>
+    <div class="canais" id="canais"></div>
+  </div>
+</section>
 
-    <script>
-        // ============================================================
-        //  CONFIGURAÇÃO CENTRAL
-        // ============================================================
-        const CONFIG = {
-            site: {
-                name: 'DBA BRABO',
-                tagline: 'Conhecimento real de banco de dados, infraestrutura, performance, alta disponibilidade, cloud e automação.'
-            },
-            mentor: {
-                name: '[Nome do Mentor]',
-                bio: 'Especialista em bancos de dados com mais de [X] anos de experiência em ambientes críticos.'
-            },
-            links: {
-                linkedin: '',
-                instagram: '',
-                github: '',
-                whatsapp: '',
-                blog: '',
-                youtube: '',
-                community: 'https://github.com/acaciolr/dba-brabo-site'
-            },
-            projects: [{
-                id: 'ora-brabo',
-                name: 'ORA BRABO',
-                desc: 'Oracle Database, RAC, ASM, Data Guard, RMAN, Exadata, Performance, Troubleshooting, Automação.',
-                tech: 'Oracle',
-                status: 'Em desenvolvimento',
-                github: ''
-            }, {
-                id: 'sql-brabo',
-                name: 'SQL BRABO',
-                desc: 'SQL Server, T-SQL, Administração, Backup, Restore, Performance, Troubleshooting, Automação.',
-                tech: 'SQL Server',
-                status: 'Em desenvolvimento',
-                github: ''
-            }, {
-                id: 'pg-brabo',
-                name: 'PG BRABO',
-                desc: 'PostgreSQL, Administração, Replication, HA, Backup, Performance, Troubleshooting, Automação.',
-                tech: 'PostgreSQL',
-                status: 'Em desenvolvimento',
-                github: ''
-            }, {
-                id: 'mysql-super-dba',
-                name: 'MYSQL SUPER DBA',
-                desc: 'Arquitetura, InnoDB, Performance, Replication, GTID, Group Replication, InnoDB Cluster, Backup, Recovery, Security, Monitoring, Troubleshooting, MySQL Shell.',
-                tech: 'MySQL',
-                status: 'Em desenvolvimento',
-                github: ''
-            }],
-            mentorias: [{
-                id: 'oracle-database',
-                name: 'Oracle Database',
-                desc: 'Administração, performance, tuning, backup, recovery, RAC, ASM, Data Guard.',
-                tech: 'oracle',
-                nivel: 'Avançado',
-                modulos: 12,
-                banner: 'Banners/oracle.png',
-                conteudo: {
-                    overview: 'Formação completa em Oracle Database, desde a arquitetura até alta disponibilidade e performance.',
-                    modulos: ['Fundamentos', 'Arquitetura', 'ASM', 'RAC', 'Grid Infrastructure', 'Data Guard', 'RMAN',
-                        'Data Pump', 'AWR/ASH/ADDM', 'Performance', 'Exadata', 'OCI'
-                    ]
-                }
-            }, {
-                id: 'mysql',
-                name: 'MySQL',
-                desc: 'Arquitetura, InnoDB, performance, replication, GTID, Group Replication, InnoDB Cluster.',
-                tech: 'mysql',
-                nivel: 'Intermediário',
-                modulos: 8,
-                banner: 'Banners/mysql.png',
-                conteudo: {
-                    overview: 'Domine a administração MySQL com foco em performance, replicação e alta disponibilidade.',
-                    modulos: ['Fundamentos', 'Arquitetura', 'Performance', 'Backup e Recovery', 'Replication',
-                        'Alta Disponibilidade', 'Security', 'Troubleshooting'
-                    ]
-                }
-            }, {
-                id: 'sqlserver',
-                name: 'SQL Server',
-                desc: 'Database Engine, T-SQL, Backup, Restore, Always On, Availability Groups, Replication.',
-                tech: 'sqlserver',
-                nivel: 'Intermediário',
-                modulos: 10,
-                banner: 'Banners/sqlserver.png',
-                conteudo: {
-                    overview: 'Administração completa do SQL Server, com foco em alta disponibilidade e performance.',
-                    modulos: ['Database Engine', 'T-SQL', 'Backup', 'Restore', 'Always On',
-                        'Availability Groups', 'Replication', 'Performance', 'Query Store', 'Security'
-                    ]
-                }
-            }, {
-                id: 'postgresql',
-                name: 'PostgreSQL',
-                desc: 'Architecture, WAL, Streaming Replication, Logical Replication, Patroni, HA, Backup, PITR.',
-                tech: 'postgresql',
-                nivel: 'Intermediário',
-                modulos: 10,
-                banner: 'Banners/postgresql.png',
-                conteudo: {
-                    overview: 'Aprofunde-se na administração do PostgreSQL com replicação, alta disponibilidade e performance.',
-                    modulos: ['Architecture', 'WAL', 'Streaming Replication', 'Logical Replication', 'Patroni',
-                        'HA', 'Backup', 'PITR', 'Performance', 'Security'
-                    ]
-                }
-            }, {
-                id: 'linguagem-sql',
-                name: 'Linguagem SQL',
-                desc: 'SELECT, JOIN, GROUP BY, CTE, Window Functions, DDL, DML, Performance, Transactions.',
-                tech: 'performance',
-                nivel: 'Básico/Intermediário',
-                modulos: 10,
-                banner: 'Banners/sql.png',
-                conteudo: {
-                    overview: 'Domine a linguagem SQL desde os fundamentos até consultas avançadas e otimização.',
-                    modulos: ['SELECT', 'WHERE', 'JOIN', 'GROUP BY', 'HAVING', 'ORDER BY', 'SUBQUERY', 'CTE',
-                        'WINDOW FUNCTIONS', 'UNION'
-                    ]
-                }
-            }, {
-                id: 'cloud-oci',
-                name: 'Oracle Cloud Infrastructure',
-                desc: 'OCI, compute, storage, networking, database cloud services, autonomous database.',
-                tech: 'cloud',
-                nivel: 'Intermediário',
-                modulos: 8,
-                banner: 'Banners/oci.png',
-                conteudo: {
-                    overview: 'Infraestrutura e serviços de banco de dados na Oracle Cloud.',
-                    modulos: ['Fundamentos OCI', 'Compute', 'Storage', 'Networking', 'Database Cloud',
-                        'Autonomous Database', 'Exadata Cloud', 'Security'
-                    ]
-                }
-            }, {
-                id: 'exadata',
-                name: 'Exadata',
-                desc: 'Arquitetura, storage, cells, performance, smart scan, hybrid columnar compression.',
-                tech: 'oracle',
-                nivel: 'Avançado',
-                modulos: 6,
-                banner: 'Banners/exadata.png',
-                conteudo: {
-                    overview: 'Engenharia de banco de dados em appliance Exadata.',
-                    modulos: ['Arquitetura', 'Storage Cells', 'Smart Scan', 'HCC', 'Performance', 'Troubleshooting']
-                }
-            }, {
-                id: 'goldengate',
-                name: 'GoldenGate',
-                desc: 'Extract, Trail, Replicat, captura, transporte, replicação heterogênea.',
-                tech: 'oracle',
-                nivel: 'Avançado',
-                modulos: 6,
-                banner: 'Banners/goldengate.png',
-                conteudo: {
-                    overview: 'Replicação de dados em tempo real com Oracle GoldenGate.',
-                    modulos: ['Extract', 'Trail', 'Replicat', 'Captura', 'Transporte', 'Replicação heterogênea']
-                }
-            }, {
-                id: 'mysql-replication',
-                name: 'MySQL Replication',
-                desc: 'Master-Slave, GTID, Group Replication, InnoDB Cluster, GoldenGate.',
-                tech: 'replication',
-                nivel: 'Avançado',
-                modulos: 5,
-                banner: 'Banners/mysql.png',
-                conteudo: {
-                    overview: 'Domine todos os tipos de replicação no MySQL, incluindo alta disponibilidade.',
-                    modulos: [
-                        { title: 'Master-Slave com Binlog',
-                            topics: ['Source', 'Replica', 'Binary Log', 'Relay Log', 'posição', 'monitoramento',
-                                'replication lag', 'troubleshooting'
-                            ] },
-                        { title: 'Master-Slave com GTID',
-                            topics: ['GTID', 'auto-position', 'vantagens', 'failover', 'reconstrução',
-                                'troubleshooting'
-                            ] },
-                        { title: 'Group Replication',
-                            topics: ['membros', 'quorum', 'comunicação', 'single-primary', 'multi-primary',
-                                'recuperação'
-                            ] },
-                        { title: 'InnoDB Cluster',
-                            topics: ['MySQL Shell', 'Group Replication', 'cluster', 'failover', 'recuperação'] },
-                        { title: 'GoldenGate para MySQL',
-                            topics: ['Extract', 'Trail', 'Replicat', 'captura', 'transporte', 'aplicação',
-                                'replicação heterogênea'
-                            ] }
-                    ]
-                }
-            }],
-            faq: [
-                { q: 'Para quem são as mentorias?', a: 'Para profissionais e estudantes que desejam aprofundar conhecimentos em banco de dados, infraestrutura e cloud.' },
-                { q: 'Preciso ter experiência?', a: 'Não necessariamente. Os conteúdos são organizados por nível, desde fundamentos até tópicos avançados.' },
-                { q: 'As mentorias são práticas?', a: 'Sim! O foco é em cenários reais, troubleshooting, automação e boas práticas de produção.' },
-                { q: 'Quais bancos são abordados?', a: 'Oracle, MySQL, SQL Server, PostgreSQL, além de SQL fundamental e cloud.' },
-                { q: 'Como funciona a comunidade?', a: 'A comunidade é um espaço colaborativo para troca de conhecimento, dúvidas e networking entre DBAs.' },
-                { q: 'Como entrar em contato?', a: 'Utilize as redes sociais ou o link da comunidade para se conectar conosco.' }
-            ],
-            tecnologias: [
-                { cat: 'DATABASE', items: ['Oracle', 'MySQL', 'SQL Server', 'PostgreSQL', 'MongoDB'] },
-                { cat: 'INFRASTRUCTURE', items: ['Linux', 'AIX', 'Cloud'] },
-                { cat: 'CLOUD', items: ['OCI', 'AWS', 'Azure', 'GCP'] },
-                { cat: 'HIGH AVAILABILITY', items: ['RAC', 'Data Guard', 'Always On', 'Group Replication',
-                        'InnoDB Cluster', 'Patroni'
-                    ] },
-                { cat: 'AUTOMATION', items: ['Shell', 'Python', 'SQL', 'MySQL Shell', 'OCI CLI'] }
-            ]
-        };
+<!-- ===================== FAQ ===================== -->
+<section id="faq">
+  <div class="container container--narrow">
+    <div class="section-head section-head--center">
+      <p class="eyebrow">Dúvidas frequentes</p>
+      <h2>FAQ</h2>
+    </div>
+    <div id="faqList"></div>
+  </div>
+</section>
 
-        // ============================================================
-        //  HELPERS
-        // ============================================================
-        function createCard(title, desc, icon = '📌', badges = []) {
-            return `
-                <div class="card">
-                    <div class="icon">${icon}</div>
-                    <h3>${title}</h3>
-                    <p>${desc}</p>
-                    ${badges.map(b => `<span class="badge">${b}</span>`).join('')}
-                </div>
-            `;
-        }
+<!-- ===================== CTA FINAL ===================== -->
+<section class="cta">
+  <div class="container">
+    <h2>Pare de apenas executar comandos.<br>Comece a entender o que acontece por trás deles.</h2>
+    <p>A conversa começa por uma call de diagnóstico para mapear onde você está e onde quer chegar. Sem compromisso.</p>
+    <div class="cta__btns">
+      <a class="btn btn--primary" href="#mentorias">Conhecer as mentorias</a>
+      <a class="btn btn--outline" href="#comunidade" data-community>Entrar na comunidade</a>
+    </div>
+  </div>
+</section>
 
-        function createMentoriaCard(m) {
-            const bannerContent = m.banner ? `<img src="${m.banner}" alt="${m.name}" loading="lazy" />` :
-                `<span style="font-size:0.9rem;">${m.name}</span>`;
-            return `
-                <div class="mentoria-card" data-tech="${m.tech}" data-search="${m.name} ${m.desc}">
-                    <div class="banner">${bannerContent}</div>
-                    <div class="body">
-                        <h3>${m.name}</h3>
-                        <p>${m.desc}</p>
-                        <div class="meta">
-                            <span>📘 ${m.nivel}</span>
-                            <span>📚 ${m.modulos} módulos</span>
-                            <span>🏷️ ${m.tech.toUpperCase()}</span>
-                        </div>
-                        <button class="btn" onclick="openMentoria('${m.id}')">VER CONTEÚDO</button>
-                    </div>
-                </div>
-            `;
-        }
+</main>
 
-        // ============================================================
-        //  RENDER
-        // ============================================================
-        function renderSobre() {
-            const items = [
-                { icon: '🗄️', title: 'Database', desc: 'Oracle, MySQL, SQL Server, PostgreSQL, MongoDB.' },
-                { icon: '🔄', title: 'High Availability', desc: 'RAC, Data Guard, Always On, Group Replication, Patroni.' },
-                { icon: '⚡', title: 'Performance', desc: 'Tuning, otimização de queries, AWR, Query Store, EXPLAIN.' },
-                { icon: '💾', title: 'Backup', desc: 'RMAN, Data Pump, mysqldump, pg_basebackup, PITR.' },
-                { icon: '☁️', title: 'Cloud', desc: 'OCI, AWS, Azure, GCP — bancos de dados como serviço.' },
-                { icon: '🤖', title: 'Automation', desc: 'Shell, Python, MySQL Shell, OCI CLI, Infra as Code.' },
-                { icon: '🔧', title: 'Troubleshooting', desc: 'Diagnóstico, logs, performance, falhas, recovery.' },
-                { icon: '🧠', title: 'Engineering', desc: 'Arquitetura, design, boas práticas, resiliência.' }
-            ];
-            document.getElementById('sobreCards').innerHTML = items.map(i => createCard(i.title, i.desc, i.icon)).join('');
-            document.getElementById('mentorInfo').textContent = `${CONFIG.mentor.name} — ${CONFIG.mentor.bio}`;
-        }
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="#topo">
+          <img class="brand__mark" src="assets/logo/avatar-96.png" width="38" height="38" alt="">
+          <span class="brand__name">DBA <span>BRABO</span></span>
+        </a>
+        <p>Conhecimento real de banco de dados, infraestrutura, performance, alta disponibilidade, cloud e automação.</p>
+      </div>
+      <div class="footer__col"><h4>Mentorias</h4><div id="footerMentorias"></div>
+        <a href="#mentorias">Ver todas →</a></div>
+      <div class="footer__col"><h4>Portal</h4>
+        <a href="#sobre">Sobre</a><a href="#metodologia">Metodologia</a>
+        <a href="#projetos">Projetos</a><a href="#tecnologias">Stack</a>
+        <a href="#roadmap">Roadmap</a><a href="#faq">FAQ</a></div>
+      <div class="footer__col"><h4>Redes</h4><div id="footerSocial"></div></div>
+    </div>
+    <div class="footer__bottom">
+      <span id="footerYear"></span>
+      <span class="mono">Feito para quem administra banco de dados de verdade.</span>
+    </div>
+  </div>
+</footer>
 
-        function renderMentorias() {
-            const grid = document.getElementById('mentoriasGrid');
-            grid.innerHTML = CONFIG.mentorias.map(m => createMentoriaCard(m)).join('');
-        }
-
-        function renderProjetos() {
-            const grid = document.getElementById('projetosGrid');
-            grid.innerHTML = CONFIG.projects.map(p => createCard(p.name, p.desc, '📁', [p.tech, p.status])).join('');
-        }
-
-        function renderTecnologias() {
-            const grid = document.getElementById('tecnologiasGrid');
-            grid.innerHTML = CONFIG.tecnologias.map(t =>
-                createCard(t.cat, t.items.join(' • '), '🛠️')
-            ).join('');
-        }
-
-        function renderRoadmap() {
-            const steps = [
-                'SQL', 'DATABASE', 'ADMINISTRATION', 'BACKUP', 'PERFORMANCE',
-                'REPLICATION', 'HIGH AVAILABILITY', 'CLOUD', 'AUTOMATION', 'SENIOR DBA'
-            ];
-            const container = document.getElementById('roadmapContainer');
-            container.innerHTML = steps.map((s, i) =>
-                `<div class="roadmap-item"><span class="step">${String(i+1).padStart(2,'0')}</span><span class="label">${s}</span><span class="desc">→</span></div>`
-            ).join('');
-        }
-
-        function renderFAQ() {
-            const container = document.getElementById('faqContainer');
-            container.innerHTML = CONFIG.faq.map((item, idx) =>
-                `
-                <div class="accordion">
-                    <button class="accordion-header" onclick="toggleAccordion(this)" aria-expanded="false">
-                        ${item.q}
-                        <span class="arrow">▼</span>
-                    </button>
-                    <div class="accordion-body">
-                        <p>${item.a}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderSocial() {
-            const links = CONFIG.links;
-            const socialMap = [
-                { key: 'linkedin', label: 'LinkedIn', icon: 'in' },
-                { key: 'instagram', label: 'Instagram', icon: 'ig' },
-                { key: 'github', label: 'GitHub', icon: 'gh' },
-                { key: 'whatsapp', label: 'WhatsApp', icon: 'wa' },
-                { key: 'blog', label: 'Blog', icon: '✍️' },
-                { key: 'youtube', label: 'YouTube', icon: 'yt' }
-            ];
-            const active = socialMap.filter(s => links[s.key]);
-            const container = document.getElementById('socialLinks');
-            container.innerHTML = active.map(s =>
-                `<a href="${links[s.key]}" target="_blank" rel="noopener">${s.icon} ${s.label}</a>`
-            ).join('');
-
-            const footerContainer = document.getElementById('footerSocialLinks');
-            footerContainer.innerHTML = active.map(s =>
-                `<a href="${links[s.key]}" target="_blank" rel="noopener">${s.icon} ${s.label}</a>`
-            ).join('');
-
-            // Community link
-            if (links.community) {
-                document.getElementById('communityLink').href = links.community;
-            }
-        }
-
-        // ============================================================
-        //  ACCORDION
-        // ============================================================
-        function toggleAccordion(el) {
-            const body = el.nextElementSibling;
-            const isOpen = body.classList.contains('open');
-            el.classList.toggle('open', !isOpen);
-            body.classList.toggle('open', !isOpen);
-            el.setAttribute('aria-expanded', !isOpen);
-        }
-
-        // ============================================================
-        //  MODAL / MENTORIA DETALHE
-        // ============================================================
-        function openMentoria(id) {
-            const m = CONFIG.mentorias.find(x => x.id === id);
-            if (!m) return;
-            const modal = document.getElementById('mentoriaModal');
-            const content = document.getElementById('modalContent');
-
-            let html = `
-                <h2 style="font-size:1.8rem;margin-bottom:4px;">${m.name}</h2>
-                <p style="color:var(--text2);margin-bottom:16px;">${m.desc}</p>
-                <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
-                    <span class="badge green">${m.nivel}</span>
-                    <span class="badge blue">${m.modulos} módulos</span>
-                    <span class="badge orange">${m.tech.toUpperCase()}</span>
-                </div>
-                <div style="background:var(--bg3);padding:16px;border-radius:var(--radius);margin-bottom:20px;">
-                    <h4 style="margin-bottom:4px;">Visão Geral</h4>
-                    <p style="color:var(--text2);">${m.conteudo.overview}</p>
-                </div>
-                <h4 style="margin:16px 0 8px;">Módulos</h4>
-            `;
-
-            // Se módulos forem objetos com título e tópicos
-            if (Array.isArray(m.conteudo.modulos) && typeof m.conteudo.modulos[0] === 'object') {
-                m.conteudo.modulos.forEach(mod => {
-                    html += `
-                        <div class="accordion">
-                            <button class="accordion-header" onclick="toggleAccordion(this)" aria-expanded="false">
-                                ${mod.title}
-                                <span class="arrow">▼</span>
-                            </button>
-                            <div class="accordion-body">
-                                <ul>${mod.topics.map(t => `<li>${t}</li>`).join('')}</ul>
-                            </div>
-                        </div>
-                    `;
-                });
-            } else {
-                // Lista simples
-                html += `<ul style="list-style:none;padding:0;">`;
-                m.conteudo.modulos.forEach(mod => {
-                    html += `<li style="padding:6px 0;border-bottom:1px solid var(--border);">📘 ${mod}</li>`;
-                });
-                html += `</ul>`;
-            }
-
-            content.innerHTML = html;
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            document.getElementById('mentoriaModal').style.display = 'none';
-            document.body.style.overflow = '';
-        }
-        // Fechar com ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-        });
-
-        // ============================================================
-        //  FILTROS
-        // ============================================================
-        function setupFilters() {
-            const btns = document.querySelectorAll('.filter-btn');
-            const cards = document.querySelectorAll('.mentoria-card');
-            btns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    btns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    const filter = btn.dataset.filter;
-                    cards.forEach(card => {
-                        const tech = card.dataset.tech;
-                        if (filter === 'all' || tech === filter) {
-                            card.style.display = '';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-                });
-            });
-        }
-
-        // ============================================================
-        //  SEARCH
-        // ============================================================
-        function setupSearch() {
-            const input = document.getElementById('searchInput');
-            const results = document.getElementById('searchResults');
-            const items = CONFIG.mentorias.map(m => ({
-                id: m.id,
-                name: m.name,
-                desc: m.desc,
-                tech: m.tech
-            }));
-
-            input.addEventListener('input', () => {
-                const q = input.value.trim().toLowerCase();
-                if (q.length < 2) { results.style.display = 'none'; return; }
-                const matches = items.filter(i =>
-                    i.name.toLowerCase().includes(q) ||
-                    i.desc.toLowerCase().includes(q) ||
-                    i.tech.toLowerCase().includes(q)
-                );
-                if (matches.length === 0) {
-                    results.innerHTML = '<div class="result-item">Nenhum resultado encontrado.</div>';
-                    results.style.display = 'block';
-                    return;
-                }
-                results.innerHTML = matches.map(m =>
-                    `<div class="result-item" onclick="openMentoria('${m.id}')">🔍 <strong>${m.name}</strong> — ${m.desc.slice(0,60)}...</div>`
-                ).join('');
-                results.style.display = 'block';
-            });
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.search-wrap')) {
-                    results.style.display = 'none';
-                }
-            });
-        }
-
-        // ============================================================
-        //  THEME
-        // ============================================================
-        function setupTheme() {
-            const toggle = document.getElementById('themeToggle');
-            const prefers = localStorage.getItem('dba-theme') || 'dark';
-            if (prefers === 'light') document.body.classList.add('light');
-            toggle.addEventListener('click', () => {
-                document.body.classList.toggle('light');
-                const isLight = document.body.classList.contains('light');
-                localStorage.setItem('dba-theme', isLight ? 'light' : 'dark');
-            });
-        }
-
-        // ============================================================
-        //  NAV
-        // ============================================================
-        function setupNav() {
-            const toggle = document.getElementById('menuToggle');
-            const nav = document.getElementById('mainNav');
-            toggle.addEventListener('click', () => {
-                nav.classList.toggle('open');
-                toggle.setAttribute('aria-expanded', nav.classList.contains('open'));
-            });
-            // Close on link click
-            nav.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    nav.classList.remove('open');
-                    toggle.setAttribute('aria-expanded', 'false');
-                });
-            });
-            // Active link
-            const links = nav.querySelectorAll('a[href^="#"]');
-            links.forEach(link => {
-                link.addEventListener('click', () => {
-                    links.forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-                });
-            });
-        }
-
-        // ============================================================
-        //  INIT
-        // ============================================================
-        function init() {
-            renderSobre();
-            renderMentorias();
-            renderProjetos();
-            renderTecnologias();
-            renderRoadmap();
-            renderFAQ();
-            renderSocial();
-            setupFilters();
-            setupSearch();
-            setupTheme();
-            setupNav();
-
-            console.log('✅ DBA BRABO Portal carregado.');
-            console.log('📦 Arquivos: index.html (único arquivo estático)');
-            console.log('🌐 Publicar: git push para GitHub Pages');
-            console.log('🔧 Configuração central em CONFIG no JavaScript');
-        }
-
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+<script src="script.js" defer></script>
 </body>
 </html>
