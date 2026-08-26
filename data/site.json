@@ -1,0 +1,101 @@
+{
+  "_comment": "Configuracao central do portal DBA BRABO. Todo link, texto de marca e dado do mentor vive aqui. Nada de URL espalhada pelo codigo.",
+
+  "site": {
+    "name": "DBA BRABO",
+    "shortName": "DBA BRABO",
+    "tagline": "Mentoria Técnica para DBAs",
+    "claim": "Não basta saber usar banco de dados. É preciso saber administrá-lo.",
+    "description": "Ecossistema de formação técnica para administradores de banco de dados: Oracle, MySQL, SQL Server, PostgreSQL, MongoDB, alta disponibilidade, performance, cloud e automação.",
+    "lang": "pt-BR",
+    "locale": "pt_BR",
+    "domain": "https://acaciolr.github.io/dba-brabo-site",
+    "domainFuturo": "https://www.dbabrabo.com.br",
+    "usarDominioProprio": false,
+    "logo": "assets/logo/dba-brabo-avatar.png",
+    "ogImage": "assets/banners/completa.webp"
+  },
+
+  "mentor": {
+    "nome": "Acácio Lima Rocha",
+    "handle": "acaciolr",
+    "titulo": "Senior Database Administrator",
+    "headline": "DBA sênior com mais de 12 anos em ambientes críticos de produção.",
+    "local": "Cotia / São Paulo — Brasil",
+    "atuacao": "Consultor DBA Sênior na Dataside",
+    "trajetoria": [
+      "Principal Advanced Support Engineer na Oracle Brasil",
+      "MySQL Tech Lead",
+      "Consultor DBA Sênior na Dataside"
+    ],
+    "reconhecimentos": [
+      "Oracle ACE Associate",
+      "LinkedIn Top Database Administration Voice 2024"
+    ],
+    "especialidades": [
+      "Oracle RAC", "Exadata", "Data Guard", "Grid Infrastructure", "ASM", "RMAN", "AutoUpgrade",
+      "MySQL InnoDB Cluster", "MySQL NDB", "Percona XtraDB Cluster",
+      "SQL Server", "PostgreSQL", "Sybase ASE",
+      "OCI", "AWS", "Azure", "GCP",
+      "Shell", "Python", "Automação"
+    ],
+    "_pendente_bio_longa": "Se quiser um parágrafo autoral de apresentação, escreva aqui e ele substitui o texto derivado dos campos acima."
+  },
+
+  "links": {
+    "_nota": "Confirmar cada URL antes de publicar. Campos vazios simplesmente nao renderizam card nenhum.",
+    "linkedin":        { "url": "https://www.linkedin.com/in/acaciolr",        "label": "LinkedIn",  "desc": "Artigos técnicos, bastidores de projeto e a rede profissional do mentor.", "confirmado": false },
+    "linkedinEmpresa": { "url": "https://www.linkedin.com/company/dbabrabo",   "label": "LinkedIn DBA BRABO", "desc": "Página oficial do ecossistema.", "confirmado": false },
+    "instagram":       { "url": "https://www.instagram.com/dbabrabo",          "label": "Instagram", "desc": "Conteúdo curto, dicas rápidas e agenda das mentorias.", "confirmado": false },
+    "github":          { "url": "https://github.com/acaciolr",                 "label": "GitHub",    "desc": "Scripts, ferramentas e projetos open-source do ecossistema.", "confirmado": false },
+    "blog":            { "url": "https://acaciolrdba.wordpress.com",           "label": "Blog",      "desc": "Estudos de caso, troubleshooting real e deep dives técnicos.", "confirmado": false },
+    "whatsapp":        { "url": "",                                            "label": "Comunidade WhatsApp", "desc": "Grupo de DBAs para dúvidas, troca de conhecimento e networking.", "confirmado": false },
+    "youtube":         { "url": "",                                            "label": "YouTube",   "desc": "", "confirmado": false },
+    "email":           { "url": "",                                            "label": "E-mail",    "desc": "Falar diretamente com o mentor.", "confirmado": false }
+  },
+
+  "comunidades": [
+    { "nome": "Comunidade MySQL Brasil", "url": "https://comunidademysql.com.br", "confirmado": false },
+    { "nome": "GUOB — Grupo de Usuários Oracle do Brasil", "url": "https://www.guob.com.br", "confirmado": false }
+  ],
+
+  "formato": {
+    "_fonte": "Extraído do rodapé e das seções presentes em todos os 19 banners oficiais.",
+    "itens": [
+      { "icone": "chat",     "titulo": "Grupo WhatsApp",   "desc": "Canal direto com o mentor entre as sessões." },
+      { "icone": "phone",    "titulo": "Calls sob demanda", "desc": "Sessões ao vivo marcadas conforme sua necessidade." },
+      { "icone": "flask",    "titulo": "Lab Prático",       "desc": "Implementação real, no seu ambiente, não só slide." }
+    ]
+  },
+
+  "metodologia": {
+    "_fonte": "Derivado da estrutura das mentorias Técnica, Carreira e Certificação & Skills.",
+    "etapas": [
+      { "n": "01", "titulo": "Diagnóstico",     "desc": "Call inicial de até 1h para mapear nível atual e objetivo." },
+      { "n": "02", "titulo": "Teoria",          "desc": "Arquitetura interna e fundamentos antes de qualquer lab." },
+      { "n": "03", "titulo": "Lab Prático",     "desc": "Administração, replicação e alta disponibilidade no seu ambiente." },
+      { "n": "04", "titulo": "Backup & DR",     "desc": "Estratégia completa com teste real de restore." },
+      { "n": "05", "titulo": "Performance",     "desc": "Diagnóstico de gargalos e tuning com evidências." },
+      { "n": "06", "titulo": "Suporte Contínuo","desc": "Acompanhamento entre sessões via grupo e calls." }
+    ]
+  },
+
+  "investimento": {
+    "_pendente": "Valores ainda nao informados. Enquanto 'valor' estiver vazio o site exibe o texto de fallback abaixo e nenhum preco e inventado.",
+    "exibirPrecos": false,
+    "moeda": "BRL",
+    "fallback": "Sob consulta",
+    "ctaSemPreco": "Falar com o mentor"
+  },
+
+  "seo": {
+    "twitterCard": "summary_large_image",
+    "themeColor": "#0A0D12",
+    "keywords": ["DBA", "Oracle", "MySQL", "SQL Server", "PostgreSQL", "MongoDB", "Exadata", "RAC", "Data Guard", "GoldenGate", "ZDLRA", "ODA", "alta disponibilidade", "performance", "backup", "mentoria DBA"]
+  },
+
+  "footer": {
+    "copyright": "DBA BRABO. Todos os direitos reservados.",
+    "anoInicio": 2025
+  }
+}
