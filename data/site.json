@@ -8,11 +8,12 @@
     "description": "Ecossistema de formação técnica para administradores de banco de dados: Oracle, MySQL, SQL Server, PostgreSQL, MongoDB, alta disponibilidade, performance, cloud e automação.",
     "lang": "pt-BR",
     "locale": "pt_BR",
-    "domain": "https://acaciolr.github.io/dba-brabo-site",
-    "domainFuturo": "https://www.dbabrabo.com.br",
-    "usarDominioProprio": false,
+    "domain": "https://dbabrabo.com.br",
+    "domainFuturo": "https://dbabrabo.com.br",
+    "usarDominioProprio": true,
     "logo": "assets/logo/dba-brabo-avatar.png",
-    "ogImage": "assets/banners/completa.webp"
+    "ogImage": "assets/og/dba-brabo-og.png",
+    "_notaOG": "Capa de compartilhamento da home e do catalogo. As paginas individuais de mentoria usam o proprio banner como og:image — isso e intencional."
   },
   "mentor": {
     "nome": "Acácio Lima Rocha",
@@ -264,28 +265,26 @@
       {
         "id": "weverton",
         "principal": false,
-        "nome": "Weverton",
-        "titulo": "",
-        "headline": "",
+        "nome": "Weverton Amorim",
+        "titulo": "Consultor DBA Sênior",
+        "headline": "DBA sênior com mais de 12 anos em ambientes críticos de produção.",
         "trajetoria": [],
         "reconhecimentos": [],
         "linkedin": "",
         "github": "",
-        "confirmado": false,
-        "_pendente": "Sobrenome, titulo, apresentacao e especialidades ainda nao informados pelo mentor."
+        "confirmado": true
       },
       {
         "id": "luis",
         "principal": false,
-        "nome": "Luis",
-        "titulo": "",
-        "headline": "",
+        "nome": "Luis Henrique Jacoveto",
+        "titulo": "Consultor DBA Sênior",
+        "headline": "DBA sênior com mais de 12 anos em ambientes críticos de produção.",
         "trajetoria": [],
         "reconhecimentos": [],
         "linkedin": "",
         "github": "",
-        "confirmado": false,
-        "_pendente": "Sobrenome, titulo, apresentacao e especialidades ainda nao informados pelo mentor."
+        "confirmado": true
       }
     ]
   },

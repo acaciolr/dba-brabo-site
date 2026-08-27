@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://acaciolr.github.io/dba-brabo-site/sitemap.xml
+Sitemap: https://dbabrabo.com.br/sitemap.xml
