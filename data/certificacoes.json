@@ -1,0 +1,68 @@
+{
+  "_comment": "Certificacoes e credenciais. A ordem e por peso tecnico, nao por data — nenhuma data e exibida. O campo 'badge' referencia assets/badges/<badge>.webp, normalizado por tools/build-badges.py a partir dos originais em badges/.",
+  "titulo": "Certificações",
+  "eyebrow": "Credenciais verificáveis",
+  "intro": "Não é enfeite de currículo. Cada credencial abaixo corresponde a um bloco de conhecimento que aparece dentro das mentorias — e a ordem reflete o peso técnico de cada uma.",
+
+  "destaques": [
+    {
+      "badge": "ace-associate",
+      "nome": "Oracle ACE Associate",
+      "tipo": "Reconhecimento",
+      "accent": "#B57BF5",
+      "desc": "Programa de reconhecimento da Oracle para quem contribui com a comunidade técnica. Não é prova — é indicação."
+    },
+    {
+      "badge": "maa",
+      "nome": "Oracle MAA",
+      "tipo": "Arquitetura",
+      "accent": "#F0705A",
+      "desc": "Maximum Availability Architecture: o blueprint oficial da Oracle para RPO e RTO em ambiente crítico."
+    },
+    {
+      "badge": "exadata-x9m-specialist",
+      "nome": "Exadata Database Machine X9M",
+      "tipo": "Specialist",
+      "accent": "#FF7A4A",
+      "desc": "Engineered System ponta a ponta — storage cells, Smart Scan, HCC e o ciclo de patch do appliance."
+    }
+  ],
+
+  "grupos": [
+    {
+      "id": "professional",
+      "nome": "Professional",
+      "desc": "O nível mais alto das provas de certificação Oracle.",
+      "accent": "#F0805A",
+      "itens": [
+        { "badge": "oracle-19c-rac-asm-gi",       "nome": "Oracle Database 19c — RAC, ASM e Grid Infrastructure" },
+        { "badge": "oracle-19c-data-guard",       "nome": "Oracle Database 19c — Data Guard" },
+        { "badge": "oracle-23ai-professional",    "nome": "Oracle Database 23ai Administration" },
+        { "badge": "oracle-db-2019-professional", "nome": "Oracle Database Administration" },
+        { "badge": "mysql-80-dba-professional",   "nome": "MySQL 8.0 Database Administrator" }
+      ]
+    },
+    {
+      "id": "associate",
+      "nome": "Associate",
+      "desc": "Domínio operacional da plataforma.",
+      "accent": "#34D3C4",
+      "itens": [
+        { "badge": "oracle-23ai-associate",          "nome": "Oracle Database 23ai Administration" },
+        { "badge": "mysql-heatwave-associate",       "nome": "MySQL HeatWave Implementation" },
+        { "badge": "mysql-implementation-associate", "nome": "MySQL Implementation" }
+      ]
+    },
+    {
+      "id": "foundations",
+      "nome": "Foundations",
+      "desc": "Base de cloud e gestão de dados.",
+      "accent": "#4FA8E8",
+      "itens": [
+        { "badge": "oci-foundations",              "nome": "Oracle Cloud Infrastructure" },
+        { "badge": "oracle-cloud-data-management", "nome": "Oracle Cloud Data Management" },
+        { "badge": "oci-ai-foundations",           "nome": "OCI AI Foundations" }
+      ]
+    }
+  ]
+}

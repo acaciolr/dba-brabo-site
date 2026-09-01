@@ -563,8 +563,29 @@ function validar() {
   for (const e of roadmap.etapas)
     for (const s of e.mentorias || [])
       if (!slugs.has(s)) erros.push(`roadmap etapa ${e.n}: slug inexistente — ${s}`);
-  for (const f of ['style.css', 'script.js', 'index.html'])
-    if (!fs.existsSync(p(f))) erros.push(`arquivo ausente na raiz: ${f}`);
+  // arquivos essenciais precisam existir E ter conteudo. Um style.css de 0 byte
+  // ou ausente derruba o site inteiro sem erro nenhum no console.
+  for (const f of ['style.css', 'script.js', 'index.html']) {
+    if (!fs.existsSync(p(f))) { erros.push(`arquivo ausente na raiz: ${f}`); continue; }
+    if (fs.statSync(p(f)).size < 500) erros.push(`arquivo praticamente vazio: ${f}`);
+  }
+
+  // A sincronizacao renomeia arquivos em conflito para "<nome> 2.<ext>". Quando
+  // isso acontece o original some, o git marca como DELETADO e um commit apaga
+  // o arquivo do repositorio. Foi o que derrubou o site em 27/08 com o
+  // style.css. Qualquer duplicata fora de _conflitos/ trava o build.
+  const varrer = (dir, achados = []) => {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (['.git', 'node_modules', '_conflitos', 'Banners'].includes(e.name)) continue;
+      const abs = path.join(dir, e.name);
+      if (e.isDirectory()) varrer(abs, achados);
+      else if (/ \d+(\.[^.]+)?$/.test(e.name)) achados.push(path.relative(ROOT, abs));
+    }
+    return achados;
+  };
+  for (const f of varrer(ROOT))
+    erros.push(`duplicata de conflito de sincronizacao: "${f}" — confira se o original ainda existe antes de commitar`);
+
   return erros;
 }
 

@@ -92,7 +92,7 @@ function icon(name, cls = '') {
 }
 
 /* ---------- estado ------------------------------------------------------ */
-const DATA = { site: null, mentorias: null, projetos: null, tecnologias: null, roadmap: null, faq: null };
+const DATA = { site: null, mentorias: null, projetos: null, tecnologias: null, roadmap: null, faq: null, certificacoes: null };
 
 async function loadJSON(name) {
   const r = await fetch(url(`data/${name}.json`), { cache: 'no-cache' });
@@ -384,6 +384,46 @@ function renderStack() {
         </div>`;
       }).join('')}
     </section>`).join('');
+}
+
+/* ---------- certificacoes ------------------------------------------------ */
+/* Badges ja normalizadas por tools/build-badges.py — mesmo quadrado, fundo
+   transparente — entao nao ha ajuste de tamanho aqui. Sem datas: a ordem e por
+   peso tecnico e o nivel aparece no cabecalho de cada faixa. */
+function renderCertificacoes() {
+  const box = $('#certificacoes'); if (!box || !DATA.certificacoes) return;
+  const C = DATA.certificacoes;
+
+  const destaque = c => `
+    <article class="cred-hero reveal" style="--accent:${esc(c.accent)}">
+      <img src="${url(`assets/badges/${c.badge}.webp`)}" width="104" height="104" loading="lazy"
+           alt="Badge ${esc(c.nome)}">
+      <div>
+        <p class="cred-hero__tipo">${esc(c.tipo)}</p>
+        <h3 class="cred-hero__nome">${esc(c.nome)}</h3>
+        <p class="cred-hero__desc">${esc(c.desc)}</p>
+      </div>
+    </article>`;
+
+  const nivel = g => `
+    <section class="cred-nivel reveal" style="--accent:${esc(g.accent)}">
+      <div class="cred-nivel__head">
+        <h3 class="cred-nivel__nome">${esc(g.nome)}</h3>
+        <p class="cred-nivel__desc">${esc(g.desc)}</p>
+      </div>
+      <div class="cred-grid">
+        ${g.itens.map(i => `
+          <article class="cred">
+            <img src="${url(`assets/badges/${i.badge}.webp`)}" width="82" height="82" loading="lazy"
+                 alt="Badge ${esc(i.nome)}">
+            <h4 class="cred__nome">${esc(i.nome)}</h4>
+          </article>`).join('')}
+      </div>
+    </section>`;
+
+  box.innerHTML =
+    `<div class="cred-destaques">${C.destaques.map(destaque).join('')}</div>` +
+    C.grupos.map(nivel).join('');
 }
 
 /* ---------- roadmap ------------------------------------------------------ */
@@ -770,9 +810,9 @@ function setupScrollSpy() {
 async function boot() {
   setupTema();                       // antes de tudo, evita flash de tema errado
   try {
-    const [site, mentorias, projetos, tecnologias, roadmap, faq] = await Promise.all(
-      ['site', 'mentorias', 'projetos', 'tecnologias', 'roadmap', 'faq'].map(loadJSON));
-    Object.assign(DATA, { site, mentorias, projetos, tecnologias, roadmap, faq });
+    const [site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes] = await Promise.all(
+      ['site', 'mentorias', 'projetos', 'tecnologias', 'roadmap', 'faq', 'certificacoes'].map(loadJSON));
+    Object.assign(DATA, { site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes });
   } catch (err) {
     console.error('[DBA BRABO] falha ao carregar os dados:', err);
     const alvo = $('#mentoriasGrid') || $('main');
@@ -785,7 +825,7 @@ async function boot() {
   }
 
   renderTerminal(); renderStats(); renderSobre(); renderFundadores(); renderMetodologia();
-  renderMentorias(); renderProjetos(); renderStack(); renderRoadmap();
+  renderMentorias(); renderProjetos(); renderStack(); renderCertificacoes(); renderRoadmap();
   renderFAQ(); renderFooter();
   await renderSocial();          // busca os SVG dos QR antes de revelar
   await setupSearch();           // indice de busca gerado no build

@@ -691,9 +691,12 @@ section + section { border-top: 1px solid var(--line); }
 .pcard__list li { position: relative; padding-left: var(--s-5); }
 .pcard__list li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); }
 
-/* fundadores: card principal + coluna de cards menores ao lado */
-.founders { display: grid; grid-template-columns: 1.55fr 1fr; gap: var(--s-5); align-items: start; }
-.founders__col { display: grid; gap: var(--s-5); align-content: start; }
+/* fundadores: card principal + coluna de cards menores ao lado
+   as duas colunas terminam na mesma linha de base: a coluna da direita
+   divide a altura do card principal em duas linhas iguais (grid-auto-rows: 1fr)
+   e o botao de cada card menor e empurrado para o rodape com margin-top: auto. */
+.founders { display: grid; grid-template-columns: 1.55fr 1fr; gap: var(--s-5); align-items: stretch; }
+.founders__col { display: grid; gap: var(--s-5); grid-auto-rows: 1fr; }
 
 .founder {
   background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--r-xl);
@@ -703,7 +706,8 @@ section + section { border-top: 1px solid var(--line); }
 .founder:hover { border-color: color-mix(in srgb, var(--brand) 34%, var(--line)); }
 
 .founder--main { display: grid; grid-template-columns: auto 1fr; gap: var(--s-8); align-items: start; }
-.founder--sm { padding: var(--s-6); }
+.founder--sm { padding: var(--s-6); display: flex; flex-direction: column; }
+.founder--sm .hstack { margin-top: auto; padding-top: var(--s-4); }
 .founder--sm:hover { transform: translateY(-2px); }
 
 .founder__avatar {
@@ -956,4 +960,68 @@ section + section { border-top: 1px solid var(--line); }
   .canal--hero .canal__actions { justify-content: center; }
   .canal { flex-direction: column; text-align: center; }
   .canal__head { flex-direction: column; }
+}
+
+
+/* ---------- 24 · CERTIFICAÇÕES ------------------------------------------ */
+/* As badges chegam normalizadas por tools/build-badges.py — mesmo quadrado
+   512x512, fundo transparente — entao aqui basta um tamanho fixo com
+   object-fit: contain para todas ficarem opticamente iguais.               */
+
+.cred-destaques { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5); margin-bottom: var(--s-12); }
+
+.cred-hero {
+  position: relative; overflow: hidden;
+  display: grid; grid-template-columns: auto 1fr; gap: var(--s-5); align-items: center;
+  background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--r-xl);
+  padding: var(--s-6);
+  transition: transform var(--t-base) var(--ease), border-color var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease);
+}
+.cred-hero::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 70% 100% at 0% 50%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 65%);
+}
+.cred-hero:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+  box-shadow: 0 20px 48px -20px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.cred-hero img {
+  position: relative; width: 104px; height: 104px; object-fit: contain;
+  filter: drop-shadow(0 6px 22px color-mix(in srgb, var(--accent) 55%, transparent));
+}
+.cred-hero__tipo { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.cred-hero__nome { font-family: var(--font-display); font-size: var(--fs-base); font-weight: 700; line-height: 1.3; margin-top: 2px; }
+.cred-hero__desc { color: var(--fg-2); font-size: var(--fs-sm); margin-top: var(--s-2); }
+
+.cred-nivel + .cred-nivel { margin-top: var(--s-10); }
+.cred-nivel__head { display: flex; align-items: baseline; gap: var(--s-4); margin-bottom: var(--s-5); }
+.cred-nivel__nome {
+  font-family: var(--font-display); font-size: var(--fs-xs); font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--accent); white-space: nowrap;
+}
+.cred-nivel__desc { color: var(--fg-2); font-size: var(--fs-sm); }
+.cred-nivel__head::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+.cred-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: var(--s-4); }
+.cred {
+  display: grid; gap: var(--s-3); justify-items: center; text-align: center; align-content: start;
+  background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: var(--s-5) var(--s-4);
+  transition: transform var(--t-base) var(--ease), border-color var(--t-base) var(--ease), background var(--t-base) var(--ease);
+}
+.cred:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); background: var(--bg-2); }
+.cred img { width: 82px; height: 82px; object-fit: contain; transition: transform var(--t-base) var(--ease), filter var(--t-base) var(--ease); }
+.cred:hover img { transform: scale(1.06); filter: drop-shadow(0 6px 18px color-mix(in srgb, var(--accent) 45%, transparent)); }
+.cred__nome { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-sm); line-height: 1.35; }
+
+@media (max-width: 900px) {
+  .cred-destaques { grid-template-columns: 1fr; }
+  .cred-nivel__head { flex-wrap: wrap; }
+  .cred-nivel__head::after { display: none; }
+}
+@media (max-width: 480px) {
+  .cred-grid { grid-template-columns: repeat(2, 1fr); }
+  .cred { padding: var(--s-4) var(--s-3); }
+  .cred img { width: 66px; height: 66px; }
 }
