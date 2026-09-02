@@ -81,6 +81,8 @@ const ICON_PATHS = {
   modules:      '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
   tag:          '<path d="M20.6 13.4 12 22l-9-9V3h10z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
   clock:        '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  calendar:     '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  pin:          '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>',
   money:        '<circle cx="12" cy="12" r="9"/><path d="M15 9.5A3 3 0 0 0 12 8c-1.7 0-3 .9-3 2s1.3 2 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-3-1.5"/><path d="M12 6v12"/>'
 };
 
@@ -92,7 +94,7 @@ function icon(name, cls = '') {
 }
 
 /* ---------- estado ------------------------------------------------------ */
-const DATA = { site: null, mentorias: null, projetos: null, tecnologias: null, roadmap: null, faq: null, certificacoes: null };
+const DATA = { site: null, mentorias: null, projetos: null, tecnologias: null, roadmap: null, faq: null, certificacoes: null, eventos: null };
 
 async function loadJSON(name) {
   const r = await fetch(url(`data/${name}.json`), { cache: 'no-cache' });
@@ -424,6 +426,94 @@ function renderCertificacoes() {
   box.innerHTML =
     `<div class="cred-destaques">${C.destaques.map(destaque).join('')}</div>` +
     C.grupos.map(nivel).join('');
+}
+
+/* ---------- eventos da comunidade ---------------------------------------
+   Um evento nunca guarda "proximo" ou "passado" no JSON: a comparacao e
+   feita aqui, contra a data de hoje. Assim a agenda se reorganiza sozinha
+   no dia seguinte a cada evento, sem ninguem editar arquivo.
+------------------------------------------------------------------------- */
+function renderEventos() {
+  const box = $('#eventos'); if (!box) return;
+  const cfg = DATA.eventos || {};
+  const itens = (cfg.itens || []).filter(e => e && e.data && e.confirmado !== false);
+  const secao = box.closest('section');
+
+  if (!itens.length) { if (secao) secao.hidden = true; return; }
+
+  const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  const asData = iso => { const [a, m, d] = String(iso).split('-').map(Number); return new Date(a, m - 1, d); };
+  const diasAte = iso => Math.round((asData(iso) - hoje) / 86400000);
+
+  const fmtLongo = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+  const fmtCurto = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+
+  const proximos = itens.filter(e => diasAte(e.data) >= 0).sort((a, b) => asData(a.data) - asData(b.data));
+  const passados = itens.filter(e => diasAte(e.data) <  0).sort((a, b) => asData(b.data) - asData(a.data));
+
+  const selo = e => {
+    const d = diasAte(e.data);
+    if (d <  0) return { txt: 'Edição encerrada', ic: 'check' };
+    if (d === 0) return { txt: 'É hoje', ic: 'clock' };
+    if (d === 1) return { txt: 'Amanhã', ic: 'clock' };
+    return { txt: `Faltam ${d} dias`, ic: 'clock' };
+  };
+
+  const botao = (u, rotulo, cls) => u
+    ? `<a class="btn ${cls}" href="${esc(u)}" target="_blank" rel="noopener">${icon('external')} ${esc(rotulo)}</a>` : '';
+
+  const card = e => {
+    const s = selo(e), passado = diasAte(e.data) < 0;
+    const L = e.links || {};
+    return `
+    <article class="evento${passado ? ' evento--passado' : ''} reveal" style="--accent:${esc(e.accent || 'var(--brand)')}">
+      <div class="evento__capa">
+        <span class="evento__selo">${icon(s.ic)} ${esc(s.txt)}</span>
+        ${e.banner ? `<img src="${url(e.banner)}" alt="Arte de divulgação do ${esc(e.nome)}" loading="lazy" width="1200" height="675">` : ''}
+      </div>
+      <div class="evento__corpo">
+        ${e.edicao ? `<p class="evento__edicao">${esc(e.edicao)}</p>` : ''}
+        <h3 class="evento__nome">${esc(e.nome)}</h3>
+        ${e.desc ? `<p class="evento__desc">${esc(e.desc)}</p>` : ''}
+        <div class="evento__meta">
+          <div class="evento__linha">${icon('calendar')}
+            <div><b>${esc(fmtLongo.format(asData(e.data)))}</b>
+            ${e.horario ? `<span>${esc(e.horario)}</span>` : ''}</div></div>
+          <div class="evento__linha">${icon('pin')}
+            <div><b>${esc(e.local || '')}</b>
+            ${e.cidade ? `<span>${esc(e.cidade)}</span>` : ''}</div></div>
+        </div>
+        <div class="evento__btns">
+          ${botao(L.site, 'Site oficial', passado ? 'btn--outline btn--sm' : 'btn--primary')}
+          ${passado ? '' : botao(L.inscricao, 'Inscrição', 'btn--outline btn--sm')}
+          ${botao(L.comunidade, 'Comunidade', 'btn--ghost btn--sm')}
+        </div>
+      </div>
+    </article>`;
+  };
+
+  const mini = e => `
+    <div class="evento-mini reveal" style="--accent:${esc(e.accent || 'var(--brand)')}">
+      ${e.banner ? `<img src="${url(e.banner)}" alt="" loading="lazy">` : '<span></span>'}
+      <div>
+        <p class="evento-mini__nome">${esc(e.nome)}</p>
+        <p class="evento-mini__meta">${esc(fmtCurto.format(asData(e.data)))} &middot; ${esc(e.cidade || '')}</p>
+      </div>
+      ${(e.links || {}).site ? `<a class="btn btn--outline btn--sm" href="${esc(e.links.site)}" target="_blank" rel="noopener">${icon('external')} Site</a>` : ''}
+    </div>`;
+
+  const nota = cfg.atualizadoEm
+    ? `<p class="eventos-nota">Agenda conferida nos sites oficiais em ${esc(fmtCurto.format(asData(cfg.atualizadoEm)))}.</p>` : '';
+
+  box.innerHTML = nota
+    + (proximos.length
+        ? `<div class="eventos${proximos.length === 1 ? ' eventos--destaque' : ''}">${proximos.map(card).join('')}</div>`
+        : `<p class="muted"><em>Nenhum evento com data confirmada no momento. As edições anteriores ficam abaixo.</em></p>`)
+    + (passados.length
+        ? `<div class="eventos-passados">
+             <p class="eventos-passados__head">Edições anteriores</p>
+             ${passados.map(mini).join('')}
+           </div>` : '');
 }
 
 /* ---------- roadmap ------------------------------------------------------ */
@@ -810,9 +900,9 @@ function setupScrollSpy() {
 async function boot() {
   setupTema();                       // antes de tudo, evita flash de tema errado
   try {
-    const [site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes] = await Promise.all(
-      ['site', 'mentorias', 'projetos', 'tecnologias', 'roadmap', 'faq', 'certificacoes'].map(loadJSON));
-    Object.assign(DATA, { site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes });
+    const [site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos] = await Promise.all(
+      ['site', 'mentorias', 'projetos', 'tecnologias', 'roadmap', 'faq', 'certificacoes', 'eventos'].map(loadJSON));
+    Object.assign(DATA, { site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos });
   } catch (err) {
     console.error('[DBA BRABO] falha ao carregar os dados:', err);
     const alvo = $('#mentoriasGrid') || $('main');
@@ -825,7 +915,7 @@ async function boot() {
   }
 
   renderTerminal(); renderStats(); renderSobre(); renderFundadores(); renderMetodologia();
-  renderMentorias(); renderProjetos(); renderStack(); renderCertificacoes(); renderRoadmap();
+  renderMentorias(); renderProjetos(); renderStack(); renderCertificacoes(); renderEventos(); renderRoadmap();
   renderFAQ(); renderFooter();
   await renderSocial();          // busca os SVG dos QR antes de revelar
   await setupSearch();           // indice de busca gerado no build

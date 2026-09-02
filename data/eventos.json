@@ -1,0 +1,45 @@
+{
+  "_comment": "Agenda de eventos da comunidade. A classificação entre próximos e edições anteriores é feita no navegador comparando 'data' com a data de hoje — não mexa em HTML para atualizar: acrescente ou edite itens aqui e atualize 'atualizadoEm'. Formato: AAAA-MM-DD.",
+  "titulo": "Eventos",
+  "eyebrow": "Agenda da comunidade",
+  "intro": "Os encontros onde a comunidade brasileira de banco de dados se junta. Datas, locais e inscrição conferidos nos sites oficiais.",
+  "atualizadoEm": "2026-09-02",
+  "itens": [
+    {
+      "slug": "mysql-br-conf-2026",
+      "nome": "MySQL BR Conf 2026",
+      "edicao": "A Comunidade Contra-Ataca",
+      "desc": "Conferência anual da Comunidade MySQL Brasil, com trilha técnica dedicada a MySQL, HeatWave e alta disponibilidade.",
+      "data": "2026-09-26",
+      "horario": "08:30 - 17:30",
+      "local": "Universidade Anhembi Morumbi — Mooca",
+      "cidade": "São Paulo, SP",
+      "banner": "assets/eventos/mysql-br-conf-2026.webp",
+      "accent": "#E8833A",
+      "links": {
+        "site": "https://mysqlbrconf.com.br/",
+        "inscricao": "https://www.sympla.com.br/evento/mysql-br-conf-2026/3406555",
+        "comunidade": "https://comunidademysql.com.br/"
+      },
+      "confirmado": true
+    },
+    {
+      "slug": "guob-tech-day-2026",
+      "nome": "GUOB Tech Day 2026",
+      "edicao": "LAOUC Community Tour",
+      "desc": "Encontro anual do Grupo de Usuários de Tecnologia Oracle do Brasil, integrado ao circuito LAOUC que passa por oito países da América Latina.",
+      "data": "2026-08-29",
+      "horario": "08:10 - 18:30",
+      "local": "USCS — Universidade Municipal de São Caetano do Sul",
+      "cidade": "São Caetano do Sul, SP",
+      "banner": "assets/eventos/guob-tech-day-2026.webp",
+      "accent": "#E3201C",
+      "links": {
+        "site": "https://guob.com.br/",
+        "inscricao": "https://www.sympla.com.br/evento/guob-tech-day-2026/3458569",
+        "comunidade": ""
+      },
+      "confirmado": true
+    }
+  ]
+}

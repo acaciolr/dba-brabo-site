@@ -1025,3 +1025,108 @@ section + section { border-top: 1px solid var(--line); }
   .cred { padding: var(--s-4) var(--s-3); }
   .cred img { width: 66px; height: 66px; }
 }
+
+
+/* ---------- 25 · EVENTOS ------------------------------------------------
+   Agenda da comunidade. Os cards se classificam sozinhos entre "proximos" e
+   "edicoes anteriores" no script, comparando a data do item com a de hoje —
+   por isso nao existe estado escrito no HTML.
+------------------------------------------------------------------------- */
+.eventos-nota {
+  display: flex; align-items: center; gap: var(--s-2);
+  font-size: var(--fs-xs); color: var(--fg-3); margin-bottom: var(--s-6);
+}
+.eventos-nota::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ok, var(--brand)); flex: none;
+}
+
+.eventos { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: var(--s-5); }
+
+/* Com um unico evento futuro, o card vira destaque horizontal em vez de
+   esticar um banner de 1400px pela largura toda. */
+.eventos--destaque { grid-template-columns: 1fr; }
+.eventos--destaque .evento { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+.eventos--destaque .evento__capa { aspect-ratio: auto; height: 100%; min-height: 320px; }
+.eventos--destaque .evento__capa::after { inset: 0 auto 0 0; width: 46%; height: auto;
+  background: linear-gradient(to right, transparent, color-mix(in srgb, var(--bg-1) 0%, transparent)); }
+.eventos--destaque .evento__corpo { padding: var(--s-8); }
+@media (max-width: 780px) {
+  .eventos--destaque .evento { grid-template-columns: 1fr; }
+  .eventos--destaque .evento__capa { aspect-ratio: 16 / 9; min-height: 0; }
+  .eventos--destaque .evento__corpo { padding: var(--s-6); }
+}
+
+.evento {
+  position: relative; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--r-xl);
+  transition: transform var(--t-base) var(--ease), border-color var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease);
+}
+.evento:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
+  box-shadow: 0 18px 46px -26px color-mix(in srgb, var(--accent) 62%, transparent);
+}
+
+.evento__capa { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--bg-2); }
+.evento__capa img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.evento__capa::after {
+  content: ''; position: absolute; inset: auto 0 0 0; height: 46%;
+  background: linear-gradient(to top, color-mix(in srgb, var(--bg-1) 92%, transparent), transparent);
+  pointer-events: none;
+}
+
+.evento__selo {
+  position: absolute; top: var(--s-3); right: var(--s-3); z-index: 1;
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  font-family: var(--font-display); font-size: var(--fs-xs); font-weight: 600;
+  letter-spacing: .04em; padding: var(--s-1) var(--s-3); border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--bg-0) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, var(--line));
+  color: var(--accent); backdrop-filter: blur(6px);
+}
+.evento__selo svg { width: 13px; height: 13px; }
+.evento--passado .evento__selo { color: var(--fg-2); border-color: var(--line); }
+.evento--passado .evento__capa img { filter: grayscale(.55) opacity(.62); }
+.evento--passado:hover .evento__capa img { filter: grayscale(0) opacity(1); }
+
+.evento__corpo { display: flex; flex-direction: column; gap: var(--s-3); padding: var(--s-6); flex: 1; }
+.evento__nome { font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 700; }
+.evento__edicao { color: var(--accent); font-size: var(--fs-xs); font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
+.evento__desc { color: var(--fg-1); font-size: var(--fs-sm); }
+
+.evento__meta { display: grid; gap: var(--s-2); margin-top: auto; padding-top: var(--s-4); border-top: 1px solid var(--line); }
+.evento__linha { display: grid; grid-template-columns: 18px 1fr; gap: var(--s-3); align-items: start; font-size: var(--fs-sm); color: var(--fg-1); }
+.evento__linha svg { width: 15px; height: 15px; color: var(--accent); margin-top: 3px; }
+.evento__linha b { display: block; font-weight: 600; color: var(--fg-0); }
+.evento__linha span { color: var(--fg-2); font-size: var(--fs-xs); }
+
+.evento__btns { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-4); }
+
+/* edicoes anteriores: linha compacta, sem peso visual de card */
+.eventos-passados { margin-top: var(--s-12); }
+.eventos-passados__head {
+  display: flex; align-items: center; gap: var(--s-4);
+  font-family: var(--font-display); font-size: var(--fs-xs); font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--fg-2);
+  margin-bottom: var(--s-5);
+}
+.eventos-passados__head::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+.evento-mini {
+  display: grid; grid-template-columns: 92px 1fr auto; gap: var(--s-4); align-items: center;
+  padding: var(--s-3); background: var(--bg-1); border: 1px solid var(--line);
+  border-radius: var(--r-md); transition: border-color var(--t-base) var(--ease);
+}
+.evento-mini + .evento-mini { margin-top: var(--s-3); }
+.evento-mini:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+.evento-mini img { width: 92px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--r-sm); filter: grayscale(.5) opacity(.7); }
+.evento-mini:hover img { filter: none; }
+.evento-mini__nome { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-sm); }
+.evento-mini__meta { color: var(--fg-2); font-size: var(--fs-xs); margin-top: 2px; }
+
+@media (max-width: 560px) {
+  .evento-mini { grid-template-columns: 66px 1fr; }
+  .evento-mini img { width: 66px; }
+  .evento-mini .btn { grid-column: 1 / -1; justify-content: center; }
+}
