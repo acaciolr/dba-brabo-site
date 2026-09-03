@@ -429,9 +429,12 @@ function renderCertificacoes() {
 }
 
 /* ---------- eventos da comunidade ---------------------------------------
-   Um evento nunca guarda "proximo" ou "passado" no JSON: a comparacao e
-   feita aqui, contra a data de hoje. Assim a agenda se reorganiza sozinha
-   no dia seguinte a cada evento, sem ninguem editar arquivo.
+   Um evento nunca guarda "proximo" ou "passado" no JSON: a comparacao e feita
+   aqui, contra a data de hoje. Assim a agenda se reorganiza sozinha.
+
+   'dataFim' e opcional. Sem ela o evento e de um dia so; com ela, o evento
+   so vira passado depois do ULTIMO dia — e enquanto estiver rolando, ganha
+   o selo "Acontecendo agora".
 ------------------------------------------------------------------------- */
 function renderEventos() {
   const box = $('#eventos'); if (!box) return;
@@ -442,33 +445,53 @@ function renderEventos() {
   if (!itens.length) { if (secao) secao.hidden = true; return; }
 
   const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
-  const asData = iso => { const [a, m, d] = String(iso).split('-').map(Number); return new Date(a, m - 1, d); };
+  const asData  = iso => { const [a, m, d] = String(iso).split('-').map(Number); return new Date(a, m - 1, d); };
   const diasAte = iso => Math.round((asData(iso) - hoje) / 86400000);
+  const fimDe   = e => e.dataFim || e.data;
 
   const fmtLongo = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
   const fmtCurto = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+  const soMes    = new Intl.DateTimeFormat('pt-BR', { month: 'long' });
 
-  const proximos = itens.filter(e => diasAte(e.data) >= 0).sort((a, b) => asData(a.data) - asData(b.data));
-  const passados = itens.filter(e => diasAte(e.data) <  0).sort((a, b) => asData(b.data) - asData(a.data));
+  /* "2 a 4 de setembro de 2026" — e nao duas datas soltas. */
+  const periodo = e => {
+    const a = asData(e.data), b = asData(fimDe(e));
+    if (+a === +b) return fmtLongo.format(a);
+    const dia = n => String(n.getDate()).padStart(2, '0');
+    if (a.getFullYear() !== b.getFullYear()) return `${fmtCurto.format(a)} a ${fmtCurto.format(b)}`;
+    if (a.getMonth() === b.getMonth())
+      return `${dia(a)} a ${dia(b)} de ${soMes.format(b)} de ${b.getFullYear()}`;
+    return `${dia(a)} de ${soMes.format(a)} a ${dia(b)} de ${soMes.format(b)} de ${b.getFullYear()}`;
+  };
+  const periodoCurto = e => {
+    const a = asData(e.data), b = asData(fimDe(e));
+    return +a === +b ? fmtCurto.format(a) : `${fmtCurto.format(a)} a ${fmtCurto.format(b)}`;
+  };
+
+  const jaPassou = e => diasAte(fimDe(e)) < 0;
+  const rolando  = e => diasAte(e.data) <= 0 && diasAte(fimDe(e)) >= 0;
+
+  const proximos = itens.filter(e => !jaPassou(e)).sort((a, b) => asData(a.data) - asData(b.data));
+  const passados = itens.filter(e =>  jaPassou(e)).sort((a, b) => asData(fimDe(b)) - asData(fimDe(a)));
 
   const selo = e => {
     const d = diasAte(e.data);
-    if (d <  0) return { txt: 'Edição encerrada', ic: 'check' };
-    if (d === 0) return { txt: 'É hoje', ic: 'clock' };
-    if (d === 1) return { txt: 'Amanhã', ic: 'clock' };
-    return { txt: `Faltam ${d} dias`, ic: 'clock' };
+    if (jaPassou(e)) return { txt: 'Edição encerrada', ic: 'check', cls: '' };
+    if (rolando(e))  return { txt: 'Acontecendo agora', ic: 'clock', cls: ' evento__selo--agora' };
+    if (d === 1)     return { txt: 'Amanhã', ic: 'clock', cls: '' };
+    return { txt: `Faltam ${d} dias`, ic: 'clock', cls: '' };
   };
 
   const botao = (u, rotulo, cls) => u
     ? `<a class="btn ${cls}" href="${esc(u)}" target="_blank" rel="noopener">${icon('external')} ${esc(rotulo)}</a>` : '';
 
   const card = e => {
-    const s = selo(e), passado = diasAte(e.data) < 0;
+    const s = selo(e), passado = jaPassou(e);
     const L = e.links || {};
     return `
     <article class="evento${passado ? ' evento--passado' : ''} reveal" style="--accent:${esc(e.accent || 'var(--brand)')}">
-      <div class="evento__capa">
-        <span class="evento__selo">${icon(s.ic)} ${esc(s.txt)}</span>
+      <div class="evento__capa${e.capaClara ? ' evento__capa--clara' : ''}">
+        <span class="evento__selo${s.cls}">${icon(s.ic)} ${esc(s.txt)}</span>
         ${e.banner ? `<img src="${url(e.banner)}" alt="Arte de divulgação do ${esc(e.nome)}" loading="lazy" width="1200" height="675">` : ''}
       </div>
       <div class="evento__corpo">
@@ -477,7 +500,7 @@ function renderEventos() {
         ${e.desc ? `<p class="evento__desc">${esc(e.desc)}</p>` : ''}
         <div class="evento__meta">
           <div class="evento__linha">${icon('calendar')}
-            <div><b>${esc(fmtLongo.format(asData(e.data)))}</b>
+            <div><b>${esc(periodo(e))}</b>
             ${e.horario ? `<span>${esc(e.horario)}</span>` : ''}</div></div>
           <div class="evento__linha">${icon('pin')}
             <div><b>${esc(e.local || '')}</b>
@@ -497,7 +520,7 @@ function renderEventos() {
       ${e.banner ? `<img src="${url(e.banner)}" alt="" loading="lazy">` : '<span></span>'}
       <div>
         <p class="evento-mini__nome">${esc(e.nome)}</p>
-        <p class="evento-mini__meta">${esc(fmtCurto.format(asData(e.data)))} &middot; ${esc(e.cidade || '')}</p>
+        <p class="evento-mini__meta">${esc(periodoCurto(e))} &middot; ${esc(e.cidade || '')}</p>
       </div>
       ${(e.links || {}).site ? `<a class="btn btn--outline btn--sm" href="${esc(e.links.site)}" target="_blank" rel="noopener">${icon('external')} Site</a>` : ''}
     </div>`;

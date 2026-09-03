@@ -1,10 +1,30 @@
 {
-  "_comment": "Agenda de eventos da comunidade. A classificação entre próximos e edições anteriores é feita no navegador comparando 'data' com a data de hoje — não mexa em HTML para atualizar: acrescente ou edite itens aqui e atualize 'atualizadoEm'. Formato: AAAA-MM-DD.",
+  "_comment": "Agenda de eventos da comunidade. A classificacao entre proximos e edicoes anteriores e feita no navegador comparando 'data' (e 'dataFim', quando o evento dura mais de um dia) com a data de hoje — nao mexa em HTML para atualizar: acrescente ou edite itens aqui e atualize 'atualizadoEm'. Formato: AAAA-MM-DD. 'dataFim' e opcional: sem ele, o evento e de um dia so.",
   "titulo": "Eventos",
   "eyebrow": "Agenda da comunidade",
   "intro": "Os encontros onde a comunidade brasileira de banco de dados se junta. Datas, locais e inscrição conferidos nos sites oficiais.",
-  "atualizadoEm": "2026-09-02",
+  "atualizadoEm": "2026-09-03",
   "itens": [
+    {
+      "slug": "pgconf-brasil-2026",
+      "nome": "PGConf Brasil 2026",
+      "edicao": "Blumenau, SC",
+      "desc": "Maior conferência PostgreSQL do Brasil, com três dias de trilhas técnicas, tutoriais e comunidade.",
+      "data": "2026-09-02",
+      "dataFim": "2026-09-04",
+      "horario": "02/09 08:00 — 04/09 18:00",
+      "local": "Quality Hotel Blumenau",
+      "cidade": "Blumenau, SC",
+      "banner": "assets/eventos/pgconf-brasil-2026.webp",
+      "accent": "#5A9BD8",
+      "links": {
+        "site": "https://2026.pgconf.com.br/",
+        "inscricao": "https://www.sympla.com.br/evento/pgconf-brasil-2026-https-2026-pgconf-com-br/3422638",
+        "comunidade": ""
+      },
+      "confirmado": true,
+      "capaClara": true
+    },
     {
       "slug": "mysql-br-conf-2026",
       "nome": "MySQL BR Conf 2026",

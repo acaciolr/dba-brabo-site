@@ -1076,6 +1076,10 @@ section + section { border-top: 1px solid var(--line); }
   pointer-events: none;
 }
 
+/* Arte clara (logo sobre placa branca) nao leva o degrade: ele foi feito
+   para fundir banner ESCURO no card, e sobre branco vira mancha cinza. */
+.evento__capa--clara::after { display: none; }
+
 .evento__selo {
   position: absolute; top: var(--s-3); right: var(--s-3); z-index: 1;
   display: inline-flex; align-items: center; gap: var(--s-2);
@@ -1087,6 +1091,25 @@ section + section { border-top: 1px solid var(--line); }
 }
 .evento__selo svg { width: 13px; height: 13px; }
 .evento--passado .evento__selo { color: var(--fg-2); border-color: var(--line); }
+
+/* evento em andamento: ponto pulsante, sem virar enfeite */
+.evento__selo--agora {
+  color: var(--ok, #34D3C4);
+  border-color: color-mix(in srgb, var(--ok, #34D3C4) 55%, var(--line));
+  background: color-mix(in srgb, var(--ok, #34D3C4) 14%, var(--bg-0));
+}
+.evento__selo--agora::before {
+  content: ''; width: 7px; height: 7px; border-radius: 50%; flex: none;
+  background: var(--ok, #34D3C4);
+  animation: pulsoAgora 1.8s var(--ease, ease-in-out) infinite;
+}
+@keyframes pulsoAgora {
+  0%, 100% { opacity: 1;  box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok, #34D3C4) 60%, transparent); }
+  50%      { opacity: .55; box-shadow: 0 0 0 5px color-mix(in srgb, var(--ok, #34D3C4) 0%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .evento__selo--agora::before { animation: none; }
+}
 .evento--passado .evento__capa img { filter: grayscale(.55) opacity(.62); }
 .evento--passado:hover .evento__capa img { filter: grayscale(0) opacity(1); }
 

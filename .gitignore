@@ -19,3 +19,10 @@ index.html.bak-original
 # cache do Python gerado ao importar os scripts de tools/
 __pycache__/
 *.pyc
+
+# Documentacao de trabalho: fica SO na pasta local, nao vai para o repositorio.
+# Sao caminhos exatos de proposito — nada de "docs/*.md", porque
+# docs/dominio-proprio.md e versionado e precisa continuar sendo.
+docs/estado-atual.md
+docs/terminal-web-spec.html
+docs/plano-execucao.html
