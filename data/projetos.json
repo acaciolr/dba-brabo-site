@@ -134,6 +134,37 @@
       },
       "confirmado": false,
       "_pendente": "Descricao, stack e destaques ainda nao informados pelo mentor. Enquanto desc estiver vazio o card mostra apenas nome, tagline e status."
+    },
+    {
+      "slug": "bsar",
+      "nome": "BSAR",
+      "tagline": "Slow query log em relatório estilo AWR",
+      "desc": "Analisador de slow query log para MySQL, MariaDB e Percona. Normaliza as queries, agrupa por fingerprint e entrega relatório no terminal e em HTML interativo, no estilo do AWR do Oracle.",
+      "stack": [
+        "Python",
+        "MySQL",
+        "MariaDB",
+        "Percona",
+        "SQLite",
+        "HTML"
+      ],
+      "destaques": [
+        "Zero dependência externa — só a biblioteca padrão do Python 3.6+",
+        "Lê .log, .gz, .zip ou direto da tabela mysql.slow_log",
+        "Percentis p50 a p99, apontamentos automáticos e sugestão de índice",
+        "Snapshot em SQLite para comparar períodos e identificar regressão",
+        "Saída em HTML, JSON, CSV e texto, com modo --watch e alertas"
+      ],
+      "status": "Em homologação",
+      "accent": "#5AA9E6",
+      "links": {
+        "github": "https://github.com/acaciolr/bsar",
+        "site": "",
+        "docs": ""
+      },
+      "confirmado": true,
+      "monitoramento": true,
+      "repoPublico": true
     }
   ],
   "_quadro": "O grid foi pensado para 6 projetos. Hoje sao 5 — o sexto entra quando o mentor definir.",
