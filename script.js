@@ -509,6 +509,7 @@ function renderEventos() {
         <div class="evento__btns">
           ${botao(L.site, 'Site oficial', passado ? 'btn--outline btn--sm' : 'btn--primary')}
           ${passado ? '' : botao(L.inscricao, 'Inscrição', 'btn--outline btn--sm')}
+          ${passado ? '' : botao(L.transmissao, 'Assistir ao vivo', 'btn--outline btn--sm')}
           ${botao(L.comunidade, 'Comunidade', 'btn--ghost btn--sm')}
         </div>
       </div>

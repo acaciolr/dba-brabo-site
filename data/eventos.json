@@ -1,10 +1,30 @@
 {
-  "_comment": "Agenda de eventos da comunidade. A classificacao entre proximos e edicoes anteriores e feita no navegador comparando 'data' (e 'dataFim', quando o evento dura mais de um dia) com a data de hoje — nao mexa em HTML para atualizar: acrescente ou edite itens aqui e atualize 'atualizadoEm'. Formato: AAAA-MM-DD. 'dataFim' e opcional: sem ele, o evento e de um dia so.",
+  "_comment": "Agenda de eventos da comunidade. A classificacao entre proximos e edicoes anteriores e feita no navegador comparando 'data' (e 'dataFim', quando o evento dura mais de um dia) com a data de hoje — nao mexa em HTML para atualizar: acrescente ou edite itens aqui e atualize 'atualizadoEm'. Formato: AAAA-MM-DD. 'links.transmissao' vira o botao 'Assistir ao vivo'. 'dataFim' e opcional: sem ele, o evento e de um dia so.",
   "titulo": "Eventos",
   "eyebrow": "Agenda da comunidade",
   "intro": "Os encontros onde a comunidade brasileira de banco de dados se junta. Datas, locais e inscrição conferidos nos sites oficiais.",
-  "atualizadoEm": "2026-09-03",
+  "atualizadoEm": "2026-09-04",
   "itens": [
+    {
+      "slug": "aula-mais-longa-2026",
+      "nome": "Aula Mais Longa da História",
+      "edicao": "80 horas ininterruptas",
+      "desc": "Tentativa de recorde para a aula de programação mais longa, com 80 horas contínuas de Introdução a SQL e Administração de Banco de Dados. Conduzida pelo professor Matheus Boesing, em formato híbrido e com transmissão ao vivo.",
+      "data": "2026-09-04",
+      "dataFim": "2026-09-07",
+      "horario": "Transmissão contínua, 24h por dia",
+      "local": "Auditório Dr. Roque Edison Redel",
+      "cidade": "Três de Maio, RS",
+      "banner": "assets/eventos/aula-mais-longa-2026.webp",
+      "accent": "#FAB43C",
+      "links": {
+        "site": "https://aulamaislonga.com.br/",
+        "transmissao": "https://www.youtube.com/watch?v=-D4DPYQI-Jo",
+        "inscricao": "",
+        "comunidade": ""
+      },
+      "confirmado": true
+    },
     {
       "slug": "pgconf-brasil-2026",
       "nome": "PGConf Brasil 2026",
