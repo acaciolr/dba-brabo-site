@@ -1,0 +1,2790 @@
+{
+ "_comment": "Arvore do material de apoio ao mentor. Este arquivo e PUBLICO e contem apenas a ESTRUTURA — nome de trilha, modulo e topico. O conteudo de cada topico vive cifrado em data/mentor/<slug>.enc, gerado por tools/build-mentor.py a partir de conteudo-mentor/ (que NAO vai para o repositorio). 'estado' e pendente | rascunho | revisado.",
+ "gerado": "estrutura",
+ "trilhas": [
+  {
+   "slug": "oracle",
+   "nome": "Oracle Database Super DBA",
+   "accent": "#F0805A",
+   "desc": "Formação completa em Oracle Database do nível iniciante ao especialista Enterprise.",
+   "modulos": [
+    {
+     "id": "01-fundamentos",
+     "n": "01",
+     "nome": "Fundamentos",
+     "topicos": [
+      {
+       "id": "arquitetura-oracle",
+       "nome": "Arquitetura Oracle",
+       "estado": "rascunho"
+      },
+      {
+       "id": "sga-e-pga",
+       "nome": "SGA e PGA",
+       "estado": "rascunho"
+      },
+      {
+       "id": "processos-background",
+       "nome": "Processos Background",
+       "estado": "rascunho"
+      },
+      {
+       "id": "cdb-e-pdb",
+       "nome": "CDB e PDB",
+       "estado": "rascunho"
+      },
+      {
+       "id": "ofa-optimal-flexible-architecture",
+       "nome": "OFA (Optimal Flexible Architecture)",
+       "estado": "rascunho"
+      },
+      {
+       "id": "instalacao-linux-e-windows",
+       "nome": "Instalação Linux e Windows",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "02-administracao",
+     "n": "02",
+     "nome": "Administração",
+     "topicos": [
+      {
+       "id": "usuarios-e-roles",
+       "nome": "Usuários e Roles",
+       "estado": "pendente"
+      },
+      {
+       "id": "profiles",
+       "nome": "Profiles",
+       "estado": "pendente"
+      },
+      {
+       "id": "tablespaces",
+       "nome": "Tablespaces",
+       "estado": "pendente"
+      },
+      {
+       "id": "datafiles",
+       "nome": "Datafiles",
+       "estado": "pendente"
+      },
+      {
+       "id": "redo-e-undo",
+       "nome": "Redo e Undo",
+       "estado": "pendente"
+      },
+      {
+       "id": "scheduler",
+       "nome": "Scheduler",
+       "estado": "pendente"
+      },
+      {
+       "id": "data-pump",
+       "nome": "Data Pump",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-backup-recovery",
+     "n": "03",
+     "nome": "Backup & Recovery",
+     "topicos": [
+      {
+       "id": "rman-completo",
+       "nome": "RMAN completo",
+       "estado": "pendente"
+      },
+      {
+       "id": "backup-full-e-incremental",
+       "nome": "Backup Full e Incremental",
+       "estado": "pendente"
+      },
+      {
+       "id": "archivelog",
+       "nome": "ArchiveLog",
+       "estado": "pendente"
+      },
+      {
+       "id": "pitr",
+       "nome": "PITR",
+       "estado": "pendente"
+      },
+      {
+       "id": "block-recovery",
+       "nome": "Block Recovery",
+       "estado": "pendente"
+      },
+      {
+       "id": "flashback-database",
+       "nome": "Flashback Database",
+       "estado": "pendente"
+      },
+      {
+       "id": "recovery-catalog",
+       "nome": "Recovery Catalog",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "04-performance",
+     "n": "04",
+     "nome": "Performance",
+     "topicos": [
+      {
+       "id": "awr",
+       "nome": "AWR",
+       "estado": "pendente"
+      },
+      {
+       "id": "ash",
+       "nome": "ASH",
+       "estado": "pendente"
+      },
+      {
+       "id": "addm",
+       "nome": "ADDM",
+       "estado": "pendente"
+      },
+      {
+       "id": "sql-monitor",
+       "nome": "SQL Monitor",
+       "estado": "pendente"
+      },
+      {
+       "id": "explain-plan",
+       "nome": "Explain Plan",
+       "estado": "pendente"
+      },
+      {
+       "id": "sql-profiles",
+       "nome": "SQL Profiles",
+       "estado": "pendente"
+      },
+      {
+       "id": "estatisticas",
+       "nome": "Estatísticas",
+       "estado": "pendente"
+      },
+      {
+       "id": "indices",
+       "nome": "Índices",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "05-alta-disponibilidade",
+     "n": "05",
+     "nome": "Alta Disponibilidade",
+     "topicos": [
+      {
+       "id": "asm",
+       "nome": "ASM",
+       "estado": "rascunho"
+      },
+      {
+       "id": "rac",
+       "nome": "RAC",
+       "estado": "rascunho"
+      },
+      {
+       "id": "data-guard",
+       "nome": "Data Guard",
+       "estado": "rascunho"
+      },
+      {
+       "id": "broker",
+       "nome": "Broker",
+       "estado": "rascunho"
+      },
+      {
+       "id": "taf",
+       "nome": "TAF",
+       "estado": "rascunho"
+      },
+      {
+       "id": "services",
+       "nome": "Services",
+       "estado": "rascunho"
+      },
+      {
+       "id": "rolling-patch",
+       "nome": "Rolling Patch",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "06-enterprise",
+     "n": "06",
+     "nome": "Enterprise",
+     "topicos": [
+      {
+       "id": "exadata",
+       "nome": "Exadata",
+       "estado": "pendente"
+      },
+      {
+       "id": "goldengate",
+       "nome": "GoldenGate",
+       "estado": "pendente"
+      },
+      {
+       "id": "oda",
+       "nome": "ODA",
+       "estado": "pendente"
+      },
+      {
+       "id": "zdlra",
+       "nome": "ZDLRA",
+       "estado": "pendente"
+      },
+      {
+       "id": "troubleshooting-avancado",
+       "nome": "Troubleshooting avançado",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mysql",
+   "nome": "MySQL Super DBA",
+   "accent": "#34D3C4",
+   "desc": "Formação prática e completa para administração, performance, alta disponibilidade, cloud e troubleshooting de ambientes MySQL.",
+   "modulos": [
+    {
+     "id": "01-mysql-single",
+     "n": "01",
+     "nome": "MySQL Single",
+     "topicos": [
+      {
+       "id": "operacoes-diarias-de-dba",
+       "nome": "Operações diárias de DBA",
+       "estado": "pendente"
+      },
+      {
+       "id": "administracao-de-instancia",
+       "nome": "Administração de instância",
+       "estado": "pendente"
+      },
+      {
+       "id": "databases-e-schemas",
+       "nome": "Databases e schemas",
+       "estado": "pendente"
+      },
+      {
+       "id": "usuarios-e-privilegios",
+       "nome": "Usuários e privilégios",
+       "estado": "pendente"
+      },
+      {
+       "id": "tablespaces",
+       "nome": "Tablespaces",
+       "estado": "pendente"
+      },
+      {
+       "id": "innodb",
+       "nome": "InnoDB",
+       "estado": "pendente"
+      },
+      {
+       "id": "variaveis",
+       "nome": "Variáveis",
+       "estado": "pendente"
+      },
+      {
+       "id": "processos-e-sessoes",
+       "nome": "Processos e sessões",
+       "estado": "pendente"
+      },
+      {
+       "id": "rotinas-administrativas",
+       "nome": "Rotinas administrativas",
+       "estado": "pendente"
+      },
+      {
+       "id": "troubleshooting-basico",
+       "nome": "Troubleshooting básico",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-replication",
+     "n": "02",
+     "nome": "Replication",
+     "topicos": [
+      {
+       "id": "binary-log",
+       "nome": "Binary Log",
+       "estado": "pendente"
+      },
+      {
+       "id": "gtid",
+       "nome": "GTID",
+       "estado": "pendente"
+      },
+      {
+       "id": "replication",
+       "nome": "Replication",
+       "estado": "pendente"
+      },
+      {
+       "id": "replica-set",
+       "nome": "Replica Set",
+       "estado": "pendente"
+      },
+      {
+       "id": "configuracao-de-replicas",
+       "nome": "Configuração de réplicas",
+       "estado": "pendente"
+      },
+      {
+       "id": "failover",
+       "nome": "Failover",
+       "estado": "pendente"
+      },
+      {
+       "id": "recovery-de-replica",
+       "nome": "Recovery de replica",
+       "estado": "pendente"
+      },
+      {
+       "id": "replication-troubleshooting",
+       "nome": "Replication troubleshooting",
+       "estado": "pendente"
+      },
+      {
+       "id": "oracle-goldengate-para-mysql",
+       "nome": "Oracle GoldenGate para MySQL",
+       "estado": "pendente"
+      },
+      {
+       "id": "cenarios-de-replicacao",
+       "nome": "Cenários de replicação",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-clusters",
+     "n": "03",
+     "nome": "Clusters",
+     "topicos": [
+      {
+       "id": "innodb-cluster",
+       "nome": "InnoDB Cluster",
+       "estado": "pendente"
+      },
+      {
+       "id": "group-replication",
+       "nome": "Group Replication",
+       "estado": "pendente"
+      },
+      {
+       "id": "mysql-shell",
+       "nome": "MySQL Shell",
+       "estado": "pendente"
+      },
+      {
+       "id": "mysql-router",
+       "nome": "MySQL Router",
+       "estado": "pendente"
+      },
+      {
+       "id": "ndb-cluster",
+       "nome": "NDB Cluster",
+       "estado": "pendente"
+      },
+      {
+       "id": "percona-xtradb-cluster-pxc",
+       "nome": "Percona XtraDB Cluster (PXC)",
+       "estado": "pendente"
+      },
+      {
+       "id": "clusterset",
+       "nome": "ClusterSet",
+       "estado": "pendente"
+      },
+      {
+       "id": "alta-disponibilidade",
+       "nome": "Alta disponibilidade",
+       "estado": "pendente"
+      },
+      {
+       "id": "failover",
+       "nome": "Failover",
+       "estado": "pendente"
+      },
+      {
+       "id": "recuperacao-de-cluster",
+       "nome": "Recuperação de cluster",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "04-heatwave",
+     "n": "04",
+     "nome": "HeatWave",
+     "topicos": [
+      {
+       "id": "oci-mysql-heatwave",
+       "nome": "OCI MySQL HeatWave",
+       "estado": "pendente"
+      },
+      {
+       "id": "arquitetura",
+       "nome": "Arquitetura",
+       "estado": "pendente"
+      },
+      {
+       "id": "provisionamento",
+       "nome": "Provisionamento",
+       "estado": "pendente"
+      },
+      {
+       "id": "configuracao",
+       "nome": "Configuração",
+       "estado": "pendente"
+      },
+      {
+       "id": "administracao",
+       "nome": "Administração",
+       "estado": "pendente"
+      },
+      {
+       "id": "performance",
+       "nome": "Performance",
+       "estado": "pendente"
+      },
+      {
+       "id": "monitoramento",
+       "nome": "Monitoramento",
+       "estado": "pendente"
+      },
+      {
+       "id": "backup",
+       "nome": "Backup",
+       "estado": "pendente"
+      },
+      {
+       "id": "operacoes-em-cloud",
+       "nome": "Operações em cloud",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "05-upgrade",
+     "n": "05",
+     "nome": "Upgrade",
+     "topicos": [
+      {
+       "id": "estrategia-de-upgrade",
+       "nome": "Estratégia de upgrade",
+       "estado": "pendente"
+      },
+      {
+       "id": "pre-check",
+       "nome": "Pré-check",
+       "estado": "pendente"
+      },
+      {
+       "id": "backup-antes-do-upgrade",
+       "nome": "Backup antes do upgrade",
+       "estado": "pendente"
+      },
+      {
+       "id": "upgrade-para-mysql-8-4",
+       "nome": "Upgrade para MySQL 8.4",
+       "estado": "pendente"
+      },
+      {
+       "id": "upgrade-de-ambientes-criticos",
+       "nome": "Upgrade de ambientes críticos",
+       "estado": "pendente"
+      },
+      {
+       "id": "validacao-pos-upgrade",
+       "nome": "Validação pós-upgrade",
+       "estado": "pendente"
+      },
+      {
+       "id": "troubleshooting",
+       "nome": "Troubleshooting",
+       "estado": "pendente"
+      },
+      {
+       "id": "rollback",
+       "nome": "Rollback",
+       "estado": "pendente"
+      },
+      {
+       "id": "compatibilidade",
+       "nome": "Compatibilidade",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "06-backup",
+     "n": "06",
+     "nome": "Backup",
+     "topicos": [
+      {
+       "id": "mysql-shell",
+       "nome": "MySQL Shell",
+       "estado": "pendente"
+      },
+      {
+       "id": "xtrabackup",
+       "nome": "XtraBackup",
+       "estado": "pendente"
+      },
+      {
+       "id": "mysqldump",
+       "nome": "mysqldump",
+       "estado": "pendente"
+      },
+      {
+       "id": "mydumper",
+       "nome": "mydumper",
+       "estado": "pendente"
+      },
+      {
+       "id": "backup-logico",
+       "nome": "Backup lógico",
+       "estado": "pendente"
+      },
+      {
+       "id": "backup-fisico",
+       "nome": "Backup físico",
+       "estado": "pendente"
+      },
+      {
+       "id": "backup-incremental",
+       "nome": "Backup incremental",
+       "estado": "pendente"
+      },
+      {
+       "id": "backup-automatizado",
+       "nome": "Backup automatizado",
+       "estado": "pendente"
+      },
+      {
+       "id": "estrategias-de-backup",
+       "nome": "Estratégias de backup",
+       "estado": "pendente"
+      },
+      {
+       "id": "validacao",
+       "nome": "Validação",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "07-restore",
+     "n": "07",
+     "nome": "Restore",
+     "topicos": [
+      {
+       "id": "recovery",
+       "nome": "Recovery",
+       "estado": "pendente"
+      },
+      {
+       "id": "restore-logico",
+       "nome": "Restore lógico",
+       "estado": "pendente"
+      },
+      {
+       "id": "restore-fisico",
+       "nome": "Restore físico",
+       "estado": "pendente"
+      },
+      {
+       "id": "restore-com-xtrabackup",
+       "nome": "Restore com XtraBackup",
+       "estado": "pendente"
+      },
+      {
+       "id": "restore-com-mysql-shell",
+       "nome": "Restore com MySQL Shell",
+       "estado": "pendente"
+      },
+      {
+       "id": "point-in-time-recovery",
+       "nome": "Point-in-Time Recovery",
+       "estado": "pendente"
+      },
+      {
+       "id": "binary-logs",
+       "nome": "Binary Logs",
+       "estado": "pendente"
+      },
+      {
+       "id": "recuperacao-de-instancia",
+       "nome": "Recuperação de instância",
+       "estado": "pendente"
+      },
+      {
+       "id": "recuperacao-de-dados",
+       "nome": "Recuperação de dados",
+       "estado": "pendente"
+      },
+      {
+       "id": "disaster-recovery",
+       "nome": "Disaster Recovery",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "08-migration",
+     "n": "08",
+     "nome": "Migration",
+     "topicos": [
+      {
+       "id": "mysql-shell",
+       "nome": "MySQL Shell",
+       "estado": "pendente"
+      },
+      {
+       "id": "util-copyinstance",
+       "nome": "util.copyInstance()",
+       "estado": "pendente"
+      },
+      {
+       "id": "migracao-node-node",
+       "nome": "Migração Node → Node",
+       "estado": "pendente"
+      },
+      {
+       "id": "migracao-entre-servidores",
+       "nome": "Migração entre servidores",
+       "estado": "pendente"
+      },
+      {
+       "id": "migracao-de-ambientes",
+       "nome": "Migração de ambientes",
+       "estado": "pendente"
+      },
+      {
+       "id": "pre-requisitos",
+       "nome": "Pré-requisitos",
+       "estado": "pendente"
+      },
+      {
+       "id": "validacao",
+       "nome": "Validação",
+       "estado": "pendente"
+      },
+      {
+       "id": "troubleshooting",
+       "nome": "Troubleshooting",
+       "estado": "pendente"
+      },
+      {
+       "id": "estrategias-de-migracao",
+       "nome": "Estratégias de migração",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "09-security",
+     "n": "09",
+     "nome": "Security",
+     "topicos": [
+      {
+       "id": "hardening",
+       "nome": "Hardening",
+       "estado": "pendente"
+      },
+      {
+       "id": "autenticacao",
+       "nome": "Autenticação",
+       "estado": "pendente"
+      },
+      {
+       "id": "privilegios",
+       "nome": "Privilégios",
+       "estado": "pendente"
+      },
+      {
+       "id": "tls",
+       "nome": "TLS",
+       "estado": "pendente"
+      },
+      {
+       "id": "certificados",
+       "nome": "Certificados",
+       "estado": "pendente"
+      },
+      {
+       "id": "auditoria",
+       "nome": "Auditoria",
+       "estado": "pendente"
+      },
+      {
+       "id": "masking",
+       "nome": "Masking",
+       "estado": "pendente"
+      },
+      {
+       "id": "seguranca-de-usuarios",
+       "nome": "Segurança de usuários",
+       "estado": "pendente"
+      },
+      {
+       "id": "seguranca-de-instancia",
+       "nome": "Segurança de instância",
+       "estado": "pendente"
+      },
+      {
+       "id": "boas-praticas-enterprise",
+       "nome": "Boas práticas Enterprise",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "10-benchmark",
+     "n": "10",
+     "nome": "Benchmark",
+     "topicos": [
+      {
+       "id": "sysbench",
+       "nome": "Sysbench",
+       "estado": "pendente"
+      },
+      {
+       "id": "mysqlslap",
+       "nome": "mysqlslap",
+       "estado": "pendente"
+      },
+      {
+       "id": "dbsafe",
+       "nome": "dbsafe",
+       "estado": "pendente"
+      },
+      {
+       "id": "testes-de-carga",
+       "nome": "Testes de carga",
+       "estado": "pendente"
+      },
+      {
+       "id": "benchmark-de-cpu",
+       "nome": "Benchmark de CPU",
+       "estado": "pendente"
+      },
+      {
+       "id": "benchmark-de-i-o",
+       "nome": "Benchmark de I/O",
+       "estado": "pendente"
+      },
+      {
+       "id": "benchmark-de-memoria",
+       "nome": "Benchmark de memória",
+       "estado": "pendente"
+      },
+      {
+       "id": "benchmark-de-banco",
+       "nome": "Benchmark de banco",
+       "estado": "pendente"
+      },
+      {
+       "id": "comparacao-de-configuracoes",
+       "nome": "Comparação de configurações",
+       "estado": "pendente"
+      },
+      {
+       "id": "analise-de-resultados",
+       "nome": "Análise de resultados",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "11-health-check",
+     "n": "11",
+     "nome": "Health Check",
+     "topicos": [
+      {
+       "id": "mysqltuner",
+       "nome": "MySQLTuner",
+       "estado": "pendente"
+      },
+      {
+       "id": "instalacao",
+       "nome": "Instalação",
+       "estado": "pendente"
+      },
+      {
+       "id": "execucao",
+       "nome": "Execução",
+       "estado": "pendente"
+      },
+      {
+       "id": "analise-dos-resultados",
+       "nome": "Análise dos resultados",
+       "estado": "pendente"
+      },
+      {
+       "id": "health-check-de-instancia",
+       "nome": "Health Check de instância",
+       "estado": "pendente"
+      },
+      {
+       "id": "configuracao",
+       "nome": "Configuração",
+       "estado": "pendente"
+      },
+      {
+       "id": "memoria",
+       "nome": "Memória",
+       "estado": "pendente"
+      },
+      {
+       "id": "cpu",
+       "nome": "CPU",
+       "estado": "pendente"
+      },
+      {
+       "id": "i-o",
+       "nome": "I/O",
+       "estado": "pendente"
+      },
+      {
+       "id": "conexoes",
+       "nome": "Conexões",
+       "estado": "pendente"
+      },
+      {
+       "id": "innodb",
+       "nome": "InnoDB",
+       "estado": "pendente"
+      },
+      {
+       "id": "replicacao",
+       "nome": "Replicação",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "12-performance-simulator",
+     "n": "12",
+     "nome": "Performance Simulator",
+     "topicos": [
+      {
+       "id": "simulacao-de-problemas-reais",
+       "nome": "Simulação de problemas reais",
+       "estado": "pendente"
+      },
+      {
+       "id": "cpu",
+       "nome": "CPU",
+       "estado": "pendente"
+      },
+      {
+       "id": "memoria",
+       "nome": "Memória",
+       "estado": "pendente"
+      },
+      {
+       "id": "i-o",
+       "nome": "I/O",
+       "estado": "pendente"
+      },
+      {
+       "id": "queries-lentas",
+       "nome": "Queries lentas",
+       "estado": "pendente"
+      },
+      {
+       "id": "locks",
+       "nome": "Locks",
+       "estado": "pendente"
+      },
+      {
+       "id": "deadlocks",
+       "nome": "Deadlocks",
+       "estado": "pendente"
+      },
+      {
+       "id": "contencao",
+       "nome": "Contenção",
+       "estado": "pendente"
+      },
+      {
+       "id": "connections",
+       "nome": "Connections",
+       "estado": "pendente"
+      },
+      {
+       "id": "innodb",
+       "nome": "InnoDB",
+       "estado": "pendente"
+      },
+      {
+       "id": "diagnostico",
+       "nome": "Diagnóstico",
+       "estado": "pendente"
+      },
+      {
+       "id": "troubleshooting",
+       "nome": "Troubleshooting",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "13-innotop",
+     "n": "13",
+     "nome": "Innotop",
+     "topicos": [
+      {
+       "id": "monitoramento-em-tempo-real",
+       "nome": "Monitoramento em tempo real",
+       "estado": "pendente"
+      },
+      {
+       "id": "threads",
+       "nome": "Threads",
+       "estado": "pendente"
+      },
+      {
+       "id": "queries",
+       "nome": "Queries",
+       "estado": "pendente"
+      },
+      {
+       "id": "locks",
+       "nome": "Locks",
+       "estado": "pendente"
+      },
+      {
+       "id": "transactions",
+       "nome": "Transactions",
+       "estado": "pendente"
+      },
+      {
+       "id": "innodb",
+       "nome": "InnoDB",
+       "estado": "pendente"
+      },
+      {
+       "id": "replication",
+       "nome": "Replication",
+       "estado": "pendente"
+      },
+      {
+       "id": "i-o",
+       "nome": "I/O",
+       "estado": "pendente"
+      },
+      {
+       "id": "performance",
+       "nome": "Performance",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "14-btop",
+     "n": "14",
+     "nome": "BTOP",
+     "topicos": [
+      {
+       "id": "monitoramento-do-sistema-operacional",
+       "nome": "Monitoramento do sistema operacional",
+       "estado": "pendente"
+      },
+      {
+       "id": "cpu",
+       "nome": "CPU",
+       "estado": "pendente"
+      },
+      {
+       "id": "memoria",
+       "nome": "Memória",
+       "estado": "pendente"
+      },
+      {
+       "id": "load-average",
+       "nome": "Load Average",
+       "estado": "pendente"
+      },
+      {
+       "id": "processos",
+       "nome": "Processos",
+       "estado": "pendente"
+      },
+      {
+       "id": "disk-i-o",
+       "nome": "Disk I/O",
+       "estado": "pendente"
+      },
+      {
+       "id": "network",
+       "nome": "Network",
+       "estado": "pendente"
+      },
+      {
+       "id": "identificacao-de-gargalos",
+       "nome": "Identificação de gargalos",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "15-dolphie",
+     "n": "15",
+     "nome": "Dolphie",
+     "topicos": [
+      {
+       "id": "monitoramento-mysql",
+       "nome": "Monitoramento MySQL",
+       "estado": "pendente"
+      },
+      {
+       "id": "queries",
+       "nome": "Queries",
+       "estado": "pendente"
+      },
+      {
+       "id": "threads",
+       "nome": "Threads",
+       "estado": "pendente"
+      },
+      {
+       "id": "locks",
+       "nome": "Locks",
+       "estado": "pendente"
+      },
+      {
+       "id": "transactions",
+       "nome": "Transactions",
+       "estado": "pendente"
+      },
+      {
+       "id": "replication",
+       "nome": "Replication",
+       "estado": "pendente"
+      },
+      {
+       "id": "performance",
+       "nome": "Performance",
+       "estado": "pendente"
+      },
+      {
+       "id": "diagnostico-em-tempo-real",
+       "nome": "Diagnóstico em tempo real",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "16-app-cadastro",
+     "n": "16",
+     "nome": "App Cadastro",
+     "topicos": [
+      {
+       "id": "aplicacao-de-acesso-ao-ambiente",
+       "nome": "Aplicação de acesso ao ambiente",
+       "estado": "pendente"
+      },
+      {
+       "id": "conectividade",
+       "nome": "Conectividade",
+       "estado": "pendente"
+      },
+      {
+       "id": "acesso-aos-clusters",
+       "nome": "Acesso aos clusters",
+       "estado": "pendente"
+      },
+      {
+       "id": "testes-de-conexao",
+       "nome": "Testes de conexão",
+       "estado": "pendente"
+      },
+      {
+       "id": "validacao-de-disponibilidade",
+       "nome": "Validação de disponibilidade",
+       "estado": "pendente"
+      },
+      {
+       "id": "operacao-em-ambientes-distribuidos",
+       "nome": "Operação em ambientes distribuídos",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "17-load-balancer",
+     "n": "17",
+     "nome": "Load Balancer",
+     "topicos": [
+      {
+       "id": "mysql-router",
+       "nome": "MySQL Router",
+       "estado": "pendente"
+      },
+      {
+       "id": "proxysql",
+       "nome": "ProxySQL",
+       "estado": "pendente"
+      },
+      {
+       "id": "haproxy",
+       "nome": "HAProxy",
+       "estado": "pendente"
+      },
+      {
+       "id": "load-balancing",
+       "nome": "Load Balancing",
+       "estado": "pendente"
+      },
+      {
+       "id": "read-write-split",
+       "nome": "Read/Write Split",
+       "estado": "pendente"
+      },
+      {
+       "id": "failover",
+       "nome": "Failover",
+       "estado": "pendente"
+      },
+      {
+       "id": "alta-disponibilidade",
+       "nome": "Alta disponibilidade",
+       "estado": "pendente"
+      },
+      {
+       "id": "connection-routing",
+       "nome": "Connection Routing",
+       "estado": "pendente"
+      },
+      {
+       "id": "topologias-de-producao",
+       "nome": "Topologias de produção",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "18-crash-chaos",
+     "n": "18",
+     "nome": "Crash & Chaos",
+     "topicos": [
+      {
+       "id": "crash-controlado",
+       "nome": "Crash controlado",
+       "estado": "pendente"
+      },
+      {
+       "id": "falhas-de-instancia",
+       "nome": "Falhas de instância",
+       "estado": "pendente"
+      },
+      {
+       "id": "falhas-de-servicos",
+       "nome": "Falhas de serviços",
+       "estado": "pendente"
+      },
+      {
+       "id": "cenarios-destrutivos-controlados",
+       "nome": "Cenários destrutivos controlados",
+       "estado": "pendente"
+      },
+      {
+       "id": "corrupcao-simulada",
+       "nome": "Corrupção simulada",
+       "estado": "pendente"
+      },
+      {
+       "id": "falhas-de-replicacao",
+       "nome": "Falhas de replicação",
+       "estado": "pendente"
+      },
+      {
+       "id": "failover",
+       "nome": "Failover",
+       "estado": "pendente"
+      },
+      {
+       "id": "recovery",
+       "nome": "Recovery",
+       "estado": "pendente"
+      },
+      {
+       "id": "diagnostico",
+       "nome": "Diagnóstico",
+       "estado": "pendente"
+      },
+      {
+       "id": "disaster-recovery",
+       "nome": "Disaster Recovery",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "19-auto-discovery",
+     "n": "19",
+     "nome": "Auto-discovery",
+     "topicos": [
+      {
+       "id": "descoberta-automatica-de-ambiente",
+       "nome": "Descoberta automática de ambiente",
+       "estado": "pendente"
+      },
+      {
+       "id": "deteccao-de-instancias",
+       "nome": "Detecção de instâncias",
+       "estado": "pendente"
+      },
+      {
+       "id": "deteccao-de-topologia",
+       "nome": "Detecção de topologia",
+       "estado": "pendente"
+      },
+      {
+       "id": "identificacao-de-clusters",
+       "nome": "Identificação de clusters",
+       "estado": "pendente"
+      },
+      {
+       "id": "identificacao-de-replicas",
+       "nome": "Identificação de replicas",
+       "estado": "pendente"
+      },
+      {
+       "id": "mapeamento-do-ambiente",
+       "nome": "Mapeamento do ambiente",
+       "estado": "pendente"
+      },
+      {
+       "id": "inventario-automatico",
+       "nome": "Inventário automático",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "20-configuration",
+     "n": "20",
+     "nome": "Configuration",
+     "topicos": [
+      {
+       "id": "configuracao-do-ambiente",
+       "nome": "Configuração do ambiente",
+       "estado": "pendente"
+      },
+      {
+       "id": "mysql-configuration",
+       "nome": "MySQL Configuration",
+       "estado": "pendente"
+      },
+      {
+       "id": "variaveis",
+       "nome": "Variáveis",
+       "estado": "pendente"
+      },
+      {
+       "id": "ajustes-de-parametros",
+       "nome": "Ajustes de parâmetros",
+       "estado": "pendente"
+      },
+      {
+       "id": "gestao-de-arquivos",
+       "nome": "Gestão de arquivos",
+       "estado": "pendente"
+      },
+      {
+       "id": "purge-de-logs",
+       "nome": "Purge de logs",
+       "estado": "pendente"
+      },
+      {
+       "id": "limpeza-operacional",
+       "nome": "Limpeza operacional",
+       "estado": "pendente"
+      },
+      {
+       "id": "padronizacao",
+       "nome": "Padronização",
+       "estado": "pendente"
+      },
+      {
+       "id": "automacao-de-configuracao",
+       "nome": "Automação de configuração",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "sqlserver",
+   "nome": "SQL Server DBA",
+   "accent": "#F08A6E",
+   "desc": "Administração completa do Microsoft SQL Server.",
+   "modulos": [
+    {
+     "id": "01-fundamentos",
+     "n": "01",
+     "nome": "Fundamentos",
+     "topicos": [
+      {
+       "id": "instalacao",
+       "nome": "Instalação",
+       "estado": "pendente"
+      },
+      {
+       "id": "instancias",
+       "nome": "Instâncias",
+       "estado": "pendente"
+      },
+      {
+       "id": "storage",
+       "nome": "Storage",
+       "estado": "pendente"
+      },
+      {
+       "id": "tempdb",
+       "nome": "TempDB",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-administracao",
+     "n": "02",
+     "nome": "Administração",
+     "topicos": [
+      {
+       "id": "logins",
+       "nome": "Logins",
+       "estado": "pendente"
+      },
+      {
+       "id": "schemas",
+       "nome": "Schemas",
+       "estado": "pendente"
+      },
+      {
+       "id": "jobs",
+       "nome": "Jobs",
+       "estado": "pendente"
+      },
+      {
+       "id": "sql-agent",
+       "nome": "SQL Agent",
+       "estado": "pendente"
+      },
+      {
+       "id": "maintenance",
+       "nome": "Maintenance",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-backup",
+     "n": "03",
+     "nome": "Backup",
+     "topicos": [
+      {
+       "id": "full",
+       "nome": "Full",
+       "estado": "pendente"
+      },
+      {
+       "id": "differential",
+       "nome": "Differential",
+       "estado": "pendente"
+      },
+      {
+       "id": "log-backup",
+       "nome": "Log Backup",
+       "estado": "pendente"
+      },
+      {
+       "id": "restore",
+       "nome": "Restore",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "04-performance",
+     "n": "04",
+     "nome": "Performance",
+     "topicos": [
+      {
+       "id": "execution-plans",
+       "nome": "Execution Plans",
+       "estado": "pendente"
+      },
+      {
+       "id": "dmvs",
+       "nome": "DMVs",
+       "estado": "pendente"
+      },
+      {
+       "id": "query-store",
+       "nome": "Query Store",
+       "estado": "pendente"
+      },
+      {
+       "id": "index-tuning",
+       "nome": "Index Tuning",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "05-enterprise",
+     "n": "05",
+     "nome": "Enterprise",
+     "topicos": [
+      {
+       "id": "always-on",
+       "nome": "Always On",
+       "estado": "pendente"
+      },
+      {
+       "id": "clustering",
+       "nome": "Clustering",
+       "estado": "pendente"
+      },
+      {
+       "id": "replication",
+       "nome": "Replication",
+       "estado": "pendente"
+      },
+      {
+       "id": "mirroring",
+       "nome": "Mirroring",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "postgresql",
+   "nome": "PostgreSQL Super DBA",
+   "accent": "#4FD1B0",
+   "desc": "Formação completa em PostgreSQL para produção.",
+   "modulos": [
+    {
+     "id": "01-arquitetura",
+     "n": "01",
+     "nome": "Arquitetura",
+     "topicos": [
+      {
+       "id": "mvcc",
+       "nome": "MVCC",
+       "estado": "pendente"
+      },
+      {
+       "id": "wal",
+       "nome": "WAL",
+       "estado": "pendente"
+      },
+      {
+       "id": "checkpoints",
+       "nome": "Checkpoints",
+       "estado": "pendente"
+      },
+      {
+       "id": "buffer-cache",
+       "nome": "Buffer Cache",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-administracao",
+     "n": "02",
+     "nome": "Administração",
+     "topicos": [
+      {
+       "id": "roles",
+       "nome": "Roles",
+       "estado": "pendente"
+      },
+      {
+       "id": "databases",
+       "nome": "Databases",
+       "estado": "pendente"
+      },
+      {
+       "id": "tablespaces",
+       "nome": "Tablespaces",
+       "estado": "pendente"
+      },
+      {
+       "id": "extensions",
+       "nome": "Extensions",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-performance",
+     "n": "03",
+     "nome": "Performance",
+     "topicos": [
+      {
+       "id": "explain-analyze",
+       "nome": "EXPLAIN ANALYZE",
+       "estado": "pendente"
+      },
+      {
+       "id": "vacuum",
+       "nome": "VACUUM",
+       "estado": "pendente"
+      },
+      {
+       "id": "autovacuum",
+       "nome": "Autovacuum",
+       "estado": "pendente"
+      },
+      {
+       "id": "indices",
+       "nome": "Índices",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "04-alta-disponibilidade",
+     "n": "04",
+     "nome": "Alta Disponibilidade",
+     "topicos": [
+      {
+       "id": "streaming-replication",
+       "nome": "Streaming Replication",
+       "estado": "pendente"
+      },
+      {
+       "id": "pitr",
+       "nome": "PITR",
+       "estado": "pendente"
+      },
+      {
+       "id": "hot-standby",
+       "nome": "Hot Standby",
+       "estado": "pendente"
+      },
+      {
+       "id": "failover",
+       "nome": "Failover",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "05-recursos-avancados",
+     "n": "05",
+     "nome": "Recursos Avançados",
+     "topicos": [
+      {
+       "id": "jsonb",
+       "nome": "JSONB",
+       "estado": "pendente"
+      },
+      {
+       "id": "particionamento",
+       "nome": "Particionamento",
+       "estado": "pendente"
+      },
+      {
+       "id": "logical-replication",
+       "nome": "Logical Replication",
+       "estado": "pendente"
+      },
+      {
+       "id": "pg-stat-statements",
+       "nome": "pg_stat_statements",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "sql-master",
+   "nome": "Linguagem SQL Master",
+   "accent": "#B57BF5",
+   "desc": "SQL universal para Oracle, SQL Server, PostgreSQL e MySQL.",
+   "modulos": [
+    {
+     "id": "01-fundamentos",
+     "n": "01",
+     "nome": "Fundamentos",
+     "topicos": [
+      {
+       "id": "select",
+       "nome": "SELECT",
+       "estado": "pendente"
+      },
+      {
+       "id": "where",
+       "nome": "WHERE",
+       "estado": "pendente"
+      },
+      {
+       "id": "order-by",
+       "nome": "ORDER BY",
+       "estado": "pendente"
+      },
+      {
+       "id": "group-by",
+       "nome": "GROUP BY",
+       "estado": "pendente"
+      },
+      {
+       "id": "having",
+       "nome": "HAVING",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-intermediario",
+     "n": "02",
+     "nome": "Intermediário",
+     "topicos": [
+      {
+       "id": "joins",
+       "nome": "JOINs",
+       "estado": "pendente"
+      },
+      {
+       "id": "subqueries",
+       "nome": "Subqueries",
+       "estado": "pendente"
+      },
+      {
+       "id": "cte",
+       "nome": "CTE",
+       "estado": "pendente"
+      },
+      {
+       "id": "union",
+       "nome": "UNION",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-avancado",
+     "n": "03",
+     "nome": "Avançado",
+     "topicos": [
+      {
+       "id": "window-functions",
+       "nome": "Window Functions",
+       "estado": "pendente"
+      },
+      {
+       "id": "merge",
+       "nome": "MERGE",
+       "estado": "pendente"
+      },
+      {
+       "id": "pivot",
+       "nome": "PIVOT",
+       "estado": "pendente"
+      },
+      {
+       "id": "unpivot",
+       "nome": "UNPIVOT",
+       "estado": "pendente"
+      },
+      {
+       "id": "recursive-cte",
+       "nome": "Recursive CTE",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "04-programacao",
+     "n": "04",
+     "nome": "Programação",
+     "topicos": [
+      {
+       "id": "views",
+       "nome": "Views",
+       "estado": "pendente"
+      },
+      {
+       "id": "procedures",
+       "nome": "Procedures",
+       "estado": "pendente"
+      },
+      {
+       "id": "functions",
+       "nome": "Functions",
+       "estado": "pendente"
+      },
+      {
+       "id": "triggers",
+       "nome": "Triggers",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "oci",
+   "nome": "Oracle Cloud Infrastructure (OCI)",
+   "accent": "#E3201C",
+   "desc": "Infraestrutura Oracle Cloud voltada para DBAs.",
+   "modulos": [
+    {
+     "id": "01-networking",
+     "n": "01",
+     "nome": "Networking",
+     "topicos": [
+      {
+       "id": "compartments",
+       "nome": "Compartments",
+       "estado": "pendente"
+      },
+      {
+       "id": "iam",
+       "nome": "IAM",
+       "estado": "pendente"
+      },
+      {
+       "id": "vcn",
+       "nome": "VCN",
+       "estado": "pendente"
+      },
+      {
+       "id": "subnets",
+       "nome": "Subnets",
+       "estado": "pendente"
+      },
+      {
+       "id": "security-lists",
+       "nome": "Security Lists",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-computacao",
+     "n": "02",
+     "nome": "Computação",
+     "topicos": [
+      {
+       "id": "compute",
+       "nome": "Compute",
+       "estado": "pendente"
+      },
+      {
+       "id": "block-volume",
+       "nome": "Block Volume",
+       "estado": "pendente"
+      },
+      {
+       "id": "object-storage",
+       "nome": "Object Storage",
+       "estado": "pendente"
+      },
+      {
+       "id": "file-storage",
+       "nome": "File Storage",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-banco-de-dados",
+     "n": "03",
+     "nome": "Banco de Dados",
+     "topicos": [
+      {
+       "id": "autonomous",
+       "nome": "Autonomous",
+       "estado": "pendente"
+      },
+      {
+       "id": "db-systems",
+       "nome": "DB Systems",
+       "estado": "pendente"
+      },
+      {
+       "id": "exadata-cloud",
+       "nome": "Exadata Cloud",
+       "estado": "pendente"
+      },
+      {
+       "id": "backup",
+       "nome": "Backup",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "04-operacoes",
+     "n": "04",
+     "nome": "Operações",
+     "topicos": [
+      {
+       "id": "monitoring",
+       "nome": "Monitoring",
+       "estado": "pendente"
+      },
+      {
+       "id": "logging",
+       "nome": "Logging",
+       "estado": "pendente"
+      },
+      {
+       "id": "alarms",
+       "nome": "Alarms",
+       "estado": "pendente"
+      },
+      {
+       "id": "resource-manager",
+       "nome": "Resource Manager",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "aws",
+   "nome": "AWS para DBAs",
+   "accent": "#FF9900",
+   "desc": "Cloud AWS com foco em banco de dados.",
+   "modulos": [
+    {
+     "id": "01-infraestrutura",
+     "n": "01",
+     "nome": "Infraestrutura",
+     "topicos": [
+      {
+       "id": "iam",
+       "nome": "IAM",
+       "estado": "pendente"
+      },
+      {
+       "id": "ec2",
+       "nome": "EC2",
+       "estado": "pendente"
+      },
+      {
+       "id": "vpc",
+       "nome": "VPC",
+       "estado": "pendente"
+      },
+      {
+       "id": "ebs",
+       "nome": "EBS",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-banco",
+     "n": "02",
+     "nome": "Banco",
+     "topicos": [
+      {
+       "id": "rds",
+       "nome": "RDS",
+       "estado": "pendente"
+      },
+      {
+       "id": "aurora",
+       "nome": "Aurora",
+       "estado": "pendente"
+      },
+      {
+       "id": "multi-az",
+       "nome": "Multi-AZ",
+       "estado": "pendente"
+      },
+      {
+       "id": "read-replica",
+       "nome": "Read Replica",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-observabilidade",
+     "n": "03",
+     "nome": "Observabilidade",
+     "topicos": [
+      {
+       "id": "cloudwatch",
+       "nome": "CloudWatch",
+       "estado": "pendente"
+      },
+      {
+       "id": "performance-insights",
+       "nome": "Performance Insights",
+       "estado": "pendente"
+      },
+      {
+       "id": "backup",
+       "nome": "Backup",
+       "estado": "pendente"
+      },
+      {
+       "id": "snapshots",
+       "nome": "Snapshots",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "azure",
+   "nome": "Microsoft Azure",
+   "accent": "#3C9BE8",
+   "desc": "Administração de bancos na nuvem Microsoft.",
+   "modulos": [
+    {
+     "id": "01-azure-core",
+     "n": "01",
+     "nome": "Azure Core",
+     "topicos": [
+      {
+       "id": "resource-groups",
+       "nome": "Resource Groups",
+       "estado": "pendente"
+      },
+      {
+       "id": "vnets",
+       "nome": "VNets",
+       "estado": "pendente"
+      },
+      {
+       "id": "entra-id",
+       "nome": "Entra ID",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-banco",
+     "n": "02",
+     "nome": "Banco",
+     "topicos": [
+      {
+       "id": "azure-sql",
+       "nome": "Azure SQL",
+       "estado": "pendente"
+      },
+      {
+       "id": "managed-instance",
+       "nome": "Managed Instance",
+       "estado": "pendente"
+      },
+      {
+       "id": "sql-vm",
+       "nome": "SQL VM",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-operacao",
+     "n": "03",
+     "nome": "Operação",
+     "topicos": [
+      {
+       "id": "backup",
+       "nome": "Backup",
+       "estado": "pendente"
+      },
+      {
+       "id": "monitor",
+       "nome": "Monitor",
+       "estado": "pendente"
+      },
+      {
+       "id": "defender",
+       "nome": "Defender",
+       "estado": "pendente"
+      },
+      {
+       "id": "alta-disponibilidade",
+       "nome": "Alta disponibilidade",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "gcp",
+   "nome": "Google Cloud Platform",
+   "accent": "#5AA9E6",
+   "desc": "Soluções de banco de dados no ecossistema Google.",
+   "modulos": [
+    {
+     "id": "01-infraestrutura",
+     "n": "01",
+     "nome": "Infraestrutura",
+     "topicos": [
+      {
+       "id": "iam",
+       "nome": "IAM",
+       "estado": "pendente"
+      },
+      {
+       "id": "vpc",
+       "nome": "VPC",
+       "estado": "pendente"
+      },
+      {
+       "id": "compute-engine",
+       "nome": "Compute Engine",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-banco",
+     "n": "02",
+     "nome": "Banco",
+     "topicos": [
+      {
+       "id": "cloud-sql",
+       "nome": "Cloud SQL",
+       "estado": "pendente"
+      },
+      {
+       "id": "alloydb",
+       "nome": "AlloyDB",
+       "estado": "pendente"
+      },
+      {
+       "id": "spanner",
+       "nome": "Spanner",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-operacoes",
+     "n": "03",
+     "nome": "Operações",
+     "topicos": [
+      {
+       "id": "logging",
+       "nome": "Logging",
+       "estado": "pendente"
+      },
+      {
+       "id": "monitoring",
+       "nome": "Monitoring",
+       "estado": "pendente"
+      },
+      {
+       "id": "backup",
+       "nome": "Backup",
+       "estado": "pendente"
+      },
+      {
+       "id": "replicacao",
+       "nome": "Replicação",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "mongodb",
+   "nome": "MongoDB DBA",
+   "accent": "#4DB33D",
+   "desc": "Administração completa de bancos NoSQL.",
+   "modulos": [
+    {
+     "id": "01-fundamentos",
+     "n": "01",
+     "nome": "Fundamentos",
+     "topicos": [
+      {
+       "id": "bson",
+       "nome": "BSON",
+       "estado": "pendente"
+      },
+      {
+       "id": "collections",
+       "nome": "Collections",
+       "estado": "pendente"
+      },
+      {
+       "id": "documents",
+       "nome": "Documents",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-administracao",
+     "n": "02",
+     "nome": "Administração",
+     "topicos": [
+      {
+       "id": "indices",
+       "nome": "Índices",
+       "estado": "pendente"
+      },
+      {
+       "id": "seguranca",
+       "nome": "Segurança",
+       "estado": "pendente"
+      },
+      {
+       "id": "usuarios",
+       "nome": "Usuários",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-performance",
+     "n": "03",
+     "nome": "Performance",
+     "topicos": [
+      {
+       "id": "aggregation-pipeline",
+       "nome": "Aggregation Pipeline",
+       "estado": "pendente"
+      },
+      {
+       "id": "explain",
+       "nome": "Explain",
+       "estado": "pendente"
+      },
+      {
+       "id": "sharding",
+       "nome": "Sharding",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "04-alta-disponibilidade",
+     "n": "04",
+     "nome": "Alta Disponibilidade",
+     "topicos": [
+      {
+       "id": "replica-set",
+       "nome": "Replica Set",
+       "estado": "pendente"
+      },
+      {
+       "id": "atlas",
+       "nome": "Atlas",
+       "estado": "pendente"
+      },
+      {
+       "id": "backup",
+       "nome": "Backup",
+       "estado": "pendente"
+      },
+      {
+       "id": "restore",
+       "nome": "Restore",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "exadata",
+   "nome": "Oracle Exadata",
+   "accent": "#FF7A4A",
+   "desc": "Especialização em Exadata X9M e X10M.",
+   "modulos": [
+    {
+     "id": "01-hardware",
+     "n": "01",
+     "nome": "Hardware",
+     "topicos": [
+      {
+       "id": "compute-nodes",
+       "nome": "Compute Nodes",
+       "estado": "pendente"
+      },
+      {
+       "id": "storage-cells",
+       "nome": "Storage Cells",
+       "estado": "pendente"
+      },
+      {
+       "id": "rdma",
+       "nome": "RDMA",
+       "estado": "pendente"
+      },
+      {
+       "id": "roce",
+       "nome": "RoCE",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-smart-features",
+     "n": "02",
+     "nome": "Smart Features",
+     "topicos": [
+      {
+       "id": "smart-scan",
+       "nome": "Smart Scan",
+       "estado": "pendente"
+      },
+      {
+       "id": "storage-index",
+       "nome": "Storage Index",
+       "estado": "pendente"
+      },
+      {
+       "id": "flash-cache",
+       "nome": "Flash Cache",
+       "estado": "pendente"
+      },
+      {
+       "id": "hcc",
+       "nome": "HCC",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-administracao",
+     "n": "03",
+     "nome": "Administração",
+     "topicos": [
+      {
+       "id": "cellsrv",
+       "nome": "CELLSRV",
+       "estado": "pendente"
+      },
+      {
+       "id": "iorm",
+       "nome": "IORM",
+       "estado": "pendente"
+      },
+      {
+       "id": "cellcli",
+       "nome": "CellCLI",
+       "estado": "pendente"
+      },
+      {
+       "id": "dcli",
+       "nome": "DCLI",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "04-troubleshooting",
+     "n": "04",
+     "nome": "Troubleshooting",
+     "topicos": [
+      {
+       "id": "sql-monitor",
+       "nome": "SQL Monitor",
+       "estado": "pendente"
+      },
+      {
+       "id": "wait-events",
+       "nome": "Wait Events",
+       "estado": "pendente"
+      },
+      {
+       "id": "offload",
+       "nome": "Offload",
+       "estado": "pendente"
+      },
+      {
+       "id": "performance",
+       "nome": "Performance",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "goldengate",
+   "nome": "Oracle GoldenGate",
+   "accent": "#E8833A",
+   "desc": "Replicação Oracle em tempo real.",
+   "modulos": [
+    {
+     "id": "01-arquitetura",
+     "n": "01",
+     "nome": "Arquitetura",
+     "topicos": [
+      {
+       "id": "extract",
+       "nome": "Extract",
+       "estado": "pendente"
+      },
+      {
+       "id": "pump",
+       "nome": "Pump",
+       "estado": "pendente"
+      },
+      {
+       "id": "replicat",
+       "nome": "Replicat",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-configuracao",
+     "n": "02",
+     "nome": "Configuração",
+     "topicos": [
+      {
+       "id": "trails",
+       "nome": "Trails",
+       "estado": "pendente"
+      },
+      {
+       "id": "checkpoints",
+       "nome": "Checkpoints",
+       "estado": "pendente"
+      },
+      {
+       "id": "parameter-files",
+       "nome": "Parameter Files",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-microservices",
+     "n": "03",
+     "nome": "Microservices",
+     "topicos": [
+      {
+       "id": "deployment",
+       "nome": "Deployment",
+       "estado": "pendente"
+      },
+      {
+       "id": "distribution",
+       "nome": "Distribution",
+       "estado": "pendente"
+      },
+      {
+       "id": "receiver",
+       "nome": "Receiver",
+       "estado": "pendente"
+      },
+      {
+       "id": "admin-server",
+       "nome": "Admin Server",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "04-casos-reais",
+     "n": "04",
+     "nome": "Casos Reais",
+     "topicos": [
+      {
+       "id": "zero-downtime",
+       "nome": "Zero Downtime",
+       "estado": "pendente"
+      },
+      {
+       "id": "migracao",
+       "nome": "Migração",
+       "estado": "pendente"
+      },
+      {
+       "id": "troubleshooting",
+       "nome": "Troubleshooting",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "oda",
+   "nome": "Oracle Database Appliance (ODA)",
+   "accent": "#C74634",
+   "desc": "Implantação e administração completa do Oracle ODA.",
+   "modulos": [
+    {
+     "id": "01-implantacao",
+     "n": "01",
+     "nome": "Implantação",
+     "topicos": [
+      {
+       "id": "kvm",
+       "nome": "KVM",
+       "estado": "pendente"
+      },
+      {
+       "id": "bare-metal",
+       "nome": "Bare Metal",
+       "estado": "pendente"
+      },
+      {
+       "id": "deploy",
+       "nome": "Deploy",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-administracao",
+     "n": "02",
+     "nome": "Administração",
+     "topicos": [
+      {
+       "id": "asm",
+       "nome": "ASM",
+       "estado": "pendente"
+      },
+      {
+       "id": "rac",
+       "nome": "RAC",
+       "estado": "pendente"
+      },
+      {
+       "id": "patch",
+       "nome": "Patch",
+       "estado": "pendente"
+      },
+      {
+       "id": "upgrade",
+       "nome": "Upgrade",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-operacao",
+     "n": "03",
+     "nome": "Operação",
+     "topicos": [
+      {
+       "id": "backup",
+       "nome": "Backup",
+       "estado": "pendente"
+      },
+      {
+       "id": "monitoramento",
+       "nome": "Monitoramento",
+       "estado": "pendente"
+      },
+      {
+       "id": "capacity",
+       "nome": "Capacity",
+       "estado": "pendente"
+      },
+      {
+       "id": "troubleshooting",
+       "nome": "Troubleshooting",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "zdlra",
+   "nome": "Zero Data Loss Recovery Appliance (ZDLRA)",
+   "accent": "#A64DFF",
+   "desc": "Backup corporativo Oracle de missão crítica.",
+   "modulos": [
+    {
+     "id": "01-fundamentos",
+     "n": "01",
+     "nome": "Fundamentos",
+     "topicos": [
+      {
+       "id": "arquitetura-zdlra",
+       "nome": "Arquitetura ZDLRA",
+       "estado": "pendente"
+      },
+      {
+       "id": "protected-database",
+       "nome": "Protected Database",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-rman",
+     "n": "02",
+     "nome": "RMAN",
+     "topicos": [
+      {
+       "id": "incremental-forever",
+       "nome": "Incremental Forever",
+       "estado": "pendente"
+      },
+      {
+       "id": "virtual-full",
+       "nome": "Virtual Full",
+       "estado": "pendente"
+      },
+      {
+       "id": "validation",
+       "nome": "Validation",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-recuperacao",
+     "n": "03",
+     "nome": "Recuperação",
+     "topicos": [
+      {
+       "id": "restore",
+       "nome": "Restore",
+       "estado": "pendente"
+      },
+      {
+       "id": "pitr",
+       "nome": "PITR",
+       "estado": "pendente"
+      },
+      {
+       "id": "disaster-recovery",
+       "nome": "Disaster Recovery",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "dbre",
+   "nome": "DBRE (Database Reliability Engineering)",
+   "accent": "#2ED8C3",
+   "desc": "Engenharia de confiabilidade aplicada a bancos de dados.",
+   "modulos": [
+    {
+     "id": "01-observabilidade",
+     "n": "01",
+     "nome": "Observabilidade",
+     "topicos": [
+      {
+       "id": "prometheus",
+       "nome": "Prometheus",
+       "estado": "pendente"
+      },
+      {
+       "id": "grafana",
+       "nome": "Grafana",
+       "estado": "pendente"
+      },
+      {
+       "id": "opentelemetry",
+       "nome": "OpenTelemetry",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-confiabilidade",
+     "n": "02",
+     "nome": "Confiabilidade",
+     "topicos": [
+      {
+       "id": "sli",
+       "nome": "SLI",
+       "estado": "pendente"
+      },
+      {
+       "id": "slo",
+       "nome": "SLO",
+       "estado": "pendente"
+      },
+      {
+       "id": "sla",
+       "nome": "SLA",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-automacao",
+     "n": "03",
+     "nome": "Automação",
+     "topicos": [
+      {
+       "id": "ansible",
+       "nome": "Ansible",
+       "estado": "pendente"
+      },
+      {
+       "id": "shell",
+       "nome": "Shell",
+       "estado": "pendente"
+      },
+      {
+       "id": "python",
+       "nome": "Python",
+       "estado": "pendente"
+      },
+      {
+       "id": "powershell",
+       "nome": "PowerShell",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "04-operacoes",
+     "n": "04",
+     "nome": "Operações",
+     "topicos": [
+      {
+       "id": "incident-response",
+       "nome": "Incident Response",
+       "estado": "pendente"
+      },
+      {
+       "id": "capacity-planning",
+       "nome": "Capacity Planning",
+       "estado": "pendente"
+      },
+      {
+       "id": "runbooks",
+       "nome": "Runbooks",
+       "estado": "pendente"
+      },
+      {
+       "id": "postmortem",
+       "nome": "Postmortem",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "slug": "carreira",
+   "nome": "Carreira, Certificações & Skills",
+   "accent": "#F5BE3F",
+   "desc": "Formação profissional para acelerar sua carreira como DBA.",
+   "modulos": [
+    {
+     "id": "01-desenvolvimento-profissional",
+     "n": "01",
+     "nome": "Desenvolvimento Profissional",
+     "topicos": [
+      {
+       "id": "curriculo-de-impacto",
+       "nome": "Currículo de impacto",
+       "estado": "pendente"
+      },
+      {
+       "id": "linkedin",
+       "nome": "LinkedIn",
+       "estado": "pendente"
+      },
+      {
+       "id": "github",
+       "nome": "GitHub",
+       "estado": "pendente"
+      },
+      {
+       "id": "portfolio",
+       "nome": "Portfólio",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "02-certificacoes",
+     "n": "02",
+     "nome": "Certificações",
+     "topicos": [
+      {
+       "id": "oracle-oca-ocp",
+       "nome": "Oracle OCA/OCP",
+       "estado": "pendente"
+      },
+      {
+       "id": "oci",
+       "nome": "OCI",
+       "estado": "pendente"
+      },
+      {
+       "id": "aws",
+       "nome": "AWS",
+       "estado": "pendente"
+      },
+      {
+       "id": "azure",
+       "nome": "Azure",
+       "estado": "pendente"
+      }
+     ]
+    },
+    {
+     "id": "03-mercado",
+     "n": "03",
+     "nome": "Mercado",
+     "topicos": [
+      {
+       "id": "entrevistas-tecnicas",
+       "nome": "Entrevistas técnicas",
+       "estado": "pendente"
+      },
+      {
+       "id": "soft-skills",
+       "nome": "Soft Skills",
+       "estado": "pendente"
+      },
+      {
+       "id": "ingles-para-dba",
+       "nome": "Inglês para DBA",
+       "estado": "pendente"
+      },
+      {
+       "id": "negociacao-salarial",
+       "nome": "Negociação salarial",
+       "estado": "pendente"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-base=".." data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Área do Mentor — DBA BRABO</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#07090D">
+
+<link rel="icon" href="../assets/logo/favicon.ico" sizes="any">
+<link rel="icon" href="../assets/logo/avatar-96.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/logo/avatar-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../mentor.css">
+</head>
+<body>
+
+<!-- ================= tela de acesso ================= -->
+<main class="acesso" id="acesso">
+  <div class="acesso__caixa">
+    <div class="acesso__marca">
+      <img src="../assets/logo/avatar-96.png" alt="DBA BRABO">
+      <div>
+        <b>DBA BRABO</b>
+        <span>Área restrita</span>
+      </div>
+    </div>
+
+    <h1 style="font-size:var(--fs-xl);margin-bottom:var(--s-2)">Material de apoio ao mentor</h1>
+    <p style="color:var(--fg-2);font-size:var(--fs-sm)">
+      Referência técnica das formações: passo a passo de execução, validação e diagnóstico.
+    </p>
+
+    <form id="form-acesso" autocomplete="off">
+      <div class="campo">
+        <label for="usuario">usuário</label>
+        <input type="text" id="usuario" name="usuario" autocapitalize="off" autocorrect="off" spellcheck="false" required>
+      </div>
+      <div class="campo">
+        <label for="senha">senha</label>
+        <input type="password" id="senha" name="senha" required>
+      </div>
+      <div class="acesso__erro" id="erro" role="alert"></div>
+      <button class="btn btn--primary" type="submit" id="btn-entrar">Entrar</button>
+      <button class="btn btn--ghost" type="button" disabled aria-disabled="true"
+              title="Ainda não disponível">Área do aluno · em breve</button>
+    </form>
+
+    <p class="acesso__nota">
+      O conteúdo é cifrado no repositório com AES-256-GCM. A senha não fica no código:
+      ela é a chave que decifra o material aqui no seu navegador. Senha errada não
+      &ldquo;nega o acesso&rdquo; — simplesmente não decifra nada.
+    </p>
+    <p class="acesso__nota"><a href="../" style="color:var(--fg-2)">&larr; voltar ao portal</a></p>
+  </div>
+</main>
+
+<!-- ================= área ================= -->
+<div class="mentor" id="mentor">
+  <header class="mtopo">
+    <div class="mtopo__marca">
+      <img src="../assets/logo/avatar-96.png" alt="">
+      <b>DBA BRABO</b>
+    </div>
+    <span class="mtopo__tag">mentor</span>
+    <div class="mtopo__dir">
+      <span id="mprogresso" style="font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--fg-3)"></span>
+      <a class="btn btn--ghost btn--sm" href="../">Portal</a>
+      <button class="btn btn--ghost btn--sm" type="button" id="btn-sair">Sair</button>
+    </div>
+  </header>
+
+  <div class="mcorpo">
+    <aside class="mlado">
+      <div class="mbusca">
+        <input type="search" id="mbusca" placeholder="buscar tópico…" autocomplete="off" spellcheck="false">
+      </div>
+      <nav id="mnav" aria-label="Trilhas"></nav>
+    </aside>
+
+    <main class="mconteudo" id="mconteudo">
+      <div class="mvazio">
+        <h1>Referência técnica</h1>
+        <p>Escolha uma trilha na barra lateral, abra o módulo e clique no tópico.
+           Cada tópico traz o passo a passo completo do lab: pré-requisitos, execução
+           comando a comando, o que validar depois de cada passo e o que fazer quando falha.</p>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="mentor.js"></script>
+</body>
+</html>

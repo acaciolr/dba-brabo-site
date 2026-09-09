@@ -1,0 +1,263 @@
+/* ==========================================================================
+   DBA BRABO — Area do mentor
+   Layout proprio (barra lateral + conteudo) e tema de terminal macOS.
+   Carrega DEPOIS de style.css e reaproveita os tokens de la.
+   ========================================================================== */
+
+/* ---------- 01 · tela de acesso ----------------------------------------- */
+.acesso {
+  min-height: 100svh; display: grid; place-items: center; padding: var(--s-6);
+}
+.acesso__caixa { width: min(460px, 100%); }
+.acesso__marca { display: flex; align-items: center; gap: var(--s-3); margin-bottom: var(--s-6); }
+.acesso__marca img { width: 40px; height: 40px; border-radius: 50%; }
+.acesso__marca b { font-family: var(--font-display); font-size: var(--fs-lg); }
+.acesso__marca span { display: block; font-size: var(--fs-xs); color: var(--fg-2); letter-spacing: .12em; text-transform: uppercase; }
+
+.acesso form { display: grid; gap: var(--s-4); margin-top: var(--s-5); }
+.campo { display: grid; gap: var(--s-2); }
+.campo label {
+  font-family: var(--font-mono, monospace); font-size: var(--fs-xs);
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg-2);
+}
+.campo input {
+  width: 100%; padding: var(--s-3) var(--s-4);
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r-md);
+  color: var(--fg-0); font-family: var(--font-mono, monospace); font-size: var(--fs-sm);
+}
+.campo input:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; border-color: transparent; }
+
+.acesso__erro {
+  display: none; align-items: center; gap: var(--s-2);
+  font-size: var(--fs-sm); color: var(--err, #F0705A);
+  background: color-mix(in srgb, var(--err, #F0705A) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--err, #F0705A) 35%, transparent);
+  border-radius: var(--r-md); padding: var(--s-3) var(--s-4);
+}
+.acesso__erro.is-on { display: flex; }
+.acesso__nota { font-size: var(--fs-xs); color: var(--fg-3); margin-top: var(--s-4); }
+
+/* ---------- 02 · esqueleto da area -------------------------------------- */
+.mentor { display: none; min-height: 100svh; grid-template-rows: auto 1fr; grid-template-columns: minmax(0, 1fr); }
+.mentor.is-on { display: grid; }
+
+.mtopo {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: var(--s-4);
+  padding: var(--s-3) var(--s-5);
+  background: color-mix(in srgb, var(--bg-0) 88%, transparent);
+  backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+}
+.mtopo__marca { display: flex; align-items: center; gap: var(--s-3); }
+.mtopo__marca img { width: 30px; height: 30px; border-radius: 50%; }
+.mtopo__marca b { font-family: var(--font-display); font-size: var(--fs-sm); }
+.mtopo__tag {
+  font-family: var(--font-mono, monospace); font-size: var(--fs-xs);
+  letter-spacing: .1em; text-transform: uppercase; color: var(--brand);
+  border: 1px solid color-mix(in srgb, var(--brand) 40%, var(--line));
+  border-radius: 100px; padding: 2px var(--s-3);
+}
+.mtopo__dir { margin-left: auto; display: flex; align-items: center; gap: var(--s-2); }
+
+.mcorpo { display: grid; grid-template-columns: 288px minmax(0, 1fr); min-height: 0; }
+@media (max-width: 900px) { .mcorpo { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- 03 · barra lateral ------------------------------------------ */
+.mlado {
+  border-right: 1px solid var(--line); background: var(--bg-1);
+  max-height: calc(100svh - 58px); overflow-y: auto; padding: var(--s-4) 0 var(--s-10);
+  position: sticky; top: 58px; align-self: start;
+}
+@media (max-width: 900px) {
+  /* No celular a lateral fica ACIMA do conteudo. Sem teto de altura seriam
+     16 trilhas para rolar antes de chegar no texto. */
+  .mlado { position: static; max-height: 45svh; border-right: 0; border-bottom: 1px solid var(--line); }
+}
+
+.mbusca { padding: 0 var(--s-4) var(--s-4); }
+.mbusca input {
+  width: 100%; padding: var(--s-2) var(--s-3); font-size: var(--fs-sm);
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r-md);
+  color: var(--fg-0); font-family: var(--font-mono, monospace);
+}
+
+.mtrilha { border-bottom: 1px solid var(--line-soft, var(--line)); }
+.mtrilha__cab {
+  width: 100%; display: grid; grid-template-columns: 3px 1fr auto; gap: var(--s-3);
+  align-items: center; padding: var(--s-3) var(--s-4);
+  background: none; border: 0; cursor: pointer; text-align: left; color: inherit;
+}
+.mtrilha__cab::before { content: ''; height: 18px; border-radius: 2px; background: var(--accent); }
+.mtrilha__cab:hover { background: var(--bg-2); }
+.mtrilha__nome { font-family: var(--font-display); font-size: var(--fs-sm); font-weight: 600; }
+.mtrilha__cont { font-family: var(--font-mono, monospace); font-size: var(--fs-xs); color: var(--fg-3); }
+.mtrilha__mods { display: none; padding: 0 0 var(--s-3) var(--s-5); }
+.mtrilha.is-open .mtrilha__mods { display: block; }
+.mtrilha.is-open .mtrilha__cab { background: var(--bg-2); }
+
+.mmod__cab {
+  width: 100%; display: flex; align-items: baseline; gap: var(--s-2);
+  padding: var(--s-2) var(--s-4) var(--s-2) 0; background: none; border: 0;
+  cursor: pointer; text-align: left; color: var(--fg-1); font-size: var(--fs-xs);
+  font-family: var(--font-mono, monospace);
+}
+.mmod__cab:hover { color: var(--fg-0); }
+.mmod__cab i { font-style: normal; color: var(--fg-3); }
+.mmod__tops { display: none; }
+.mmod.is-open .mmod__tops { display: block; }
+
+.mtop {
+  display: grid; grid-template-columns: 7px 1fr; gap: var(--s-3); align-items: center;
+  width: 100%; padding: var(--s-2) var(--s-4) var(--s-2) var(--s-2);
+  background: none; border: 0; cursor: pointer; text-align: left;
+  color: var(--fg-2); font-size: var(--fs-xs); border-radius: var(--r-sm);
+}
+.mtop::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--fg-3); opacity: .45; }
+.mtop--revisado::before { background: var(--ok, #34D3C4); opacity: 1; }
+.mtop--rascunho::before { background: var(--warn, #F5A524); opacity: 1; }
+.mtop:hover { background: var(--bg-2); color: var(--fg-0); }
+.mtop.is-sel { background: color-mix(in srgb, var(--brand) 14%, transparent); color: var(--fg-0); }
+
+/* ---------- 04 · conteudo ----------------------------------------------- */
+.mconteudo { padding: var(--s-8) clamp(var(--s-5), 4vw, var(--s-12)) var(--s-16); min-width: 0; }
+.mvazio { max-width: 62ch; }
+.mvazio h1 { font-size: var(--fs-2xl); margin-bottom: var(--s-4); }
+.mvazio p { color: var(--fg-1); }
+
+.mcab { border-bottom: 1px solid var(--line); padding-bottom: var(--s-5); margin-bottom: var(--s-8); }
+.mcab__trilha {
+  font-family: var(--font-mono, monospace); font-size: var(--fs-xs);
+  letter-spacing: .12em; text-transform: uppercase; color: var(--accent);
+}
+.mcab h1 { font-size: var(--fs-2xl); margin: var(--s-2) 0 var(--s-3); }
+.mcab__resumo { color: var(--fg-1); max-width: 72ch; }
+
+.mbloco { margin-bottom: var(--s-10); max-width: 1120px; }
+/* o texto continua em medida legivel; diagrama e terminal usam a coluna toda */
+.mbloco > p, .mbloco h3, .mbloco > .mlista,
+.mpasso__t, .mpasso__d, .mpasso .mlista { max-width: 82ch; }
+.mbloco h2 {
+  font-family: var(--font-mono, monospace); font-size: var(--fs-xs); font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--fg-2);
+  padding-bottom: var(--s-2); border-bottom: 1px solid var(--line); margin-bottom: var(--s-5);
+}
+.mbloco h3 { font-family: var(--font-display); font-size: var(--fs-md); margin: var(--s-6) 0 var(--s-2); }
+.mbloco p { color: var(--fg-1); margin-bottom: var(--s-3); }
+
+/* passos numerados com validacao — o que separa runbook de lista de comandos */
+.mpasso { display: grid; grid-template-columns: 34px 1fr; gap: var(--s-4); padding: var(--s-5) 0; border-bottom: 1px solid var(--line-soft, var(--line)); }
+.mpasso:last-child { border-bottom: 0; }
+.mpasso__n { font-family: var(--font-mono, monospace); font-size: var(--fs-xs); color: var(--accent); font-weight: 600; padding-top: 3px; }
+.mpasso__t { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-sm); margin-bottom: var(--s-2); }
+.mpasso__d { color: var(--fg-1); font-size: var(--fs-sm); margin-bottom: var(--s-3); }
+.mcheque, .mfalha {
+  display: grid; grid-template-columns: auto 1fr; gap: var(--s-3);
+  font-size: var(--fs-sm); padding: var(--s-3) var(--s-4); border-radius: var(--r-md); margin-top: var(--s-3);
+}
+.mcheque { background: color-mix(in srgb, var(--ok, #34D3C4) 9%, transparent); border-left: 2px solid var(--ok, #34D3C4); }
+.mfalha  { background: color-mix(in srgb, var(--warn, #F5A524) 9%, transparent); border-left: 2px solid var(--warn, #F5A524); }
+.mcheque b, .mfalha b { font-family: var(--font-mono, monospace); font-size: var(--fs-xs); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.mcheque b { color: var(--ok, #34D3C4); } .mfalha b { color: var(--warn, #F5A524); }
+
+/* ---------- 05 · terminal macOS ----------------------------------------- */
+.term-mac {
+  border-radius: 11px; overflow: hidden; margin: var(--s-4) 0;
+  background: #1E1E1E; border: 1px solid #000;
+  box-shadow: 0 18px 44px -18px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.05) inset;
+}
+.term-mac__barra {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: var(--s-3);
+  padding: 9px 13px;
+  background: linear-gradient(180deg, #3A3A3C 0%, #2C2C2E 100%);
+  border-bottom: 1px solid #000;
+}
+.term-mac__luzes { display: flex; gap: 8px; }
+.term-mac__luzes i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+.term-mac__luzes i:nth-child(1) { background: #FF5F57; box-shadow: inset 0 0 0 .5px rgba(0,0,0,.25); }
+.term-mac__luzes i:nth-child(2) { background: #FEBC2E; box-shadow: inset 0 0 0 .5px rgba(0,0,0,.25); }
+.term-mac__luzes i:nth-child(3) { background: #28C840; box-shadow: inset 0 0 0 .5px rgba(0,0,0,.25); }
+.term-mac__titulo {
+  text-align: center; font-size: 12px; color: #C7C7CC; font-weight: 500;
+  font-family: -apple-system, "SF Pro Text", "Segoe UI", sans-serif;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.term-mac__copiar {
+  background: none; border: 0; cursor: pointer; color: #8E8E93; padding: 2px 4px; border-radius: 4px;
+  font-family: var(--font-mono, monospace); font-size: 11px;
+}
+.term-mac__copiar:hover { color: #FFF; background: rgba(255,255,255,.12); }
+.term-mac pre {
+  margin: 0; padding: 14px 16px; overflow-x: auto;
+  font-family: "SF Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: .8rem; line-height: 1.65; color: #E4E4E7; white-space: pre;
+}
+.term-mac .pr { color: #28C840; }          /* prompt   */
+.term-mac .cm { color: #6E6E73; }          /* comentario */
+.term-mac .sa { color: #A0A0A6; }          /* saida    */
+
+/* ---------- 06 · diagrama ----------------------------------------------- */
+.mdiag {
+  background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: var(--s-6); margin: var(--s-5) 0; overflow-x: auto;
+}
+.mdiag svg { display: block; width: 100%; height: auto; min-width: 520px; }
+.mdiag__leg { font-size: var(--fs-xs); color: var(--fg-2); margin-top: var(--s-4); text-align: center; }
+
+/* ---------- 07 · avisos e pendencia ------------------------------------- */
+.mrev {
+  display: flex; align-items: flex-start; gap: var(--s-3);
+  background: color-mix(in srgb, var(--warn, #F5A524) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--warn, #F5A524) 35%, transparent);
+  border-radius: var(--r-md); padding: var(--s-4); margin-bottom: var(--s-6);
+  font-size: var(--fs-sm); color: var(--fg-1);
+}
+.mrev b { color: var(--warn, #F5A524); }
+
+.mpend { max-width: 62ch; }
+.mpend__sel {
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  font-family: var(--font-mono, monospace); font-size: var(--fs-xs);
+  letter-spacing: .08em; text-transform: uppercase; color: var(--fg-2);
+  border: 1px dashed var(--line-strong, var(--line)); border-radius: var(--r-sm);
+  padding: var(--s-1) var(--s-3); margin-bottom: var(--s-4);
+}
+.mlista { list-style: none; padding: 0; margin: var(--s-4) 0 0; display: grid; gap: var(--s-2); }
+.mlista li { position: relative; padding-left: var(--s-5); color: var(--fg-1); font-size: var(--fs-sm); }
+.mlista li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); }
+
+/* ---------- 08 · ajustes locais ----------------------------------------- */
+
+/* style.css aplica `section { padding-block: 96px }` e `section + section
+   { border-top }` para as secoes da landing page. Aqui dentro isso vaza e
+   estica cada trilha da lateral e cada bloco do conteudo. Zera na entrada;
+   os paddings proprios vem das regras acima, que sao mais especificas. */
+#mentor section { padding-block: 0; }
+#mentor section + section { border-top: 0; }
+.mtrilha + .mtrilha { border-top: 0; }
+
+/* Colunas de grid nao encolhem abaixo do conteudo por padrao (min-width:auto).
+   Sem isto, um <pre> largo dentro de .mpasso empurra a pagina inteira e cria
+   scroll horizontal no celular — o terminal e que deve rolar, nao o body. */
+.mbloco, .mpasso > div, .mconteudo, .mcorpo > *, .mlado nav, .mmod, .mtrilha__mods,
+.mcheque > *, .mfalha > *, .mrev > * { min-width: 0; }
+
+/* `codigo` inline no meio de uma frase carrega comando longo sem espaco.
+   Sem quebra forcada ele estoura a coluna no celular. */
+.mconteudo code, .mcheque, .mfalha, .mrev { overflow-wrap: anywhere; }
+
+@media (max-width: 640px) {
+  .mtopo { gap: var(--s-2); padding: var(--s-3) var(--s-4); }
+  .mtopo__marca b { white-space: nowrap; }
+  #mprogresso { display: none; }          /* nao cabe e nao e essencial */
+}
+
+@media (max-width: 560px) {
+  /* o rotulo VALIDAÇÃO / SE FALHAR passa a ficar acima do texto */
+  .mcheque, .mfalha { grid-template-columns: 1fr; gap: var(--s-1); }
+  .mpasso { grid-template-columns: 24px 1fr; gap: var(--s-3); }
+}
+
+.btn[disabled] { opacity: .38; cursor: not-allowed; pointer-events: none; }
+.mconteudo { --accent: var(--brand); }
+.mbloco > .mpasso:first-of-type { padding-top: 0; }
+.mtop span { overflow: hidden; text-overflow: ellipsis; }

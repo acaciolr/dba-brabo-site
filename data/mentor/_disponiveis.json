@@ -1,0 +1,21 @@
+{
+  "gerado": "2026-09-09",
+  "trilhas": [
+    "aws",
+    "azure",
+    "carreira",
+    "dbre",
+    "exadata",
+    "gcp",
+    "goldengate",
+    "mongodb",
+    "mysql",
+    "oci",
+    "oda",
+    "oracle",
+    "postgresql",
+    "sql-master",
+    "sqlserver",
+    "zdlra"
+  ]
+}
