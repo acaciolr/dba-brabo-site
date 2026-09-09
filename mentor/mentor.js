@@ -120,7 +120,6 @@ async function abrirArea() {
   $('#acesso').style.display = 'none';
   $('#mentor').classList.add('is-on');
   montarNav();
-  atualizarProgresso();
   restaurarHash();
 }
 
@@ -173,14 +172,6 @@ function montarNav() {
     sec.append(cab, mods);
     nav.appendChild(sec);
   }
-}
-
-function atualizarProgresso() {
-  let feitos = 0, total = 0;
-  for (const t of app.indice.trilhas)
-    for (const m of t.modulos)
-      for (const p of m.topicos) { total++; if (p.estado !== 'pendente') feitos++; }
-  $('#mprogresso').textContent = `${feitos}/${total} tópicos escritos`;
 }
 
 /* ---------- busca -------------------------------------------------------- */
@@ -316,6 +307,11 @@ function renderBloco(b) {
       return terminal(b);
     case 'diagrama':
       return `<figure class="mdiag">${b.svg || ''}${b.leg ? `<figcaption class="mdiag__leg">${rico(b.leg)}</figcaption>` : ''}</figure>`;
+    case 'imagem': {
+      const src = String(b.src || '').replace(/^\//, '');
+      if (!src) return '';
+      return `<figure class="mimg"><img src="${BASE}/${esc(src)}" alt="${esc(b.alt || b.leg || 'Print de referência')}" loading="lazy">${b.leg ? `<figcaption class="mdiag__leg">${rico(b.leg)}</figcaption>` : ''}</figure>`;
+    }
     case 'passos':
       return (b.itens || []).map(passo).join('');
     case 'aviso':

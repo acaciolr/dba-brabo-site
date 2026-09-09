@@ -249,6 +249,704 @@
        "estado": "pendente"
       }
      ]
+    },
+    {
+     "id": "07-multitenant",
+     "n": "07",
+     "nome": "Multitenant",
+     "topicos": [
+      {
+       "id": "cdb-relocate",
+       "nome": "Realocar PDB online",
+       "estado": "rascunho"
+      },
+      {
+       "id": "pdb-refresh",
+       "nome": "Refresh de PDB",
+       "estado": "rascunho"
+      },
+      {
+       "id": "lockdown-profiles",
+       "nome": "Lockdown Profiles",
+       "estado": "rascunho"
+      },
+      {
+       "id": "pdb-snapshot",
+       "nome": "Snapshots de PDB",
+       "estado": "rascunho"
+      },
+      {
+       "id": "proxy-pdb",
+       "nome": "Proxy PDB",
+       "estado": "rascunho"
+      },
+      {
+       "id": "application-containers",
+       "nome": "Application Containers",
+       "estado": "rascunho"
+      },
+      {
+       "id": "pdb-upgrade",
+       "nome": "Upgrade de PDB",
+       "estado": "rascunho"
+      },
+      {
+       "id": "multitenant-troubleshooting",
+       "nome": "Troubleshooting multitenant",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "08-rac",
+     "n": "08",
+     "nome": "RAC",
+     "topicos": [
+      {
+       "id": "gi-install",
+       "nome": "Instalar Grid Infrastructure",
+       "estado": "rascunho"
+      },
+      {
+       "id": "ocr-voting",
+       "nome": "OCR e Voting Disks",
+       "estado": "rascunho"
+      },
+      {
+       "id": "gns-gpnpt",
+       "nome": "GNS e GPNPT",
+       "estado": "rascunho"
+      },
+      {
+       "id": "services-fcf",
+       "nome": "Services e FCF",
+       "estado": "rascunho"
+      },
+      {
+       "id": "taf-config",
+       "nome": "TAF na prática",
+       "estado": "rascunho"
+      },
+      {
+       "id": "load-balance",
+       "nome": "Balanceamento de carga",
+       "estado": "rascunho"
+      },
+      {
+       "id": "fencing",
+       "nome": "Fencing e split-brain",
+       "estado": "rascunho"
+      },
+      {
+       "id": "add-node",
+       "nome": "Adicionar nó",
+       "estado": "rascunho"
+      },
+      {
+       "id": "rolling-patch-rac",
+       "nome": "Rolling patch no RAC",
+       "estado": "rascunho"
+      },
+      {
+       "id": "policy-cluster",
+       "nome": "Policy-managed x admin-managed",
+       "estado": "rascunho"
+      },
+      {
+       "id": "rac-backup",
+       "nome": "Backup em RAC",
+       "estado": "rascunho"
+      },
+      {
+       "id": "rac-troubleshooting",
+       "nome": "Troubleshooting RAC",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "09-asm",
+     "n": "09",
+     "nome": "ASM",
+     "topicos": [
+      {
+       "id": "diskgroup-create",
+       "nome": "Criar diskgroup",
+       "estado": "rascunho"
+      },
+      {
+       "id": "au-size",
+       "nome": "AU size",
+       "estado": "rascunho"
+      },
+      {
+       "id": "rebalance-power",
+       "nome": "Rebalance e POWER",
+       "estado": "rascunho"
+      },
+      {
+       "id": "acfs",
+       "nome": "ACFS",
+       "estado": "rascunho"
+      },
+      {
+       "id": "afd",
+       "nome": "AFD",
+       "estado": "rascunho"
+      },
+      {
+       "id": "failure-groups",
+       "nome": "Failure groups",
+       "estado": "rascunho"
+      },
+      {
+       "id": "asmca-cli",
+       "nome": "ASMCA x CLI",
+       "estado": "rascunho"
+      },
+      {
+       "id": "asm-troubleshooting",
+       "nome": "Troubleshooting ASM",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "10-dataguard",
+     "n": "10",
+     "nome": "Data Guard",
+     "topicos": [
+      {
+       "id": "far-sync",
+       "nome": "Far Sync",
+       "estado": "rascunho"
+      },
+      {
+       "id": "fsfo-setup",
+       "nome": "FSFO",
+       "estado": "rascunho"
+      },
+      {
+       "id": "cascaded-standby",
+       "nome": "Cascata",
+       "estado": "rascunho"
+      },
+      {
+       "id": "snapshot-standby",
+       "nome": "Snapshot standby",
+       "estado": "rascunho"
+      },
+      {
+       "id": "rolling-upgrade-dg",
+       "nome": "Upgrade via Data Guard",
+       "estado": "rascunho"
+      },
+      {
+       "id": "lag-tuning",
+       "nome": "Lag tuning",
+       "estado": "rascunho"
+      },
+      {
+       "id": "broker-cli",
+       "nome": "Broker CLI",
+       "estado": "rascunho"
+      },
+      {
+       "id": "switchover-drill",
+       "nome": "Switchover ensaiado",
+       "estado": "rascunho"
+      },
+      {
+       "id": "reinstate",
+       "nome": "Reinstate",
+       "estado": "rascunho"
+      },
+      {
+       "id": "dg-troubleshooting",
+       "nome": "Troubleshooting Data Guard",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "11-rman-lab",
+     "n": "11",
+     "nome": "RMAN Lab",
+     "topicos": [
+      {
+       "id": "incremental-strategy",
+       "nome": "Estratégia incremental",
+       "estado": "rascunho"
+      },
+      {
+       "id": "section-size",
+       "nome": "Section size",
+       "estado": "rascunho"
+      },
+      {
+       "id": "catalog-setup",
+       "nome": "Recovery catalog",
+       "estado": "rascunho"
+      },
+      {
+       "id": "tspitr",
+       "nome": "TSPITR",
+       "estado": "rascunho"
+      },
+      {
+       "id": "disaster-rebuild",
+       "nome": "Rebuild pós-desastre",
+       "estado": "rascunho"
+      },
+      {
+       "id": "duplex-backup",
+       "nome": "Duplexação",
+       "estado": "rascunho"
+      },
+      {
+       "id": "validate-restore",
+       "nome": "Validate e testes",
+       "estado": "rascunho"
+      },
+      {
+       "id": "archivelog-policy",
+       "nome": "Política de archivelog",
+       "estado": "rascunho"
+      },
+      {
+       "id": "bct",
+       "nome": "Block Change Tracking",
+       "estado": "rascunho"
+      },
+      {
+       "id": "rman-troubleshooting",
+       "nome": "Troubleshooting RMAN",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "12-sql-tuning",
+     "n": "12",
+     "nome": "SQL Tuning",
+     "topicos": [
+      {
+       "id": "explain-deep",
+       "nome": "Explain a fundo",
+       "estado": "rascunho"
+      },
+      {
+       "id": "sql-profiles-lab",
+       "nome": "SQL Profiles",
+       "estado": "rascunho"
+      },
+      {
+       "id": "spm-baselines",
+       "nome": "Baselines e SPM",
+       "estado": "rascunho"
+      },
+      {
+       "id": "stats-gather",
+       "nome": "Estatísticas",
+       "estado": "rascunho"
+      },
+      {
+       "id": "hints-guide",
+       "nome": "Hints",
+       "estado": "rascunho"
+      },
+      {
+       "id": "monitor-reports",
+       "nome": "SQL Monitor",
+       "estado": "rascunho"
+      },
+      {
+       "id": "outlines-migration",
+       "nome": "Migrar outlines",
+       "estado": "rascunho"
+      },
+      {
+       "id": "tuning-advisor",
+       "nome": "Tuning Advisor",
+       "estado": "rascunho"
+      },
+      {
+       "id": "bind-peeking",
+       "nome": "Bind peeking",
+       "estado": "rascunho"
+      },
+      {
+       "id": "tuning-lab",
+       "nome": "Lab de tuning",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "13-awr-ash",
+     "n": "13",
+     "nome": "AWR e ASH",
+     "topicos": [
+      {
+       "id": "awr-snapshots",
+       "nome": "Snapshots e retenção",
+       "estado": "rascunho"
+      },
+      {
+       "id": "addm-workflow",
+       "nome": "Fluxo ADDM",
+       "estado": "rascunho"
+      },
+      {
+       "id": "ash-deep",
+       "nome": "ASH a fundo",
+       "estado": "rascunho"
+      },
+      {
+       "id": "baseline-templates",
+       "nome": "Baselines",
+       "estado": "rascunho"
+      },
+      {
+       "id": "awr-diff",
+       "nome": "Comparar AWRs",
+       "estado": "rascunho"
+      },
+      {
+       "id": "retention-tuning",
+       "nome": "Retenção",
+       "estado": "rascunho"
+      },
+      {
+       "id": "licensing-note",
+       "nome": "Nota de licenciamento",
+       "estado": "rascunho"
+      },
+      {
+       "id": "awr-lab",
+       "nome": "Lab AWR",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "14-upgrade",
+     "n": "14",
+     "nome": "Upgrade",
+     "topicos": [
+      {
+       "id": "autoupgrade",
+       "nome": "AutoUpgrade",
+       "estado": "rascunho"
+      },
+      {
+       "id": "datapatch",
+       "nome": "Datapatch",
+       "estado": "rascunho"
+      },
+      {
+       "id": "ojvm-patch",
+       "nome": "OJVM",
+       "estado": "rascunho"
+      },
+      {
+       "id": "ru-rur",
+       "nome": "RU e RUR",
+       "estado": "rascunho"
+      },
+      {
+       "id": "rollback-plan",
+       "nome": "Rollback",
+       "estado": "rascunho"
+      },
+      {
+       "id": "preupgrade-checks",
+       "nome": "Pré-checks",
+       "estado": "rascunho"
+      },
+      {
+       "id": "timezone-upgrade",
+       "nome": "Timezone",
+       "estado": "rascunho"
+      },
+      {
+       "id": "upgrade-troubleshooting",
+       "nome": "Troubleshooting upgrade",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "15-security",
+     "n": "15",
+     "nome": "Segurança",
+     "topicos": [
+      {
+       "id": "tde-setup",
+       "nome": "TDE",
+       "estado": "rascunho"
+      },
+      {
+       "id": "wallet-mgmt",
+       "nome": "Wallet",
+       "estado": "rascunho"
+      },
+      {
+       "id": "vault-realms",
+       "nome": "Vault realms",
+       "estado": "rascunho"
+      },
+      {
+       "id": "unified-audit",
+       "nome": "Unified Audit",
+       "estado": "rascunho"
+      },
+      {
+       "id": "redaction-masking",
+       "nome": "Redaction",
+       "estado": "rascunho"
+      },
+      {
+       "id": "least-privilege",
+       "nome": "Menor privilégio",
+       "estado": "rascunho"
+      },
+      {
+       "id": "password-profiles",
+       "nome": "Profiles de senha",
+       "estado": "rascunho"
+      },
+      {
+       "id": "security-assessment",
+       "nome": "Assessment de segurança",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "16-oem",
+     "n": "16",
+     "nome": "OEM",
+     "topicos": [
+      {
+       "id": "oem-install",
+       "nome": "Instalar OEM",
+       "estado": "rascunho"
+      },
+      {
+       "id": "metrics-alerts",
+       "nome": "Métricas e alertas",
+       "estado": "rascunho"
+      },
+      {
+       "id": "blackouts",
+       "nome": "Blackouts",
+       "estado": "rascunho"
+      },
+      {
+       "id": "jobs",
+       "nome": "Jobs e deployment",
+       "estado": "rascunho"
+      },
+      {
+       "id": "compliance",
+       "nome": "Compliance",
+       "estado": "rascunho"
+      },
+      {
+       "id": "oem-troubleshooting",
+       "nome": "Troubleshooting OEM",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "17-goldengate",
+     "n": "17",
+     "nome": "GoldenGate",
+     "topicos": [
+      {
+       "id": "gg-extract",
+       "nome": "Extract",
+       "estado": "rascunho"
+      },
+      {
+       "id": "gg-pump",
+       "nome": "Pump",
+       "estado": "rascunho"
+      },
+      {
+       "id": "gg-replicat",
+       "nome": "Replicat",
+       "estado": "rascunho"
+      },
+      {
+       "id": "gg-cdr",
+       "nome": "CDR",
+       "estado": "rascunho"
+      },
+      {
+       "id": "gg-heartbeat",
+       "nome": "Heartbeat",
+       "estado": "rascunho"
+      },
+      {
+       "id": "gg-upgrade",
+       "nome": "Upgrade do GoldenGate",
+       "estado": "rascunho"
+      },
+      {
+       "id": "gg-oracle-ha",
+       "nome": "GoldenGate em HA",
+       "estado": "rascunho"
+      },
+      {
+       "id": "gg-troubleshooting",
+       "nome": "Troubleshooting GoldenGate",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "18-migration",
+     "n": "18",
+     "nome": "Migração",
+     "topicos": [
+      {
+       "id": "datapump-full",
+       "nome": "Data Pump full",
+       "estado": "rascunho"
+      },
+      {
+       "id": "transportable-tbs",
+       "nome": "Transportable",
+       "estado": "rascunho"
+      },
+      {
+       "id": "xtts",
+       "nome": "XTTS",
+       "estado": "rascunho"
+      },
+      {
+       "id": "copy-performance",
+       "nome": "Throughput de cópia",
+       "estado": "rascunho"
+      },
+      {
+       "id": "charset-migration",
+       "nome": "Migração de charset",
+       "estado": "rascunho"
+      },
+      {
+       "id": "migration-checklist",
+       "nome": "Checklist de migração",
+       "estado": "rascunho"
+      },
+      {
+       "id": "fallback-plan",
+       "nome": "Plano de retorno",
+       "estado": "rascunho"
+      },
+      {
+       "id": "migration-troubleshooting",
+       "nome": "Troubleshooting migração",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "19-benchmark",
+     "n": "19",
+     "nome": "Benchmark",
+     "topicos": [
+      {
+       "id": "swingbench",
+       "nome": "Swingbench",
+       "estado": "rascunho"
+      },
+      {
+       "id": "orion",
+       "nome": "Orion",
+       "estado": "rascunho"
+      },
+      {
+       "id": "calibrate-io",
+       "nome": "Calibrate I-O",
+       "estado": "rascunho"
+      },
+      {
+       "id": "sio-benchmark",
+       "nome": "SIO",
+       "estado": "rascunho"
+      },
+      {
+       "id": "benchmark-compare",
+       "nome": "Comparar resultados",
+       "estado": "rascunho"
+      },
+      {
+       "id": "benchmark-report",
+       "nome": "Relatório de benchmark",
+       "estado": "rascunho"
+      }
+     ]
+    },
+    {
+     "id": "20-war-room",
+     "n": "20",
+     "nome": "War-room",
+     "topicos": [
+      {
+       "id": "crash-instance",
+       "nome": "Crash de instância",
+       "estado": "rascunho"
+      },
+      {
+       "id": "block-corruption",
+       "nome": "Corrupção de bloco",
+       "estado": "rascunho"
+      },
+      {
+       "id": "controlfile-loss",
+       "nome": "Perda de controlfile",
+       "estado": "rascunho"
+      },
+      {
+       "id": "spfile-loss",
+       "nome": "Perda de spfile",
+       "estado": "rascunho"
+      },
+      {
+       "id": "archivelog-gap",
+       "nome": "Gap de archivelog",
+       "estado": "rascunho"
+      },
+      {
+       "id": "split-brain-drill",
+       "nome": "Simulado split-brain",
+       "estado": "rascunho"
+      },
+      {
+       "id": "failover-drill",
+       "nome": "Simulado failover",
+       "estado": "rascunho"
+      },
+      {
+       "id": "pitr-drill",
+       "nome": "Simulado PITR",
+       "estado": "rascunho"
+      },
+      {
+       "id": "chaos-lab",
+       "nome": "Lab de caos",
+       "estado": "rascunho"
+      },
+      {
+       "id": "postmortem",
+       "nome": "Postmortem",
+       "estado": "rascunho"
+      }
+     ]
     }
    ]
   },
@@ -1478,6 +2176,11 @@
        "id": "mirroring",
        "nome": "Mirroring",
        "estado": "pendente"
+      },
+      {
+       "id": "log-shipping",
+       "nome": "Log Shipping",
+       "estado": "rascunho"
       }
      ]
     }

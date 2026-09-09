@@ -203,6 +203,13 @@
 .mdiag svg { display: block; width: 100%; height: auto; min-width: 520px; }
 .mdiag__leg { font-size: var(--fs-xs); color: var(--fg-2); margin-top: var(--s-4); text-align: center; }
 
+/* prints de referência (capturas de telas e diálogos do lab) */
+.mimg {
+  background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: var(--s-5); margin: var(--s-5) 0; overflow-x: auto;
+}
+.mimg img { display: block; width: 100%; height: auto; border-radius: var(--r-md); }
+
 /* ---------- 07 · avisos e pendencia ------------------------------------- */
 .mrev {
   display: flex; align-items: flex-start; gap: var(--s-3);
@@ -248,7 +255,6 @@
 @media (max-width: 640px) {
   .mtopo { gap: var(--s-2); padding: var(--s-3) var(--s-4); }
   .mtopo__marca b { white-space: nowrap; }
-  #mprogresso { display: none; }          /* nao cabe e nao e essencial */
 }
 
 @media (max-width: 560px) {
