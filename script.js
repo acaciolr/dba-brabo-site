@@ -1012,9 +1012,12 @@ function setupIdioma() {
 async function boot() {
   setupTema();                       // antes de tudo, evita flash de tema errado
   try {
-    const [site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos, consultoria] = await Promise.all(
-      ['site', 'mentorias', 'projetos', 'tecnologias', 'roadmap', 'faq', 'certificacoes', 'eventos', 'consultoria'].map(loadJSON));
-    Object.assign(DATA, { site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos, consultoria });
+    const [site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos] = await Promise.all(
+      ['site', 'mentorias', 'projetos', 'tecnologias', 'roadmap', 'faq', 'certificacoes', 'eventos'].map(loadJSON));
+    Object.assign(DATA, { site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos });
+    try {
+      DATA.consultoria = await loadJSON('consultoria');
+    } catch { DATA.consultoria = null; }   // sem o JSON a seção se esconde sozinha — nunca derruba o boot
     try {
       DATA.i18n = await loadJSON('i18n');
     } catch { DATA.i18n = null; }   // sem dicionário = portal segue em PT, botão continua clicável
