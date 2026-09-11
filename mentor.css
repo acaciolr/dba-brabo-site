@@ -267,3 +267,53 @@
 .mconteudo { --accent: var(--brand); }
 .mbloco > .mpasso:first-of-type { padding-top: 0; }
 .mtop span { overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- 09 · diagramas animados ------------------------------------- */
+/* A animacao mostra o SENTIDO do fluxo — redo saindo do primario, bloco
+   viajando pelo interconnect, oplog chegando no secondary. E didatica, nao
+   decoracao: por isso e lenta, discreta e pode ser parada. */
+.mdiag--anim { position: relative; }
+.mdiag__pausa {
+  position: absolute; top: var(--s-3); right: var(--s-3); z-index: 2;
+  background: color-mix(in srgb, var(--bg-0) 82%, transparent);
+  border: 1px solid var(--line); border-radius: var(--r-full);
+  color: var(--fg-2); cursor: pointer; padding: 3px var(--s-3);
+  font-family: var(--font-mono, monospace); font-size: 11px; line-height: 1.6;
+  backdrop-filter: blur(6px); opacity: 0; transition: opacity .18s ease, color .18s ease;
+}
+.mdiag--anim:hover .mdiag__pausa,
+.mdiag__pausa:focus-visible { opacity: 1; }
+.mdiag__pausa:hover { color: var(--fg-0); border-color: var(--line-strong); }
+
+/* Pacote que percorre a seta. O tracejado corre no sentido do fluxo. */
+.mdiag .fluxo {
+  stroke-dasharray: 6 10;
+  animation: mdiagFluxo 1.6s linear infinite;
+}
+@keyframes mdiagFluxo { to { stroke-dashoffset: -32; } }
+
+/* Pulso de um no ativo (primario, coordenador, mongos). */
+.mdiag .pulso { animation: mdiagPulso 2.4s ease-in-out infinite; transform-origin: center; }
+@keyframes mdiagPulso { 0%,100% { opacity:.35 } 50% { opacity:1 } }
+
+/* Aparecimento em cascata para etapas numeradas de um fluxo. */
+.mdiag .etapa { animation: mdiagEtapa 4s ease-in-out infinite; }
+.mdiag .etapa--2 { animation-delay: .5s; }
+.mdiag .etapa--3 { animation-delay: 1s; }
+.mdiag .etapa--4 { animation-delay: 1.5s; }
+@keyframes mdiagEtapa { 0%,70%,100% { opacity:.4 } 20%,50% { opacity:1 } }
+
+/* Parada manual e respeito a preferencia do sistema valem para tudo. */
+.mdiag.is-parado .fluxo,
+.mdiag.is-parado .pulso,
+.mdiag.is-parado .etapa { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .mdiag .fluxo, .mdiag .pulso, .mdiag .etapa { animation: none; }
+  .mdiag .fluxo { stroke-dasharray: none; }
+  .mdiag .pulso, .mdiag .etapa { opacity: 1; }
+  .mdiag__pausa { display: none; }
+}
+
+/* Print de tela dentro do lab: emoldurado como janela, nao solto na pagina. */
+.mimg figcaption { margin-top: var(--s-3); }
+.mimg img { border: 1px solid var(--line); background: var(--bg-2); }

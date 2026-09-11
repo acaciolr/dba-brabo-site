@@ -26,3 +26,7 @@ __pycache__/
 docs/estado-atual.md
 docs/terminal-web-spec.html
 docs/plano-execucao.html
+
+# Material de apoio ao mentor em TEXTO PURO. O repositorio e PUBLICO —
+# isto nunca pode subir. So o resultado cifrado (data/mentor/*.enc) vai.
+conteudo-mentor/

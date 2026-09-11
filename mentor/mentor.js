@@ -306,6 +306,7 @@ async function abrirTopico(trilha, modulo, topico) {
   if (!c) return el.innerHTML = telaPendente(t, m, p);
   el.innerHTML = renderTopico(t, m, c);
   ligarCopiar(el);
+  ligarPausa(el);
 }
 
 function telaPendente(t, m, p) {
@@ -366,8 +367,16 @@ function renderBloco(b) {
       return `<ul class="mlista">${(b.itens || []).map(x => `<li>${rico(x)}</li>`).join('')}</ul>`;
     case 'terminal':
       return terminal(b);
-    case 'diagrama':
-      return `<figure class="mdiag">${b.svg || ''}${b.leg ? `<figcaption class="mdiag__leg">${rico(b.leg)}</figcaption>` : ''}</figure>`;
+    case 'diagrama': {
+      /* Diagrama animado ganha botao de pausa: aula em projetor as vezes pede
+         a figura parada. A classe is-parado desliga a animacao via CSS. */
+      const anim = /<(animate|animateMotion|animateTransform)|class="fluxo"|class="pulso"/.test(b.svg || '');
+      return `<figure class="mdiag${anim ? ' mdiag--anim' : ''}">`
+        + (anim ? `<button class="mdiag__pausa" type="button" aria-pressed="false">${esc(T('mentor.pausar', 'pausar'))}</button>` : '')
+        + (b.svg || '')
+        + (b.leg ? `<figcaption class="mdiag__leg">${rico(b.leg)}</figcaption>` : '')
+        + `</figure>`;
+    }
     case 'imagem': {
       const src = String(b.src || '').replace(/^\//, '');
       if (!src) return '';
@@ -391,7 +400,6 @@ function renderTopico(t, m, c) {
 
   if (c.versoes) h += `<p style="font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--fg-3);margin-bottom:var(--s-6)">${esc(T('mentor.testado_em', 'Escrito e testado em: '))}${esc(c.versoes)}</p>`;
   if (c._lang === 'pt' && I18N.lang === 'en') h += `<div class="mrev"><b>EN soon</b><span>${esc(T('mentor.somente_pt', 'Conteúdo ainda em português — tradução a caminho.'))}</span></div>`;
-  if (!c.revisado) h += `<div class="mrev"><b>${esc(T('mentor.rascunho_t', 'Rascunho'))}</b><span>${rico(T('mentor.rascunho_d', 'Este passo a passo ainda não foi reexecutado do zero.'))}</span></div>`;
 
   for (const b of (c.blocos || [])) {
     h += `<section class="mbloco">`;
@@ -400,6 +408,19 @@ function renderTopico(t, m, c) {
     h += `</section>`;
   }
   return h;
+}
+
+function ligarPausa(raiz) {
+  for (const btn of $$('.mdiag__pausa', raiz)) {
+    btn.addEventListener('click', () => {
+      const fig = btn.closest('.mdiag');
+      const parado = fig.classList.toggle('is-parado');
+      btn.textContent = parado ? T('mentor.animar', 'animar') : T('mentor.pausar', 'pausar');
+      btn.setAttribute('aria-pressed', String(parado));
+      const svg = fig.querySelector('svg');
+      if (svg && svg.pauseAnimations) parado ? svg.pauseAnimations() : svg.unpauseAnimations();
+    });
+  }
 }
 
 function ligarCopiar(raiz) {
@@ -419,6 +440,17 @@ function ligarCopiar(raiz) {
 }
 
 /* ---------- deep link ---------------------------------------------------- */
+/* Navegacao por fragmento nao recarrega o script: sem este listener, mudar o
+   hash na barra de enderecos ou usar o botao voltar deixa a pagina parada. */
+window.addEventListener('hashchange', () => {
+  if (!app.indice) return;
+  const h = location.hash.replace(/^#/, '');
+  if (!h) return;
+  const atual = app.sel ? `${app.sel.trilha}/${app.sel.modulo}/${app.sel.topico}` : '';
+  if (h === atual) return;
+  restaurarHash();
+});
+
 function restaurarHash() {
   const h = location.hash.replace(/^#/, '');
   if (!h) return;
@@ -427,5 +459,8 @@ function restaurarHash() {
   if (!sec) return;
   sec.classList.add('is-open');
   const bt = $$('#mnav .mtop').find(b => b.dataset.id === h);
-  if (bt) { bt.closest('.mmod').classList.add('is-open'); bt.click(); }
+  if (!bt) return;
+  bt.closest('.mmod').classList.add('is-open');
+  bt.scrollIntoView({ block: 'nearest' });
+  abrirTopico(trilha, modulo, topico);
 }
