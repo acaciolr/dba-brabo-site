@@ -1012,9 +1012,12 @@ function setupIdioma() {
 async function boot() {
   setupTema();                       // antes de tudo, evita flash de tema errado
   try {
-    const [site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos, consultoria, i18n] = await Promise.all(
-      ['site', 'mentorias', 'projetos', 'tecnologias', 'roadmap', 'faq', 'certificacoes', 'eventos', 'consultoria', 'i18n'].map(loadJSON));
-    Object.assign(DATA, { site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos, consultoria, i18n });
+    const [site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos, consultoria] = await Promise.all(
+      ['site', 'mentorias', 'projetos', 'tecnologias', 'roadmap', 'faq', 'certificacoes', 'eventos', 'consultoria'].map(loadJSON));
+    Object.assign(DATA, { site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos, consultoria });
+    try {
+      DATA.i18n = await loadJSON('i18n');
+    } catch { DATA.i18n = null; }   // sem dicionário = portal segue em PT, botão continua clicável
     setupIdioma();
   } catch (err) {
     console.error('[DBA BRABO] falha ao carregar os dados:', err);
