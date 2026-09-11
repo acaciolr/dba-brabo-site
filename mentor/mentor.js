@@ -16,6 +16,47 @@ const CHAVE_SESSAO = 'dbabrabo.mentor.k';
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
+/* ---------- idioma (chrome PT/EN; conteúdo segue PT na Fase 1) ------------- */
+const I18N = { lang: 'pt', dict: null };
+function t(chave, fb) {
+  const g = (o, k) => String(k).split('.').reduce((a, p) => (a && a[p] != null ? a[p] : null), o);
+  return g(I18N.dict && I18N.dict[I18N.lang], chave)
+      || g(I18N.dict && I18N.dict.pt, chave)
+      || fb || chave;
+}
+function aplicarIdioma() {
+  if (!I18N.dict) return;
+  document.documentElement.lang = t('meta.lang', 'pt-BR');
+  document.querySelectorAll('[data-i18n]').forEach(n => { n.innerHTML = t(n.dataset.i18n, null) || n.innerHTML; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(n => { n.placeholder = t(n.dataset.i18nPh, null) || n.placeholder; });
+  document.querySelectorAll('[data-i18n-aria]').forEach(n => { n.setAttribute('aria-label', t(n.dataset.i18nAria, null) || n.getAttribute('aria-label')); });
+  document.querySelectorAll('[data-i18n-title]').forEach(n => { n.title = t(n.dataset.i18nTitle, null) || n.title; });
+  const btn = $('#langToggleTop');
+  if (btn) btn.textContent = I18N.lang === 'pt' ? 'EN' : 'PT';
+}
+async function carregarIdioma() {
+  try {
+    const r = await fetch(`${BASE}/data/i18n.json`, { cache: 'no-store' });
+    if (r.ok) I18N.dict = await r.json();
+  } catch {}
+  try {
+    const l = localStorage.getItem('dbabrabo.lang');
+    if (l === 'pt' || l === 'en') I18N.lang = l;
+  } catch {}
+  aplicarIdioma();
+  const btn = $('#langToggleTop');
+  if (btn && !btn.dataset.i18nOn) {
+    btn.dataset.i18nOn = '1';
+    btn.addEventListener('click', () => {
+      I18N.lang = I18N.lang === 'pt' ? 'en' : 'pt';
+      try { localStorage.setItem('dbabrabo.lang', I18N.lang); } catch {}
+      aplicarIdioma();
+      if (app.sel) abrirTopico(app.sel.trilha, app.sel.modulo, app.sel.topico);
+    });
+  }
+}
+carregarIdioma();
+
 /* ---------- estado ------------------------------------------------------ */
 const app = {
   senha: null,
@@ -60,18 +101,18 @@ function erro(msg) { elErro.textContent = msg; elErro.classList.add('is-on'); }
 function limpaErro() { elErro.classList.remove('is-on'); }
 
 async function tentarEntrar(usuario, senha) {
-  if (usuario.trim() !== USUARIO_ESPERADO) throw new Error('Usuário ou senha incorretos.');
+  if (usuario.trim() !== USUARIO_ESPERADO) throw new Error(t('mentor.erro_cred', 'Usuário ou senha incorretos.'));
   let env;
   try {
     env = await baixarEnc(`${BASE}/data/mentor/_verificacao.enc`);
   } catch {
-    throw new Error('Material cifrado ainda não publicado. Rode tools/build-mentor.mjs.');
+    throw new Error(t('mentor.erro_sem_material', 'Material cifrado ainda não publicado. Rode tools/build-mentor.mjs.'));
   }
   try {
     await decifrar(env, senha);
   } catch {
     app.chaves = {};
-    throw new Error('Usuário ou senha incorretos.');
+    throw new Error(t('mentor.erro_cred', 'Usuário ou senha incorretos.'));
   }
   app.senha = senha;
 }
@@ -80,7 +121,7 @@ $('#form-acesso').addEventListener('submit', async e => {
   e.preventDefault();
   limpaErro();
   const btn = $('#btn-entrar');
-  btn.disabled = true; btn.textContent = 'Decifrando…';
+  btn.disabled = true; btn.textContent = t('mentor.decifrando', 'Decifrando…');
   try {
     await tentarEntrar($('#usuario').value, $('#senha').value);
     try { sessionStorage.setItem(CHAVE_SESSAO, app.senha); } catch {}
@@ -89,7 +130,7 @@ $('#form-acesso').addEventListener('submit', async e => {
     erro(err.message);
     $('#senha').value = ''; $('#senha').focus();
   } finally {
-    btn.disabled = false; btn.textContent = 'Entrar';
+    btn.disabled = false; btn.textContent = t('mentor.entrar', 'Entrar');
   }
 });
 
@@ -230,7 +271,7 @@ async function abrirTopico(trilha, modulo, topico) {
 
   if (!app.disponiveis.includes(trilha)) return el.innerHTML = telaPendente(t, m, p);
 
-  el.innerHTML = `<p style="color:var(--fg-3);font-family:var(--font-mono);font-size:var(--fs-xs)">decifrando…</p>`;
+  el.innerHTML = `<p style="color:var(--fg-3);font-family:var(--font-mono);font-size:var(--fs-xs)">${esc(t('mentor.decifrando2', 'decifrando…'))}</p>`;
   let dados;
   try { dados = await carregarTrilha(trilha); }
   catch (e) { return el.innerHTML = `<div class="mrev"><b>Erro</b> Não foi possível ler ${trilha}.enc — ${esc(e.message)}</div>`; }
@@ -248,11 +289,8 @@ function telaPendente(t, m, p) {
   return `<div class="mpend">
     <span class="mpend__sel">${esc(t.nome)} · ${esc(m.nome)}</span>
     <h1 style="font-size:var(--fs-xl);margin-bottom:var(--s-3)">${esc(p.nome)}</h1>
-    <p style="color:var(--fg-1)">Este tópico ainda não foi escrito. O índice já reserva o lugar dele
-       — o conteúdo entra em <code style="font-family:var(--font-mono);font-size:var(--fs-xs)">conteudo-mentor/${esc(t.slug)}.json</code>
-       e sobe cifrado no próximo build.</p>
-    <p style="color:var(--fg-3);font-size:var(--fs-sm);margin-top:var(--s-4)">
-       Nada aqui é preenchido automaticamente: um passo a passo só entra depois de escrito e conferido.</p>
+    <p style="color:var(--fg-1)">${t('mentor.pendente_p1', 'Este tópico ainda não foi escrito. O índice já reserva o lugar dele — o conteúdo entra no próximo build.')}</p>
+    <p style="color:var(--fg-3);font-size:var(--fs-sm);margin-top:var(--s-4)">${t('mentor.pendente_p2', 'Nada aqui é preenchido automaticamente: um passo a passo só entra depois de escrito e conferido.')}</p>
   </div>`;
 }
 
@@ -280,7 +318,7 @@ function terminal(bloco) {
     <div class="term-mac__barra">
       <div class="term-mac__luzes"><i></i><i></i><i></i></div>
       <div class="term-mac__titulo">${esc(bloco.titulo || 'bash')}</div>
-      <button class="term-mac__copiar" type="button">copiar</button>
+      <button class="term-mac__copiar" type="button">${esc(t('mentor.copiar', 'copiar'))}</button>
     </div>
     <pre>${linhas}</pre>
   </div>`;
@@ -292,8 +330,8 @@ function passo(p, i) {
   if (p.desc) h += `<div class="mpasso__d">${rico(p.desc)}</div>`;
   for (const b of (p.blocos || [])) h += renderBloco(b);
   if (p.term) h += terminal(p.term);
-  if (p.cheque) h += `<div class="mcheque"><b>Validação</b><span>${rico(p.cheque)}</span></div>`;
-  if (p.falha)  h += `<div class="mfalha"><b>Se falhar</b><span>${rico(p.falha)}</span></div>`;
+  if (p.cheque) h += `<div class="mcheque"><b>${esc(t('mentor.validacao', 'Validação'))}</b><span>${rico(p.cheque)}</span></div>`;
+  if (p.falha)  h += `<div class="mfalha"><b>${esc(t('mentor.se_falhar', 'Se falhar'))}</b><span>${rico(p.falha)}</span></div>`;
   return h + '</div></div>';
 }
 
@@ -328,8 +366,8 @@ function renderTopico(t, m, c) {
     ${c.resumo ? `<p class="mcab__resumo">${rico(c.resumo)}</p>` : ''}
   </header>`;
 
-  if (c.versoes) h += `<p style="font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--fg-3);margin-bottom:var(--s-6)">Escrito e testado em: ${esc(c.versoes)}</p>`;
-  if (!c.revisado) h += `<div class="mrev"><b>Rascunho</b><span>Este passo a passo ainda não foi reexecutado do zero. Confira contra a documentação da sua versão antes de usar em aula.</span></div>`;
+  if (c.versoes) h += `<p style="font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--fg-3);margin-bottom:var(--s-6)">${esc(t('mentor.testado_em', 'Escrito e testado em: '))}${esc(c.versoes)}</p>`;
+  if (!c.revisado) h += `<div class="mrev"><b>${esc(t('mentor.rascunho_t', 'Rascunho'))}</b><span>${rico(t('mentor.rascunho_d', 'Este passo a passo ainda não foi reexecutado do zero.'))}</span></div>`;
 
   for (const b of (c.blocos || [])) {
     h += `<section class="mbloco">`;
@@ -348,7 +386,9 @@ function ligarCopiar(raiz) {
       const cmds = Array.from(pre.querySelectorAll('.pr'))
         .map(s => (s.nextSibling?.textContent || '').trim()).filter(Boolean).join('\n');
       navigator.clipboard.writeText(cmds || pre.textContent).then(() => {
-        btn.textContent = 'copiado'; setTimeout(() => btn.textContent = 'copiar', 1400);
+        const volta = btn.textContent;
+        btn.textContent = t('mentor.copiado', 'copiado');
+        setTimeout(() => btn.textContent = t('mentor.copiar', 'copiar'), 1400);
       });
     });
   }

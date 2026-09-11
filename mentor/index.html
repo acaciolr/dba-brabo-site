@@ -26,36 +26,36 @@
       <img src="../assets/logo/avatar-96.png" alt="DBA BRABO">
       <div>
         <b>DBA BRABO</b>
-        <span>Área restrita</span>
+        <span data-i18n="mentor.area_restrita">Área restrita</span>
       </div>
     </div>
 
-    <h1 style="font-size:var(--fs-xl);margin-bottom:var(--s-2)">Material de apoio ao mentor</h1>
-    <p style="color:var(--fg-2);font-size:var(--fs-sm)">
+    <h1 style="font-size:var(--fs-xl);margin-bottom:var(--s-2)" data-i18n="mentor.titulo">Material de apoio ao mentor</h1>
+    <p style="color:var(--fg-2);font-size:var(--fs-sm)" data-i18n="mentor.sub">
       Referência técnica das formações: passo a passo de execução, validação e diagnóstico.
     </p>
 
     <form id="form-acesso" autocomplete="off">
       <div class="campo">
-        <label for="usuario">usuário</label>
+        <label for="usuario" data-i18n="mentor.usuario">usuário</label>
         <input type="text" id="usuario" name="usuario" autocapitalize="off" autocorrect="off" spellcheck="false" required>
       </div>
       <div class="campo">
-        <label for="senha">senha</label>
+        <label for="senha" data-i18n="mentor.senha">senha</label>
         <input type="password" id="senha" name="senha" required>
       </div>
       <div class="acesso__erro" id="erro" role="alert"></div>
-      <button class="btn btn--primary" type="submit" id="btn-entrar">Entrar</button>
+      <button class="btn btn--primary" type="submit" id="btn-entrar" data-i18n="mentor.entrar">Entrar</button>
       <button class="btn btn--ghost" type="button" disabled aria-disabled="true"
-              title="Ainda não disponível">Área do aluno · em breve</button>
+              title="Ainda não disponível" data-i18n-title="mentor.aluno_titulo" data-i18n="mentor.aluno_breve">Área do aluno · em breve</button>
     </form>
 
-    <p class="acesso__nota">
+    <p class="acesso__nota" data-i18n="mentor.nota">
       O conteúdo é cifrado no repositório com AES-256-GCM. A senha não fica no código:
       ela é a chave que decifra o material aqui no seu navegador. Senha errada não
       &ldquo;nega o acesso&rdquo; — simplesmente não decifra nada.
     </p>
-    <p class="acesso__nota"><a href="../" style="color:var(--fg-2)">&larr; voltar ao portal</a></p>
+    <p class="acesso__nota"><a href="../" style="color:var(--fg-2)" data-i18n="mentor.voltar">&larr; voltar ao portal</a></p>
   </div>
 </main>
 
@@ -68,24 +68,24 @@
     </div>
     <span class="mtopo__tag">mentor</span>
     <div class="mtopo__dir">
-      <span id="mprogresso" style="font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--fg-3)"></span>
-      <a class="btn btn--ghost btn--sm" href="../">Portal</a>
-      <button class="btn btn--ghost btn--sm" type="button" id="btn-sair">Sair</button>
+      <button class="lang-toggle" id="langToggleTop" type="button" aria-label="Mudar idioma" data-i18n-aria="idioma" style="min-width:30px;height:30px">PT</button>
+      <a class="btn btn--ghost btn--sm" href="../" data-i18n="mentor.portal">Portal</a>
+      <button class="btn btn--ghost btn--sm" type="button" id="btn-sair" data-i18n="mentor.sair">Sair</button>
     </div>
   </header>
 
   <div class="mcorpo">
     <aside class="mlado">
       <div class="mbusca">
-        <input type="search" id="mbusca" placeholder="buscar tópico…" autocomplete="off" spellcheck="false">
+        <input type="search" id="mbusca" data-i18n-ph="mentor.buscar" placeholder="buscar tópico…" autocomplete="off" spellcheck="false">
       </div>
       <nav id="mnav" aria-label="Trilhas"></nav>
     </aside>
 
     <main class="mconteudo" id="mconteudo">
       <div class="mvazio">
-        <h1>Referência técnica</h1>
-        <p>Escolha uma trilha na barra lateral, abra o módulo e clique no tópico.
+        <h1 data-i18n="mentor.vazio_h">Referência técnica</h1>
+        <p data-i18n="mentor.vazio_p">Escolha uma trilha na barra lateral, abra o módulo e clique no tópico.
            Cada tópico traz o passo a passo completo do lab: pré-requisitos, execução
            comando a comando, o que validar depois de cada passo e o que fazer quando falha.</p>
       </div>

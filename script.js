@@ -94,7 +94,8 @@ function icon(name, cls = '') {
 }
 
 /* ---------- estado ------------------------------------------------------ */
-const DATA = { site: null, mentorias: null, projetos: null, tecnologias: null, roadmap: null, faq: null, certificacoes: null, eventos: null };
+const DATA = { site: null, mentorias: null, projetos: null, tecnologias: null, roadmap: null, faq: null, certificacoes: null, eventos: null, consultoria: null, i18n: null };
+let LANG = 'pt';
 
 async function loadJSON(name) {
   const r = await fetch(url(`data/${name}.json`), { cache: 'no-cache' });
@@ -318,6 +319,62 @@ function renderFiltros(ms) {
     .filter(f => conta(f.id) > 0)
     .map(f => `<button class="filter${f.id === 'all' ? ' is-active' : ''}" data-filter="${esc(f.id)}"
        aria-pressed="${f.id === 'all'}">${esc(f.label)}<span class="filter__count">${conta(f.id)}</span></button>`).join('');
+}
+
+/* ---------- consultoria -------------------------------------------------
+   Linha de servico separada da mentoria. Todo o texto vem do JSON — nao ha
+   nome de cliente, numero de projeto nem promessa de resultado no codigo.
+------------------------------------------------------------------------- */
+function renderConsultoria() {
+  const box = $('#consultoria'); if (!box) return;
+  const c = DATA.consultoria;
+  const secao = box.closest('section');
+  if (!c || !(c.servicos || []).length) { if (secao) secao.hidden = true; return; }
+
+  const card = s => `
+    <article class="cons reveal" style="--accent:${esc(s.accent || 'var(--brand)')}">
+      <h3 class="cons__nome">${esc(s.nome)}</h3>
+      <p class="cons__desc">${esc(s.desc)}</p>
+      ${(s.tec || []).length
+        ? `<div class="cons__tec">${s.tec.map(t => `<span>${esc(t)}</span>`).join('')}</div>` : ''}
+    </article>`;
+
+  const P = c.plataformas || {};
+  const F = c.formatos || {};
+  // canalContato guarda a CHAVE do canal, nao a URL — resolve em site.links.
+  const L = (DATA.site && DATA.site.links) || {};
+  const chave = (DATA.site && DATA.site.contato && DATA.site.contato.canalContato) || 'linkedinEmpresa';
+  const contato = (L[chave] && L[chave].url) || (L.linkedin && L.linkedin.url) || '';
+
+  box.innerHTML = `
+    <div class="cons-grid">${c.servicos.map(card).join('')}</div>
+
+    <div class="cons-base">
+      <div class="cons-bloco reveal">
+        <p class="cons-bloco__t">${esc(P.titulo || 'Plataformas')}</p>
+        <div class="cons-plat">
+          <div class="cons-plat__linha"><span class="cons-plat__rot">Bancos</span>
+            ${(P.bancos || []).map(x => `<b>${esc(x)}</b>`).join('')}</div>
+          <div class="cons-plat__linha"><span class="cons-plat__rot">Nuvens</span>
+            ${(P.nuvens || []).map(x => `<b>${esc(x)}</b>`).join('')}</div>
+        </div>
+      </div>
+
+      <div class="cons-bloco reveal">
+        <p class="cons-bloco__t">${esc(F.titulo || 'Como funciona')}</p>
+        <div class="cons-form">
+          ${(F.itens || []).map(i => `
+            <div class="cons-form__item"><b>${esc(i.nome)}</b><span>${esc(i.desc)}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    ${c.cta ? `
+    <div class="cons-cta reveal">
+      <p>${esc(c.cta.texto)}</p>
+      ${contato ? `<a class="btn btn--primary" href="${esc(contato)}" target="_blank" rel="noopener">
+        ${icon('external')} ${esc(c.cta.rotulo)}</a>` : ''}
+    </div>` : ''}`;
 }
 
 /* ---------- projetos ----------------------------------------------------- */
@@ -918,15 +975,47 @@ function setupScrollSpy() {
   secoes.forEach(s => io.observe(s));
 }
 
+/* ---------- idioma (chrome PT/EN; conteúdo profundo chega na Fase 2) ----- */
+function t(chave) {
+  const get = (o, k) => k.split('.').reduce((a, p) => (a && a[p] != null ? a[p] : null), o);
+  return get(DATA.i18n && DATA.i18n[LANG], chave)
+      || get(DATA.i18n && DATA.i18n.pt, chave)
+      || chave;
+}
+
+function aplicarIdioma() {
+  if (!DATA.i18n) return;
+  document.documentElement.lang = t('meta.lang');
+  $$('[data-i18n]').forEach(n => { n.innerHTML = t(n.dataset.i18n); });
+  $$('[data-i18n-ph]').forEach(n => { n.placeholder = t(n.dataset.i18nPh); });
+  $$('[data-i18n-aria]').forEach(n => { n.setAttribute('aria-label', t(n.dataset.i18nAria)); });
+  $$('[data-i18n-title]').forEach(n => { n.title = t(n.dataset.i18nTitle); });
+  const btn = $('#langToggle');
+  if (btn) btn.textContent = LANG === 'pt' ? 'EN' : 'PT';
+}
+
+function setupIdioma() {
+  try { LANG = localStorage.getItem('dbabrabo.lang') || 'pt'; } catch { LANG = 'pt'; }
+  if (!['pt', 'en'].includes(LANG)) LANG = 'pt';
+  aplicarIdioma();
+  const btn = $('#langToggle');
+  if (btn) btn.addEventListener('click', () => {
+    LANG = LANG === 'pt' ? 'en' : 'pt';
+    try { localStorage.setItem('dbabrabo.lang', LANG); } catch {}
+    aplicarIdioma();
+  });
+}
+
 /* ==========================================================================
    BOOT
    ========================================================================== */
 async function boot() {
   setupTema();                       // antes de tudo, evita flash de tema errado
   try {
-    const [site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos] = await Promise.all(
-      ['site', 'mentorias', 'projetos', 'tecnologias', 'roadmap', 'faq', 'certificacoes', 'eventos'].map(loadJSON));
-    Object.assign(DATA, { site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos });
+    const [site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos, consultoria, i18n] = await Promise.all(
+      ['site', 'mentorias', 'projetos', 'tecnologias', 'roadmap', 'faq', 'certificacoes', 'eventos', 'consultoria', 'i18n'].map(loadJSON));
+    Object.assign(DATA, { site, mentorias, projetos, tecnologias, roadmap, faq, certificacoes, eventos, consultoria, i18n });
+    setupIdioma();
   } catch (err) {
     console.error('[DBA BRABO] falha ao carregar os dados:', err);
     const alvo = $('#mentoriasGrid') || $('main');
@@ -939,7 +1028,7 @@ async function boot() {
   }
 
   renderTerminal(); renderStats(); renderSobre(); renderFundadores(); renderMetodologia();
-  renderMentorias(); renderProjetos(); renderStack(); renderCertificacoes(); renderEventos(); renderRoadmap();
+  renderMentorias(); renderConsultoria(); renderProjetos(); renderStack(); renderCertificacoes(); renderEventos(); renderRoadmap();
   renderFAQ(); renderFooter();
   await renderSocial();          // busca os SVG dos QR antes de revelar
   await setupSearch();           // indice de busca gerado no build

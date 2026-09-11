@@ -55,7 +55,7 @@
 </head>
 <body>
 
-<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<a class="skip-link" href="#conteudo" data-i18n="pular">Pular para o conteúdo</a>
 <div class="backdrop" aria-hidden="true"></div>
 <div class="aurora" aria-hidden="true"></div>
 
@@ -68,26 +68,29 @@
   </a>
 
   <nav class="nav" id="nav" aria-label="Navegação principal">
-    <a class="nav__link is-active" href="#sobre">Sobre</a>
-    <a class="nav__link" href="#mentorias">Mentorias</a>
-    <a class="nav__link" href="#metodologia">Metodologia</a>
-    <a class="nav__link" href="#projetos">Projetos</a>
-    <a class="nav__link" href="#certificacoes-sec">Certificações</a>
-    <a class="nav__link" href="#tecnologias">Stack</a>
-    <a class="nav__link" href="#eventos-sec">Eventos</a>
-    <a class="nav__link" href="#roadmap">Roadmap</a>
-    <a class="nav__link" href="#faq">FAQ</a>
+    <a class="nav__link is-active" href="#sobre" data-i18n="nav.sobre">Sobre</a>
+    <a class="nav__link" href="#mentorias" data-i18n="nav.mentorias">Mentorias</a>
+    <a class="nav__link" href="#metodologia" data-i18n="nav.metodologia">Metodologia</a>
+    <a class="nav__link" href="#consultoria-sec" data-i18n="nav.consultoria">Consultoria</a>
+    <a class="nav__link" href="#projetos" data-i18n="nav.projetos">Projetos</a>
+    <a class="nav__link" href="#certificacoes-sec" data-i18n="nav.certificacoes">Certificações</a>
+    <a class="nav__link" href="#tecnologias" data-i18n="nav.stack">Stack</a>
+    <a class="nav__link" href="#eventos-sec" data-i18n="nav.eventos">Eventos</a>
+    <a class="nav__link" href="#roadmap" data-i18n="nav.roadmap">Roadmap</a>
+    <a class="nav__link" href="#faq" data-i18n="nav.faq">FAQ</a>
     <span class="nav__actions">
-      <a class="btn btn--primary btn--sm" href="#comunidade" data-community>Entrar na comunidade</a>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">
+      <a class="btn btn--primary btn--sm" href="#comunidade" data-community data-i18n="nav.comunidade">Entrar na comunidade</a>
+      <button class="btn btn--ghost btn--sm" type="button" disabled aria-disabled="true" title="Em breve" data-i18n="nav.aluno" data-i18n-title="aluno_breve">Área do aluno</button>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema" data-i18n-aria="tema">
         <svg data-icon="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
         <svg data-icon="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         <svg data-icon="system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
       </button>
+      <button class="lang-toggle" id="langToggle" type="button" aria-label="Mudar idioma" data-i18n-aria="idioma">PT</button>
     </span>
   </nav>
 
-  <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav">
+  <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" data-i18n-aria="menu_abrir" aria-expanded="false" aria-controls="nav">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
   </button>
 </header>
@@ -99,13 +102,13 @@
   <div class="container">
     <div class="hero__grid">
       <div>
-        <p class="eyebrow">Ecossistema de formação técnica</p>
+        <p class="eyebrow" data-i18n="hero.eyebrow">Ecossistema de formação técnica</p>
         <h1>DBA <span class="accent">BRABO</span></h1>
-        <p class="hero__claim">“Não basta saber usar banco de dados.<br>É preciso saber administrá-lo.”</p>
-        <p class="hero__desc">Mentoria individual em Oracle, MySQL, SQL&nbsp;Server, PostgreSQL e MongoDB — da arquitetura interna à alta disponibilidade, com lab prático no seu ambiente e troubleshooting de cenário real.</p>
+        <p class="hero__claim" data-i18n="hero.claim">“Não basta saber usar banco de dados.<br>É preciso saber administrá-lo.”</p>
+        <p class="hero__desc" data-i18n="hero.desc">Mentoria individual em Oracle, MySQL, SQL&nbsp;Server, PostgreSQL e MongoDB — da arquitetura interna à alta disponibilidade, com lab prático no seu ambiente e troubleshooting de cenário real.</p>
         <div class="hero__cta">
-          <a class="btn btn--primary" href="#mentorias">Conhecer as mentorias</a>
-          <a class="btn btn--outline" href="#sobre">Conhecer o ecossistema</a>
+          <a class="btn btn--primary" href="#mentorias" data-i18n="hero.cta1">Conhecer as mentorias</a>
+          <a class="btn btn--outline" href="#sobre" data-i18n="hero.cta2">Conhecer o ecossistema</a>
         </div>
         <div class="hero__stats" id="heroStats"></div>
       </div>
@@ -118,9 +121,9 @@
 <section id="sobre">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow">O que é o DBA BRABO</p>
-      <h2>Conhecimento de produção,<br>não de slide.</h2>
-      <p>Um ecossistema para quem precisa responder por banco de dados em ambiente crítico: administração, replicação, alta disponibilidade, backup, performance, segurança, cloud e automação. Cada trilha começa pela arquitetura interna — porque sem entender o que acontece por baixo, todo diagnóstico vira chute.</p>
+      <p class="eyebrow" data-i18n="sec.sobre_eyebrow">O que é o DBA BRABO</p>
+      <h2 data-i18n="sec.sobre_h2">Conhecimento de produção,<br>não de slide.</h2>
+      <p data-i18n="sec.sobre_p">Um ecossistema para quem precisa responder por banco de dados em ambiente crítico: administração, replicação, alta disponibilidade, backup, performance, segurança, cloud e automação. Cada trilha começa pela arquitetura interna — porque sem entender o que acontece por baixo, todo diagnóstico vira chute.</p>
     </div>
     <div class="grid grid--4" id="sobreGrid"></div>
     <div class="founders mt-12" id="fundadores"></div>
@@ -131,16 +134,16 @@
 <section id="mentorias">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow">Catálogo</p>
-      <h2>Mentorias DBA BRABO</h2>
-      <p>Trilhas técnicas por tecnologia e programas de acompanhamento. Busque por tema — <span class="mono">GTID</span>, <span class="mono">RMAN</span>, <span class="mono">Patroni</span>, <span class="mono">Always On</span> — ou filtre pela stack que você opera.</p>
+      <p class="eyebrow" data-i18n="sec.mentorias_eyebrow">Catálogo</p>
+      <h2 data-i18n="sec.mentorias_h2">Mentorias DBA BRABO</h2>
+      <p data-i18n="sec.mentorias_p">Trilhas técnicas por tecnologia e programas de acompanhamento. Busque por tema — <span class="mono">GTID</span>, <span class="mono">RMAN</span>, <span class="mono">Patroni</span>, <span class="mono">Always On</span> — ou filtre pela stack que você opera.</p>
     </div>
 
     <div class="toolbar">
       <div class="search">
         <svg class="search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-        <input type="search" id="search" placeholder="Buscar mentoria, módulo, tópico ou tecnologia…"
-               aria-label="Buscar no portal" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="searchResults">
+        <input type="search" id="search" data-i18n-ph="search.placeholder" placeholder="Buscar mentoria, módulo, tópico ou tecnologia…"
+               data-i18n-aria="search.label" aria-label="Buscar no portal" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="searchResults">
         <span class="search__kbd">/</span>
         <div class="search__results" id="searchResults" role="listbox" aria-label="Resultados"></div>
       </div>
@@ -156,12 +159,24 @@
 <section id="metodologia">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow">Como você vai aprender</p>
-      <h2>A proposta não é assistir aula.</h2>
-      <p>É sair com o ambiente montado, o problema reproduzido e o diagnóstico feito por você — com o mentor do lado.</p>
+      <p class="eyebrow" data-i18n="sec.metodologia_eyebrow">Como você vai aprender</p>
+      <h2 data-i18n="sec.metodologia_h2">A proposta não é assistir aula.</h2>
+      <p data-i18n="sec.metodologia_p">É sair com o ambiente montado, o problema reproduzido e o diagnóstico feito por você — com o mentor do lado.</p>
     </div>
     <div class="method" id="metodologiaGrid"></div>
     <div class="format mt-12" id="formato"></div>
+  </div>
+</section>
+
+<!-- ===================== CONSULTORIA ===================== -->
+<section id="consultoria-sec">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="sec.consultoria_eyebrow">Consultoria</p>
+      <h2 data-i18n="sec.consultoria_h2">Banco de dados em ambiente crítico</h2>
+      <p data-i18n="sec.consultoria_p">Projeto, migração, recuperação e sustentação. É o mesmo trabalho que deu origem às mentorias, feito direto no seu ambiente.</p>
+    </div>
+    <div id="consultoria"></div>
   </div>
 </section>
 
@@ -169,9 +184,9 @@
 <section id="projetos">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow">Ferramentas e open-source</p>
-      <h2>Projetos do ecossistema</h2>
-      <p>O que foi construído resolvendo problema real em produção — e virou ferramenta.</p>
+      <p class="eyebrow" data-i18n="sec.projetos_eyebrow">Ferramentas e open-source</p>
+      <h2 data-i18n="sec.projetos_h2">Projetos do ecossistema</h2>
+      <p data-i18n="sec.projetos_p">O que foi construído resolvendo problema real em produção — e virou ferramenta.</p>
     </div>
     <div class="grid grid--3" id="projetosGrid"></div>
   </div>
@@ -181,9 +196,9 @@
 <section id="certificacoes-sec">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow">Credenciais verificáveis</p>
-      <h2>Certificações</h2>
-      <p>Não é enfeite de currículo. Cada credencial abaixo corresponde a um bloco de conhecimento que aparece dentro das mentorias — e a ordem reflete o peso técnico de cada uma.</p>
+      <p class="eyebrow" data-i18n="sec.certificacoes_eyebrow">Credenciais verificáveis</p>
+      <h2 data-i18n="sec.certificacoes_h2">Certificações</h2>
+      <p data-i18n="sec.certificacoes_p">Não é enfeite de currículo. Cada credencial abaixo corresponde a um bloco de conhecimento que aparece dentro das mentorias — e a ordem reflete o peso técnico de cada uma.</p>
     </div>
     <div id="certificacoes"></div>
   </div>
@@ -193,9 +208,9 @@
 <section id="tecnologias">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow">Stack DBA BRABO</p>
-      <h2>As tecnologias cobertas</h2>
-      <p>Clique em qualquer tecnologia para ver o que ela significa aqui dentro e em quais mentorias ela aparece.</p>
+      <p class="eyebrow" data-i18n="sec.stack_eyebrow">Stack DBA BRABO</p>
+      <h2 data-i18n="sec.stack_h2">As tecnologias cobertas</h2>
+      <p data-i18n="sec.stack_p">Clique em qualquer tecnologia para ver o que ela significa aqui dentro e em quais mentorias ela aparece.</p>
     </div>
     <div class="stack" id="stackGrid"></div>
   </div>
@@ -205,9 +220,9 @@
 <section id="eventos-sec">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow">Agenda da comunidade</p>
-      <h2>Eventos</h2>
-      <p>Os encontros onde a comunidade brasileira de banco de dados se junta. Cada card se move sozinho para as edições anteriores no dia seguinte ao evento.</p>
+      <p class="eyebrow" data-i18n="sec.eventos_eyebrow">Agenda da comunidade</p>
+      <h2 data-i18n="sec.eventos_h2">Eventos</h2>
+      <p data-i18n="sec.eventos_p">Os encontros onde a comunidade brasileira de banco de dados se junta. Cada card se move sozinho para as edições anteriores no dia seguinte ao evento.</p>
     </div>
     <div id="eventos"></div>
   </div>
@@ -217,9 +232,9 @@
 <section id="roadmap">
   <div class="container container--narrow">
     <div class="section-head section-head--center">
-      <p class="eyebrow">A jornada</p>
-      <h2>Roadmap do DBA</h2>
-      <p>A ordem importa. Cada etapa só faz sentido depois que a anterior parou de te surpreender. Clique para abrir.</p>
+      <p class="eyebrow" data-i18n="sec.roadmap_eyebrow">A jornada</p>
+      <h2 data-i18n="sec.roadmap_h2">Roadmap do DBA</h2>
+      <p data-i18n="sec.roadmap_p">A ordem importa. Cada etapa só faz sentido depois que a anterior parou de te surpreender. Clique para abrir.</p>
     </div>
     <div class="roadmap" id="roadmapList"></div>
   </div>
@@ -229,9 +244,9 @@
 <section id="comunidade">
   <div class="container">
     <div class="section-head section-head--center">
-      <p class="eyebrow">Conecte-se</p>
-      <h2>Comunidade DBA BRABO</h2>
-      <p>Um espaço para DBAs trocarem conhecimento, tirarem dúvida e crescerem juntos — e o canal direto com o mentor entre as sessões. Aponte a câmera do celular para entrar.</p>
+      <p class="eyebrow" data-i18n="sec.comunidade_eyebrow">Conecte-se</p>
+      <h2 data-i18n="sec.comunidade_h2">Comunidade DBA BRABO</h2>
+      <p data-i18n="sec.comunidade_p">Um espaço para DBAs trocarem conhecimento, tirarem dúvida e crescerem juntos — e o canal direto com o mentor entre as sessões. Aponte a câmera do celular para entrar.</p>
     </div>
     <div class="canais" id="canais"></div>
   </div>
@@ -241,8 +256,8 @@
 <section id="faq">
   <div class="container container--narrow">
     <div class="section-head section-head--center">
-      <p class="eyebrow">Dúvidas frequentes</p>
-      <h2>FAQ</h2>
+      <p class="eyebrow" data-i18n="sec.faq_eyebrow">Dúvidas frequentes</p>
+      <h2 data-i18n="sec.faq_h2">FAQ</h2>
     </div>
     <div id="faqList"></div>
   </div>
@@ -251,11 +266,11 @@
 <!-- ===================== CTA FINAL ===================== -->
 <section class="cta">
   <div class="container">
-    <h2>Pare de apenas executar comandos.<br>Comece a entender o que acontece por trás deles.</h2>
-    <p>A conversa começa por uma call de diagnóstico para mapear onde você está e onde quer chegar. Sem compromisso.</p>
+    <h2 data-i18n="sec.cta_h2">Pare de apenas executar comandos.<br>Comece a entender o que acontece por trás deles.</h2>
+    <p data-i18n="sec.cta_p">A conversa começa por uma call de diagnóstico para mapear onde você está e onde quer chegar. Sem compromisso.</p>
     <div class="cta__btns">
       <a class="btn btn--primary" href="#mentorias">Conhecer as mentorias</a>
-      <a class="btn btn--outline" href="#comunidade" data-contato>Falar com o mentor</a>
+      <a class="btn btn--outline" href="#comunidade" data-contato data-i18n="sec.cta_falar">Falar com o mentor</a>
     </div>
   </div>
 </section>
@@ -271,19 +286,21 @@
           <img class="brand__mark" src="assets/logo/avatar-96.png" width="38" height="38" alt="">
           <span class="brand__name">DBA <span>BRABO</span></span>
         </a>
-        <p>Conhecimento real de banco de dados, infraestrutura, performance, alta disponibilidade, cloud e automação.</p>
+        <p data-i18n="footer.desc">Conhecimento real de banco de dados, infraestrutura, performance, alta disponibilidade, cloud e automação.</p>
       </div>
-      <div class="footer__col"><h4>Mentorias</h4><div id="footerMentorias"></div>
-        <a href="#mentorias">Ver todas →</a></div>
-      <div class="footer__col"><h4>Portal</h4>
-        <a href="#sobre">Sobre</a><a href="#metodologia">Metodologia</a>
-        <a href="#projetos">Projetos</a><a href="#certificacoes-sec">Certificações</a><a href="#tecnologias">Stack</a>
-        <a href="#eventos-sec">Eventos</a><a href="#roadmap">Roadmap</a><a href="#faq">FAQ</a></div>
-      <div class="footer__col"><h4>Redes</h4><div id="footerSocial"></div></div>
+      <div class="footer__col"><h4 data-i18n="footer.mentorias">Mentorias</h4><div id="footerMentorias"></div>
+        <a href="#mentorias" data-i18n="footer.ver_todas">Ver todas →</a></div>
+      <div class="footer__col"><h4 data-i18n="footer.portal">Portal</h4>
+        <a href="#sobre" data-i18n="nav.sobre">Sobre</a><a href="#metodologia" data-i18n="nav.metodologia">Metodologia</a><a href="#consultoria-sec" data-i18n="nav.consultoria">Consultoria</a>
+        <a href="#projetos" data-i18n="nav.projetos">Projetos</a><a href="#certificacoes-sec" data-i18n="nav.certificacoes">Certificações</a><a href="#tecnologias" data-i18n="nav.stack">Stack</a>
+        <a href="#eventos-sec" data-i18n="nav.eventos">Eventos</a><a href="#roadmap" data-i18n="nav.roadmap">Roadmap</a><a href="#faq" data-i18n="nav.faq">FAQ</a></div>
+      <div class="footer__col"><h4 data-i18n="footer.redes">Redes</h4><div id="footerSocial"></div></div>
     </div>
     <div class="footer__bottom">
       <span id="footerYear"></span>
-      <span class="mono">Feito para quem administra banco de dados de verdade.</span>
+      <span class="mono" data-i18n="footer.assinatura">Feito para quem administra banco de dados de verdade.</span>
+      <a href="mentor/" class="mono" rel="nofollow"
+         style="color:var(--fg-3);font-size:var(--fs-xs)" data-i18n="footer.mentor">Área do mentor</a>
     </div>
   </div>
 </footer>

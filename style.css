@@ -293,6 +293,16 @@ section + section { border-top: 1px solid var(--line); }
 :root[data-theme="light"]  .theme-toggle [data-icon="sun"],
 :root[data-theme="system"] .theme-toggle [data-icon="system"] { display: block; }
 
+.lang-toggle {
+  min-width: 36px; height: 36px; padding-inline: var(--s-2);
+  display: grid; place-items: center;
+  border-radius: var(--r-md); border: 1px solid var(--line);
+  color: var(--fg-1); background: var(--bg-1);
+  font-family: var(--font-mono); font-size: var(--fs-xs); font-weight: 600; letter-spacing: .06em;
+  transition: color var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+}
+.lang-toggle:hover { color: var(--brand); border-color: var(--line-strong); background: var(--bg-2); }
+
 .menu-toggle { display: none; width: 40px; height: 40px; place-items: center; border-radius: var(--r-md); border: 1px solid var(--line); color: var(--fg-0); }
 .menu-toggle svg { width: 20px; height: 20px; }
 
@@ -1153,3 +1163,64 @@ section + section { border-top: 1px solid var(--line); }
   .evento-mini img { width: 66px; }
   .evento-mini .btn { grid-column: 1 / -1; justify-content: center; }
 }
+
+
+/* ---------- 26 · CONSULTORIA -------------------------------------------
+   Linha de servico separada da mentoria. Mesmo sistema de accent por card.
+------------------------------------------------------------------------- */
+.cons-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: var(--s-4); }
+
+.cons {
+  position: relative; display: flex; flex-direction: column; gap: var(--s-3);
+  background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: var(--s-6); overflow: hidden;
+  transition: transform var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
+}
+.cons::before {
+  content: ''; position: absolute; inset: 0 auto 0 0; width: 3px;
+  background: var(--accent); opacity: .8;
+}
+.cons:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+
+.cons__nome { font-family: var(--font-display); font-size: var(--fs-md); font-weight: 700; }
+.cons__desc { color: var(--fg-1); font-size: var(--fs-sm); flex: 1; }
+.cons__tec { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-2); }
+.cons__tec span {
+  font-family: var(--font-mono, monospace); font-size: var(--fs-xs); color: var(--fg-2);
+  border: 1px solid var(--line); border-radius: var(--r-sm); padding: 2px var(--s-2);
+}
+
+/* plataformas e formatos: dois blocos lado a lado abaixo da grade */
+.cons-base { display: grid; grid-template-columns: 1.25fr 1fr; gap: var(--s-5); margin-top: var(--s-8); }
+@media (max-width: 820px) { .cons-base { grid-template-columns: 1fr; } }
+
+.cons-bloco {
+  background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--s-6);
+}
+.cons-bloco__t {
+  font-family: var(--font-display); font-size: var(--fs-xs); font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--fg-2); margin-bottom: var(--s-4);
+}
+.cons-plat { display: grid; gap: var(--s-4); }
+.cons-plat__linha { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+.cons-plat__rot {
+  font-size: var(--fs-xs); color: var(--fg-3); min-width: 74px;
+}
+.cons-plat__linha b {
+  font-family: var(--font-display); font-weight: 600; font-size: var(--fs-sm); color: var(--fg-0);
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  padding: var(--s-1) var(--s-3); background: var(--bg-2);
+}
+
+.cons-form { display: grid; gap: var(--s-3); }
+.cons-form__item { display: grid; grid-template-columns: auto 1fr; gap: var(--s-3); align-items: baseline; }
+.cons-form__item b { font-family: var(--font-display); font-size: var(--fs-sm); color: var(--brand); white-space: nowrap; }
+.cons-form__item span { color: var(--fg-1); font-size: var(--fs-sm); }
+
+.cons-cta {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--s-5); margin-top: var(--s-6); padding: var(--s-6);
+  background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--r-lg);
+  border-left: 3px solid var(--brand);
+}
+.cons-cta p { color: var(--fg-1); font-size: var(--fs-sm); max-width: 58ch; margin: 0; }
