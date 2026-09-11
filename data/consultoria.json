@@ -1,0 +1,120 @@
+{
+  "_comment": "Servicos de consultoria. Nada aqui pode descrever servico que o time nao executa. Sem numero de clientes, sem nome de cliente, sem promessa de resultado.",
+  "eyebrow": "Consultoria",
+  "titulo": "Banco de dados em ambiente crítico",
+  "intro": "Projeto, migração, recuperação e sustentação. É o mesmo trabalho que deu origem às mentorias, feito direto no seu ambiente.",
+  "servicos": [
+    {
+      "id": "ha",
+      "nome": "Arquitetura e alta disponibilidade",
+      "desc": "Desenho e implantação de cluster, réplica e contingência. RPO e RTO definidos pelo que o negócio aguenta perder, não pelo que o fabricante promete.",
+      "tec": [
+        "Oracle RAC",
+        "Data Guard",
+        "InnoDB Cluster",
+        "Always On",
+        "Replicação"
+      ],
+      "accent": "#F0805A"
+    },
+    {
+      "id": "migracao",
+      "nome": "Migração e upgrade",
+      "desc": "Mudança de versão, de plataforma ou de datacenter, com plano de retorno escrito antes de começar. Inclui troca de sistema operacional e de arquitetura.",
+      "tec": [
+        "AutoUpgrade",
+        "Data Pump",
+        "GoldenGate",
+        "RMAN",
+        "Cross-platform"
+      ],
+      "accent": "#34D3C4"
+    },
+    {
+      "id": "backup",
+      "nome": "Backup e recuperação",
+      "desc": "Estratégia desenhada a partir do restore, não do backup. Com teste de recuperação executado — backup que nunca foi restaurado é só um arquivo grande.",
+      "tec": [
+        "RMAN",
+        "ZDLRA",
+        "XtraBackup",
+        "pgBackRest",
+        "PITR"
+      ],
+      "accent": "#5AA9E6"
+    },
+    {
+      "id": "performance",
+      "nome": "Performance e tuning",
+      "desc": "Diagnóstico com evidência: plano de execução, evento de espera, e o que mudou desde a época em que estava bom.",
+      "tec": [
+        "AWR",
+        "Performance Schema",
+        "pg_stat_statements",
+        "Query Store"
+      ],
+      "accent": "#E8833A"
+    },
+    {
+      "id": "assessment",
+      "nome": "Assessment e health check",
+      "desc": "Retrato do que está no ar: o que saiu de suporte, o que não tem contingência, o que vai doer no próximo pico — e em que ordem vale resolver.",
+      "tec": [
+        "Exadata",
+        "ODA",
+        "Ambiente on-premise",
+        "Ambiente em nuvem"
+      ],
+      "accent": "#B57BF5"
+    },
+    {
+      "id": "cloud",
+      "nome": "Cloud e ambiente gerenciado",
+      "desc": "Migração e operação em nuvem, incluindo o que muda quando o banco deixa de ser seu e passa a ser serviço gerenciado: backup automático, patching, failover e os limites que ninguém lê antes de assinar.",
+      "tec": [
+        "OCI Autonomous e DB Systems",
+        "AWS RDS e Aurora",
+        "Azure SQL e Managed Instance",
+        "Cloud SQL e AlloyDB"
+      ],
+      "accent": "#4FD1B0"
+    }
+  ],
+  "plataformas": {
+    "titulo": "Plataformas",
+    "bancos": [
+      "Oracle",
+      "SQL Server",
+      "MySQL",
+      "PostgreSQL",
+      "MongoDB"
+    ],
+    "nuvens": [
+      "Oracle Cloud (OCI)",
+      "AWS",
+      "Azure",
+      "Google Cloud"
+    ]
+  },
+  "formatos": {
+    "titulo": "Como funciona",
+    "itens": [
+      {
+        "nome": "Pontual",
+        "desc": "Uma migração, um incidente, um assessment. Entra, resolve, documenta, sai."
+      },
+      {
+        "nome": "Projeto",
+        "desc": "Escopo e prazo fechados antes de começar, com plano de retorno escrito no dia um."
+      },
+      {
+        "nome": "Contínuo",
+        "desc": "Sustentação e acompanhamento do ambiente: rotina de saúde, revisão de backup e alguém para chamar quando doer."
+      }
+    ]
+  },
+  "cta": {
+    "texto": "Descreva o cenário e o que está doendo. Se não for algo que a gente faz, eu digo na primeira conversa.",
+    "rotulo": "Falar sobre um projeto"
+  }
+}

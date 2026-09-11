@@ -88,7 +88,8 @@
       "decifrando2": "decifrando…",
       "testado_em": "Escrito e testado em: ",
       "pendente_p1": "Este tópico ainda não foi escrito. O índice já reserva o lugar dele — o conteúdo entra no próximo build.",
-      "pendente_p2": "Nada aqui é preenchido automaticamente: um passo a passo só entra depois de escrito e conferido."
+      "pendente_p2": "Nada aqui é preenchido automaticamente: um passo a passo só entra depois de escrito e conferido.",
+      "somente_pt": "Conteúdo ainda em português — tradução a caminho."
     }
   },
   "en": {
@@ -179,7 +180,8 @@
       "decifrando2": "decrypting…",
       "testado_em": "Written and tested on: ",
       "pendente_p1": "This topic has not been written yet. The index already holds its place — content lands in the next build.",
-      "pendente_p2": "Nothing here is auto-filled: a walkthrough only lands after being written and reviewed."
+      "pendente_p2": "Nothing here is auto-filled: a walkthrough only lands after being written and reviewed.",
+      "somente_pt": "Content still in Portuguese — translation on its way."
     }
   }
 }

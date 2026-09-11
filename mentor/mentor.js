@@ -51,7 +51,8 @@ async function carregarIdioma() {
       I18N.lang = I18N.lang === 'pt' ? 'en' : 'pt';
       try { localStorage.setItem('dbabrabo.lang', I18N.lang); } catch {}
       aplicarIdioma();
-      if (app.sel) abrirTopico(app.sel.trilha, app.sel.modulo, app.sel.topico);
+      if (app.indice) abrirArea();   // recarrega índice + conteúdo no idioma (restaura o tópico aberto)
+      else if (app.sel) abrirTopico(app.sel.trilha, app.sel.modulo, app.sel.topico);
     });
   }
 }
@@ -150,9 +151,19 @@ $('#btn-sair').addEventListener('click', () => {
 
 /* ---------- carga do indice --------------------------------------------- */
 async function abrirArea() {
-  if (!app.indice) {
-    const r = await fetch(`${BASE}/data/mentor-indice.json`, { cache: 'no-store' });
-    app.indice = await r.json();
+  if (!app.indice || app.indiceLang !== I18N.lang) {
+    app.indice = null; app.conteudo = {};
+    const alvo = I18N.lang === 'en' ? `${BASE}/data/mentor-indice-en.json` : `${BASE}/data/mentor-indice.json`;
+    try {
+      const r = await fetch(alvo, { cache: 'no-store' });
+      if (!r.ok) throw 0;
+      app.indice = await r.json();
+      app.indiceLang = I18N.lang;
+    } catch {
+      const r = await fetch(`${BASE}/data/mentor-indice.json`, { cache: 'no-store' });
+      app.indice = await r.json();
+      app.indiceLang = 'pt';
+    }
     try {
       const d = await fetch(`${BASE}/data/mentor/_disponiveis.json`, { cache: 'no-store' });
       app.disponiveis = d.ok ? (await d.json()).trilhas || [] : [];
@@ -245,10 +256,22 @@ $('#mbusca').addEventListener('input', e => {
 
 /* ---------- carga do conteudo cifrado ----------------------------------- */
 async function carregarTrilha(slug) {
-  if (app.conteudo[slug]) return app.conteudo[slug];
-  const env = await baixarEnc(`${BASE}/data/mentor/${slug}.enc`);
-  const dados = await decifrar(env, app.senha);
-  app.conteudo[slug] = dados;
+  const chave = `${I18N.lang}:${slug}`;
+  if (app.conteudo[chave]) return app.conteudo[chave];
+  let dados = null, lang = 'pt';
+  if (I18N.lang === 'en') {
+    try {
+      const env = await baixarEnc(`${BASE}/data/mentor/en/${slug}.enc`);
+      dados = await decifrar(env, app.senha);
+      lang = 'en';
+    } catch { dados = null; }
+  }
+  if (!dados) {
+    const env = await baixarEnc(`${BASE}/data/mentor/${slug}.enc`);
+    dados = await decifrar(env, app.senha);
+  }
+  dados._lang = lang;
+  app.conteudo[chave] = dados;
   return dados;
 }
 
@@ -367,6 +390,7 @@ function renderTopico(t, m, c) {
   </header>`;
 
   if (c.versoes) h += `<p style="font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--fg-3);margin-bottom:var(--s-6)">${esc(T('mentor.testado_em', 'Escrito e testado em: '))}${esc(c.versoes)}</p>`;
+  if (c._lang === 'pt' && I18N.lang === 'en') h += `<div class="mrev"><b>EN soon</b><span>${esc(T('mentor.somente_pt', 'Conteúdo ainda em português — tradução a caminho.'))}</span></div>`;
   if (!c.revisado) h += `<div class="mrev"><b>${esc(T('mentor.rascunho_t', 'Rascunho'))}</b><span>${rico(T('mentor.rascunho_d', 'Este passo a passo ainda não foi reexecutado do zero.'))}</span></div>`;
 
   for (const b of (c.blocos || [])) {

@@ -7,8 +7,11 @@
  *
  * A senha NUNCA fica no codigo. Ela vem do ambiente:
  *
- *   PowerShell:  $env:MENTOR_SENHA="..."; node tools/build-mentor.mjs
- *   bash:        MENTOR_SENHA='...' node tools/build-mentor.mjs
+ *   PowerShell:  $env:MENTOR_SENHA="..."; node tools/build-mentor.mjs [--en]
+ *   bash:        MENTOR_SENHA='...' node tools/build-mentor.mjs [--en]
+ *
+ * --en  le conteudo-mentor/en/<trilha>.json e gera data/mentor/en/<trilha>.enc
+ * (mesma senha, mesmo envelope). Sem a flag, comportamento original.
  *
  * O arquivo .enc e um envelope JSON com os parametros de derivacao — o
  * navegador precisa deles para decifrar, e expo-los nao enfraquece nada:
@@ -22,8 +25,9 @@ import { fileURLToPath } from 'node:url';
 /* fileURLToPath e obrigatorio: caminho com espaco ("DBA BRABO PORTAL") vira
    %20 em import.meta.url e quebra qualquer manipulacao manual de string. */
 const RAIZ    = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const ORIGEM  = path.join(RAIZ, 'conteudo-mentor');
-const DESTINO = path.join(RAIZ, 'data', 'mentor');
+const EN      = process.argv.includes('--en');
+const ORIGEM  = EN ? path.join(RAIZ, 'conteudo-mentor', 'en') : path.join(RAIZ, 'conteudo-mentor');
+const DESTINO = EN ? path.join(RAIZ, 'data', 'mentor', 'en')  : path.join(RAIZ, 'data', 'mentor');
 
 const ITER = 600000;          // custo do ataque offline; o .enc e publico
 const SAL  = 16;
