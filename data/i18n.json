@@ -91,7 +91,8 @@
       "pendente_p2": "Nada aqui é preenchido automaticamente: um passo a passo só entra depois de escrito e conferido.",
       "somente_pt": "Conteúdo ainda em português — tradução a caminho.",
       "pausar": "pausar",
-      "animar": "animar"
+      "animar": "animar",
+      "sem_acesso": "Sua conta não tem acesso a esta trilha."
     }
   },
   "en": {
@@ -185,7 +186,8 @@
       "pendente_p2": "Nothing here is auto-filled: a walkthrough only lands after being written and reviewed.",
       "somente_pt": "Content still in Portuguese — translation on its way.",
       "pausar": "pause",
-      "animar": "play"
+      "animar": "play",
+      "sem_acesso": "Your account has no access to this track."
     }
   }
 }

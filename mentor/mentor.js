@@ -1,15 +1,14 @@
 /* ==========================================================================
-   DBA BRABO — Area do mentor
+   DBA BRABO — Area do mentor (acesso por usuario)
    --------------------------------------------------------------------------
-   O repositorio e publico. Nada de senha no codigo: a senha digitada aqui e a
-   propria chave que decifra os arquivos data/mentor/*.enc (PBKDF2-SHA256 com
-   600.000 iteracoes + AES-256-GCM, tudo via Web Crypto). Senha errada nao
-   "nega login" — o GCM falha a autenticacao e nao ha texto claro nenhum.
-   O usuario e so conferencia de UX; a chave e a senha.
+   O repositorio e publico. Nada de senha no codigo e nenhuma chave de dados
+   no codigo: cada usuario desembrulha, com a PROPRIA senha, apenas as chaves
+   das trilhas que pode ver (data/mentor/_users.json, gerado por
+   tools/build-users.mjs). Senha errada nao "nega login" — o GCM falha e nao
+   ha texto claro nenhum. Trilha fora da lista = chave ausente = indecifravel.
    ========================================================================== */
 'use strict';
 
-const USUARIO_ESPERADO = 'dbabrabo_mentor';
 const BASE   = '..';
 const CHAVE_SESSAO = 'dbabrabo.mentor.k';
 
@@ -60,33 +59,38 @@ carregarIdioma();
 
 /* ---------- estado ------------------------------------------------------ */
 const app = {
-  senha: null,
-  indice: null,        // data/mentor-indice.json  (publico, so nomes)
+  usuario: null,      // login autenticado
+  trilhas: [],        // slugs que este usuario pode ver
+  senha: null,        // senha digitada (só p/ retomar a sessão na aba)
+  indice: null,        // data/mentor-indice[-en].json (publico, so nomes)
   disponiveis: [],     // trilhas que ja tem .enc
-  conteudo: {},        // slug -> { topicos: {...} }  (decifrado, em memoria)
-  chaves: {},          // sal(base64) -> CryptoKey    (cache de derivacao)
+  conteudo: {},        // "lang:slug" -> { topicos: {...} } (decifrado)
+  chaves: {},          // slug -> CryptoKey da trilha (só as autorizadas)
   sel: null            // { trilha, modulo, topico }
 };
 
 /* ---------- cripto ------------------------------------------------------ */
 const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 
-async function derivar(senha, salB64, iter) {
-  if (app.chaves[salB64]) return app.chaves[salB64];
+async function kekDe(senha, salB64) {
   const base = await crypto.subtle.importKey(
     'raw', new TextEncoder().encode(senha), 'PBKDF2', false, ['deriveKey']);
-  const k = await crypto.subtle.deriveKey(
-    { name: 'PBKDF2', salt: b64(salB64), iterations: iter, hash: 'SHA-256' },
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt: b64(salB64), iterations: 600000, hash: 'SHA-256' },
     base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
-  app.chaves[salB64] = k;
-  return k;
 }
 
-/** Decifra um envelope .enc. Lanca se a senha estiver errada (falha do GCM). */
-async function decifrar(envelope, senha) {
-  const chave = await derivar(senha, envelope.sal, envelope.iter);
+async function desembrulhar(w, kek) {
+  const raw = b64(w.ct);
   const claro = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv: b64(envelope.iv) }, chave, b64(envelope.ct));
+    { name: 'AES-GCM', iv: b64(w.iv) }, kek, raw);
+  return new Uint8Array(claro);
+}
+
+/** Decifra um envelope .enc com a chave de dados JÁ desembrulhada. */
+async function decifrarComChave(envelope, chaveDados) {
+  const claro = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv: b64(envelope.iv) }, chaveDados, b64(envelope.ct));
   return JSON.parse(new TextDecoder().decode(claro));
 }
 
@@ -102,20 +106,35 @@ function erro(msg) { elErro.textContent = msg; elErro.classList.add('is-on'); }
 function limpaErro() { elErro.classList.remove('is-on'); }
 
 async function tentarEntrar(usuario, senha) {
-  if (usuario.trim() !== USUARIO_ESPERADO) throw new Error(T('mentor.erro_cred', 'Usuário ou senha incorretos.'));
-  let env;
+  usuario = (usuario || '').trim();
+  let mapa;
   try {
-    env = await baixarEnc(`${BASE}/data/mentor/_verificacao.enc`);
+    const r = await fetch(`${BASE}/data/mentor/_users.json`, { cache: 'no-store' });
+    if (!r.ok) throw 0;
+    mapa = await r.json();
   } catch {
     throw new Error(T('mentor.erro_sem_material', 'Material cifrado ainda não publicado. Rode tools/build-mentor.mjs.'));
   }
+  const u = mapa.users && mapa.users[usuario];
+  if (!u) throw new Error(T('mentor.erro_cred', 'Usuário ou senha incorretos.'));
+  let kek;
   try {
-    await decifrar(env, senha);
+    kek = await kekDe(senha, u.sal);
+    const sonda = await desembrulhar(u.sonda, kek);
+    if (new TextDecoder().decode(sonda) !== 'dbabrabo-ok') throw 0;
   } catch {
-    app.chaves = {};
     throw new Error(T('mentor.erro_cred', 'Usuário ou senha incorretos.'));
   }
-  app.senha = senha;
+  const chaves = {};
+  for (const slug of u.trilhas) {
+    const w = u.wraps && u.wraps[slug];
+    if (!w) continue;
+    const raw = await desembrulhar(w, kek);
+    chaves[slug] = await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['decrypt']);
+  }
+  app.usuario = usuario; app.senha = senha;
+  app.trilhas = u.trilhas; app.chaves = chaves;
+  app.indice = null; app.conteudo = {};
 }
 
 $('#form-acesso').addEventListener('submit', async e => {
@@ -125,7 +144,7 @@ $('#form-acesso').addEventListener('submit', async e => {
   btn.disabled = true; btn.textContent = T('mentor.decifrando', 'Decifrando…');
   try {
     await tentarEntrar($('#usuario').value, $('#senha').value);
-    try { sessionStorage.setItem(CHAVE_SESSAO, app.senha); } catch {}
+    try { sessionStorage.setItem(CHAVE_SESSAO, JSON.stringify({ u: app.usuario, p: app.senha })); } catch {}
     await abrirArea();
   } catch (err) {
     erro(err.message);
@@ -143,9 +162,9 @@ $('#btn-sair').addEventListener('click', () => {
 /* Retoma a sessao sem redigitar (sessionStorage morre ao fechar a aba). */
 (async function retomar() {
   let s = null;
-  try { s = sessionStorage.getItem(CHAVE_SESSAO); } catch {}
-  if (!s) return;
-  try { await tentarEntrar(USUARIO_ESPERADO, s); await abrirArea(); }
+  try { s = JSON.parse(sessionStorage.getItem(CHAVE_SESSAO) || 'null'); } catch {}
+  if (!s || !s.u) return;
+  try { await tentarEntrar(s.u, s.p); await abrirArea(); }
   catch { try { sessionStorage.removeItem(CHAVE_SESSAO); } catch {} }
 })();
 
@@ -180,6 +199,7 @@ function montarNav() {
   const nav = $('#mnav');
   nav.innerHTML = '';
   for (const t of app.indice.trilhas) {
+    if (!app.trilhas.includes(t.slug)) continue;   // congela painéis fora do acesso
     const nTop = t.modulos.reduce((a, m) => a + m.topicos.length, 0);
     const sec = document.createElement('section');
     sec.className = 'mtrilha';
@@ -258,17 +278,19 @@ $('#mbusca').addEventListener('input', e => {
 async function carregarTrilha(slug) {
   const chave = `${I18N.lang}:${slug}`;
   if (app.conteudo[chave]) return app.conteudo[chave];
+  const chaveDados = app.chaves[slug];
+  if (!chaveDados) throw new Error(T('mentor.sem_acesso', 'Sua conta não tem acesso a esta trilha.'));
   let dados = null, lang = 'pt';
   if (I18N.lang === 'en') {
     try {
       const env = await baixarEnc(`${BASE}/data/mentor/en/${slug}.enc`);
-      dados = await decifrar(env, app.senha);
+      dados = await decifrarComChave(env, chaveDados);
       lang = 'en';
     } catch { dados = null; }
   }
   if (!dados) {
     const env = await baixarEnc(`${BASE}/data/mentor/${slug}.enc`);
-    dados = await decifrar(env, app.senha);
+    dados = await decifrarComChave(env, chaveDados);
   }
   dados._lang = lang;
   app.conteudo[chave] = dados;
@@ -283,9 +305,12 @@ async function abrirTopico(trilha, modulo, topico) {
   $$('#mnav .mtop').forEach(b => b.classList.toggle('is-sel', b.dataset.id === `${trilha}/${modulo}/${topico}`));
 
   const t  = app.indice.trilhas.find(x => x.slug === trilha);
+  const el = $('#mconteudo');
+  if (!t || !app.trilhas.includes(trilha)) {
+    return el.innerHTML = `<div class="mrev"><b>Acesso</b><span>${esc(T('mentor.sem_acesso', 'Sua conta não tem acesso a esta trilha.'))}</span></div>`;
+  }
   const m  = t.modulos.find(x => x.id === modulo);
   const p  = m.topicos.find(x => x.id === topico);
-  const el = $('#mconteudo');
   el.style.setProperty('--accent', t.accent);
   el.scrollTo?.(0, 0);
   window.scrollTo(0, 0);

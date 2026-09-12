@@ -21,6 +21,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { chaveTrilha, ITER } from './chaves.mjs';
 
 /* fileURLToPath e obrigatorio: caminho com espaco ("DBA BRABO PORTAL") vira
    %20 em import.meta.url e quebra qualquer manipulacao manual de string. */
@@ -29,7 +30,6 @@ const EN      = process.argv.includes('--en');
 const ORIGEM  = EN ? path.join(RAIZ, 'conteudo-mentor', 'en') : path.join(RAIZ, 'conteudo-mentor');
 const DESTINO = EN ? path.join(RAIZ, 'data', 'mentor', 'en')  : path.join(RAIZ, 'data', 'mentor');
 
-const ITER = 600000;          // custo do ataque offline; o .enc e publico
 const SAL  = 16;
 const IV   = 12;              // AES-GCM
 
@@ -43,10 +43,12 @@ if (senha.length < 12) {
   process.exit(1);
 }
 
-function cifrar(textoPuro) {
+/* UMA chave de dados por trilha (tools/chaves.mjs): cada usuario recebe
+   embrulhadas so as chaves das trilhas que pode ver. */
+function cifrar(textoPuro, slug) {
   const sal = crypto.randomBytes(SAL);
   const iv  = crypto.randomBytes(IV);
-  const chave = crypto.pbkdf2Sync(senha, sal, ITER, 32, 'sha256');
+  const chave = chaveTrilha(senha, slug);
   const c = crypto.createCipheriv('aes-256-gcm', chave, iv);
   const ct = Buffer.concat([c.update(textoPuro, 'utf8'), c.final()]);
   return {
@@ -69,7 +71,7 @@ if (!arquivos.length) { console.error('ERRO: nenhum .json em conteudo-mentor/');
 /* Sentinela de verificacao: e o unico arquivo que a tela de acesso decifra para
    dizer "senha certa". Nao guarda conteudo — so prova que a chave bate. */
 fs.writeFileSync(path.join(DESTINO, '_verificacao.enc'),
-  JSON.stringify(cifrar(JSON.stringify({ ok: true, em: new Date().toISOString() }))));
+  JSON.stringify(cifrar(JSON.stringify({ ok: true, em: new Date().toISOString() }), '_verificacao')));
 
 let total = 0;
 const publicadas = [];
@@ -78,7 +80,7 @@ for (const f of arquivos) {
   try { JSON.parse(bruto); } catch (e) {
     console.error(`ERRO: ${f} nao e JSON valido — ${e.message}`); process.exit(1);
   }
-  const env = cifrar(bruto);
+  const env = cifrar(bruto, f.replace(/\.json$/, ''));
   const saida = path.join(DESTINO, f.replace(/\.json$/, '.enc'));
   fs.writeFileSync(saida, JSON.stringify(env));
   const kb = (fs.statSync(saida).size / 1024).toFixed(1);
