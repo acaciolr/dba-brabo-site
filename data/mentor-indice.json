@@ -3016,6 +3016,11 @@
        "id": "dcli",
        "nome": "DCLI",
        "estado": "pendente"
+      },
+      {
+       "id": "patching",
+       "nome": "Patching",
+       "estado": "revisado"
       }
      ]
     },
@@ -3253,6 +3258,11 @@
        "id": "protected-database",
        "nome": "Protected Database",
        "estado": "pendente"
+      },
+      {
+       "id": "patching",
+       "nome": "Patching",
+       "estado": "revisado"
       }
      ]
     },
