@@ -177,50 +177,8 @@
      ]
     },
     {
-     "id": "05-alta-disponibilidade",
+     "id": "05-enterprise",
      "n": "05",
-     "nome": "Alta Disponibilidade",
-     "topicos": [
-      {
-       "id": "asm",
-       "nome": "ASM",
-       "estado": "rascunho"
-      },
-      {
-       "id": "rac",
-       "nome": "RAC",
-       "estado": "rascunho"
-      },
-      {
-       "id": "data-guard",
-       "nome": "Data Guard",
-       "estado": "rascunho"
-      },
-      {
-       "id": "broker",
-       "nome": "Broker",
-       "estado": "rascunho"
-      },
-      {
-       "id": "taf",
-       "nome": "TAF",
-       "estado": "rascunho"
-      },
-      {
-       "id": "services",
-       "nome": "Services",
-       "estado": "rascunho"
-      },
-      {
-       "id": "rolling-patch",
-       "nome": "Rolling Patch",
-       "estado": "rascunho"
-      }
-     ]
-    },
-    {
-     "id": "06-enterprise",
-     "n": "06",
      "nome": "Enterprise",
      "topicos": [
       {
@@ -251,8 +209,8 @@
      ]
     },
     {
-     "id": "07-multitenant",
-     "n": "07",
+     "id": "06-multitenant",
+     "n": "06",
      "nome": "Multitenant",
      "topicos": [
       {
@@ -298,10 +256,15 @@
      ]
     },
     {
-     "id": "08-rac",
-     "n": "08",
+     "id": "07-rac",
+     "n": "07",
      "nome": "RAC",
      "topicos": [
+      {
+       "id": "visao-geral-rac",
+       "nome": "Visão geral",
+       "estado": "revisado"
+      },
       {
        "id": "gi-install",
        "nome": "Instalar Grid Infrastructure",
@@ -365,10 +328,15 @@
      ]
     },
     {
-     "id": "09-asm",
-     "n": "09",
+     "id": "08-asm",
+     "n": "08",
      "nome": "ASM",
      "topicos": [
+      {
+       "id": "visao-geral-asm",
+       "nome": "Visão geral",
+       "estado": "revisado"
+      },
       {
        "id": "diskgroup-create",
        "nome": "Criar diskgroup",
@@ -412,10 +380,15 @@
      ]
     },
     {
-     "id": "10-dataguard",
-     "n": "10",
+     "id": "09-dataguard",
+     "n": "09",
      "nome": "Data Guard",
      "topicos": [
+      {
+       "id": "visao-geral-dataguard",
+       "nome": "Visão geral",
+       "estado": "revisado"
+      },
       {
        "id": "far-sync",
        "nome": "Far Sync",
@@ -469,8 +442,8 @@
      ]
     },
     {
-     "id": "11-rman-lab",
-     "n": "11",
+     "id": "10-rman-lab",
+     "n": "10",
      "nome": "RMAN Lab",
      "topicos": [
       {
@@ -526,8 +499,8 @@
      ]
     },
     {
-     "id": "12-sql-tuning",
-     "n": "12",
+     "id": "11-sql-tuning",
+     "n": "11",
      "nome": "SQL Tuning",
      "topicos": [
       {
@@ -583,8 +556,8 @@
      ]
     },
     {
-     "id": "13-awr-ash",
-     "n": "13",
+     "id": "12-awr-ash",
+     "n": "12",
      "nome": "AWR e ASH",
      "topicos": [
       {
@@ -630,8 +603,8 @@
      ]
     },
     {
-     "id": "14-upgrade",
-     "n": "14",
+     "id": "13-upgrade",
+     "n": "13",
      "nome": "Upgrade",
      "topicos": [
       {
@@ -677,8 +650,8 @@
      ]
     },
     {
-     "id": "15-security",
-     "n": "15",
+     "id": "14-security",
+     "n": "14",
      "nome": "Segurança",
      "topicos": [
       {
@@ -724,8 +697,8 @@
      ]
     },
     {
-     "id": "16-oem",
-     "n": "16",
+     "id": "15-oem",
+     "n": "15",
      "nome": "OEM",
      "topicos": [
       {
@@ -761,8 +734,8 @@
      ]
     },
     {
-     "id": "17-goldengate",
-     "n": "17",
+     "id": "16-goldengate",
+     "n": "16",
      "nome": "GoldenGate",
      "topicos": [
       {
@@ -808,8 +781,8 @@
      ]
     },
     {
-     "id": "18-migration",
-     "n": "18",
+     "id": "17-migration",
+     "n": "17",
      "nome": "Migração",
      "topicos": [
       {
@@ -855,8 +828,8 @@
      ]
     },
     {
-     "id": "19-benchmark",
-     "n": "19",
+     "id": "18-benchmark",
+     "n": "18",
      "nome": "Benchmark",
      "topicos": [
       {
@@ -892,8 +865,8 @@
      ]
     },
     {
-     "id": "20-war-room",
-     "n": "20",
+     "id": "19-war-room",
+     "n": "19",
      "nome": "War-room",
      "topicos": [
       {
