@@ -385,6 +385,16 @@
      "nome": "Data Guard",
      "topicos": [
       {
+       "id": "dg-logico",
+       "nome": "Logical standby do zero",
+       "estado": "revisado"
+      },
+      {
+       "id": "dg-fisico",
+       "nome": "Standby físico do zero",
+       "estado": "revisado"
+      },
+      {
        "id": "visao-geral-dataguard",
        "nome": "Visão geral",
        "estado": "revisado"
