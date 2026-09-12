@@ -3467,26 +3467,6 @@
        "id": "metodologia-de-certificacao",
        "nome": "Metodologia de certificação",
        "estado": "revisado"
-      },
-      {
-       "id": "oracle-oca-ocp",
-       "nome": "Oracle OCA/OCP",
-       "estado": "pendente"
-      },
-      {
-       "id": "oci",
-       "nome": "OCI",
-       "estado": "pendente"
-      },
-      {
-       "id": "aws",
-       "nome": "AWS",
-       "estado": "pendente"
-      },
-      {
-       "id": "azure",
-       "nome": "Azure",
-       "estado": "pendente"
       }
      ]
     },
