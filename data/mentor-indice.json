@@ -1106,6 +1106,26 @@
        "estado": "pendente"
       },
       {
+       "id": "pxc-proxy",
+       "nome": "PXC: ProxySQL",
+       "estado": "revisado"
+      },
+      {
+       "id": "pxc-sst",
+       "nome": "PXC: SST e IST",
+       "estado": "revisado"
+      },
+      {
+       "id": "pxc-install",
+       "nome": "PXC: instalação",
+       "estado": "revisado"
+      },
+      {
+       "id": "pxc-overview",
+       "nome": "PXC: visão geral",
+       "estado": "revisado"
+      },
+      {
        "id": "clusterset",
        "nome": "ClusterSet",
        "estado": "pendente"
@@ -3443,6 +3463,11 @@
      "n": "02",
      "nome": "Certificações",
      "topicos": [
+      {
+       "id": "metodologia-de-certificacao",
+       "nome": "Metodologia de certificação",
+       "estado": "revisado"
+      },
       {
        "id": "oracle-oca-ocp",
        "nome": "Oracle OCA/OCP",
