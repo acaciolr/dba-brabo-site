@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Operations — ECOSSISTEMA SUPER DBA</title>
+<meta name="description" content="Runbooks de operações: Upgrade, Backup, Restore, Migration, Security, Performance, Observability.">
+<meta name="theme-color" content="#0B0D10">
+<link rel="icon" href="../../assets/logo/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="../css/tui.css">
+</head>
+<body>
+
+<header class="etop">
+  <span class="etop__title"><a href="../" style="color:inherit;text-decoration:none">← ECOSSISTEMA</a> / OPERATIONS</span>
+  <span class="etop__sp"></span>
+  <span class="etop__clock" id="clock">--/--/---- --:--:--</span>
+  <span>v1.0</span>
+</header>
+
+<div class="ewrap">
+
+  <section class="epanel erun" id="upgrade">
+    <span class="eleg">OP · Upgrade</span>
+    <h2>Upgrade guiado <span class="etag">MOCK · runbook</span></h2>
+    <p>Subir de versão sem susto: mesma ordem em todo motor — inventário, backup válido, réplica primeiro, primário depois, validação.</p>
+    <h5>Checklist por tecnologia</h5>
+    <ul>
+      <li><b>Oracle:</b> <code>preupgrade.jar</code> + fixups → GI/RDBMS em rolling (RAC um nó por vez) → <code>datapatch</code> → valida <code>dba_registry_sqlpatch</code>.</li>
+      <li><b>MySQL:</b> checa <code>mysqlsh util.checkForServerUpgrade()</code> → réplica primeiro → <code>mysql_upgrade</code> automático no restart 8.x.</li>
+      <li><b>SQL Server:</b> Upgrade Advisor → passivo do AG primeiro → failover → valida <code>@@VERSION</code> e jobs.</li>
+      <li><b>PostgreSQL:</b> <code>pg_upgrade --check</code> → standby → promove → valida extensões.</li>
+      <li><b>MongoDB:</b> <code>setFeatureCompatibilityVersion</code> por etapa → secondaries → stepdown do primary.</li>
+    </ul>
+    <h5>Validação</h5>
+    <p>Versão nova respondendo + app conectando + backup pós-upgrade testado. Rollback = restore do backup prévio (por isso ele vem antes).</p>
+  </section>
+
+  <section class="epanel erun" id="backup">
+    <span class="eleg">OP · Backup</span>
+    <h2>Backup que presta <span class="etag">MOCK · runbook</span></h2>
+    <p>Backup não testado é promessa. Todo backup desta plataforma nasce com verificação e retenção declaradas.</p>
+    <h5>Checklist por tecnologia</h5>
+    <ul>
+      <li><b>Oracle:</b> RMAN <code>BACKUP DATABASE PLUS ARCHIVELOG</code> + <code>VALIDATE</code> + catalog.</li>
+      <li><b>MySQL:</b> XtraBackup full semanal + incremental diário + <code>--prepare</code> de teste.</li>
+      <li><b>SQL Server:</b> FULL + DIFF + LOG com <code>CHECKSUM</code> + <code>RESTORE VERIFYONLY</code>.</li>
+      <li><b>PostgreSQL:</b> <code>pg_basebackup</code> + WAL archiving + restore de teste.</li>
+      <li><b>MongoDB:</b> <code>mongodump --oplog</code> ou snapshot de filesystem com <code>fsyncLock</code>.</li>
+    </ul>
+  </section>
+
+  <section class="epanel erun" id="restore">
+    <span class="eleg">OP · Restore</span>
+    <h2>Restore e PITR <span class="etag">MOCK · runbook</span></h2>
+    <p>Restaurar é o único teste que importa. Ensaiado fora de incidente, documentado com tempo medido (RTO real).</p>
+    <h5>Checklist por tecnologia</h5>
+    <ul>
+      <li><b>Oracle:</b> RMAN <code>RESTORE + RECOVER UNTIL TIME</code> → <code>OPEN RESETLOGS</code> → valida contagem de objetos.</li>
+      <li><b>MySQL:</b> full + incrementais + binlog até o timestamp (<code>mysqlbinlog --stop-datetime</code>).</li>
+      <li><b>SQL Server:</b> FULL + último DIFF + cadeia de LOG com <code>STOPAT</code> + <code>RECOVERY</code>.</li>
+      <li><b>PostgreSQL:</b> base + WAL até o LSN/tempo (<code>recovery_target_time</code>).</li>
+      <li><b>MongoDB:</b> restore + oplog replay até o timestamp.</li>
+    </ul>
+  </section>
+
+  <section class="epanel erun" id="migration">
+    <span class="eleg">OP · Migration</span>
+    <h2>Migração entre motores e versões <span class="etag">MOCK · runbook</span></h2>
+    <p>Copiar dado é fácil; copiar sem perder e sem parar é o trabalho: replicação como ponte + cutover ensaiado.</p>
+    <h5>Roteiro padrão</h5>
+    <ol>
+      <li>Inventário: objetos, volumes, charset, dependências de app.</li>
+      <li>Carga inicial (dump/snapshot) + replicação contínua (GoldenGate, DMS, copyInstance).</li>
+      <li>Validação: contagem + checksum por tabela nos dois lados.</li>
+      <li>Cutover em janela: congela escrita → drena lag → aponta app → monitora.</li>
+      <li>Rollback pronto: origem intacta até o aceite formal.</li>
+    </ol>
+  </section>
+
+  <section class="epanel erun" id="security">
+    <span class="eleg">OP · Security</span>
+    <h2>Hardening e auditoria <span class="etag">MOCK · runbook</span></h2>
+    <p>Menor privilégio, criptografia e trilha — o trio que sobrevive a auditoria.</p>
+    <h5>Checklist por tecnologia</h5>
+    <ul>
+      <li><b>Oracle:</b> profiles + roles mínimas, TDE tablespace, Unified Audit, Database Vault onde couber.</li>
+      <li><b>MySQL:</b> remove anônimos/test, <code>caching_sha2_password</code>, TLS obrigatório, audit plugin, TDE.</li>
+      <li><b>SQL Server:</b> TDE + backup criptografado, Row-Level Security, SQL Audit, sem <code>sa</code> no app.</li>
+      <li><b>PostgreSQL:</b> <code>pg_hba.conf</code> restrito, SCRAM, RLS, pgaudit, SSL.</li>
+      <li><b>MongoDB:</b> keyfile/x.509 entre membros, RBAC por role, criptografia at-rest, auditoria.</li>
+    </ul>
+  </section>
+
+  <section class="epanel erun" id="performance">
+    <span class="eleg">OP · Performance</span>
+    <h2>Diagnóstico por evidência <span class="etag">MOCK · runbook</span></h2>
+    <p>Medir antes, mudar uma coisa, medir depois. Palpite não entra no change.</p>
+    <h5>Roteiro padrão</h5>
+    <ol>
+      <li>Onde o tempo vai: waits/eventos (AWR/ASH, Query Store, Performance Schema, pg_stat, profiler).</li>
+      <li>Plano real vs estimado (<code>EXPLAIN ANALYZE</code> e equivalentes).</li>
+      <li>Estatísticas atualizadas antes de mexer em índice.</li>
+      <li>Uma mudança por vez, com baseline gravado.</li>
+    </ol>
+  </section>
+
+  <section class="epanel erun" id="observability">
+    <span class="eleg">OP · Observability</span>
+    <h2>Métricas, logs e alertas <span class="etag">MOCK · runbook</span></h2>
+    <p>O que vale alerta: replicação parada, espaço, backup envelhecido, erro recorrente. Resto é dashboard.</p>
+    <h5>Três pilares por VM</h5>
+    <ul>
+      <li><b>Métricas:</b> uptime, conexões/sessões, lag, espaço, hit ratio — coleta periódica, seuil com hysteresis.</li>
+      <li><b>Logs:</b> erro do motor centralizado, rotação declarada, busca por janela de incidente.</li>
+      <li><b>Alertas:</b> severidade (info/warn/crit), dono, runbook linkado — alerta sem ação documentada é ruído.</li>
+    </ul>
+  </section>
+
+  <footer class="efoot">
+    <span class="mock">MOCK v1 — runbooks estáticos</span>
+    <span style="flex:1"></span>
+    <a href="../">Hub</a>
+    <a href="../../mentor/">Área do mentor</a>
+  </footer>
+</div>
+
+<div class="etoast" id="toast" role="status"></div>
+<script src="../js/eco.js"></script>
+<script>relogio();</script>
+</body>
+</html>

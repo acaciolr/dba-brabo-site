@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECOSSISTEMA SUPER DBA — DBA BRABO</title>
+<meta name="description" content="Hub central dos ambientes de treinamento DBA BRABO: Oracle, MySQL, SQL Server, PostgreSQL e MongoDB.">
+<meta name="theme-color" content="#0B0D10">
+<link rel="icon" href="../assets/logo/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/tui.css">
+</head>
+<body>
+
+<header class="etop">
+  <button class="burger" id="burger" type="button" aria-label="Abrir menu">☰</button>
+  <span class="etop__title">Menu</span>
+  <span class="etop__sp"></span>
+  <span class="etop__clock" id="clock">--/--/---- --:--:--</span>
+  <span>v1.0</span>
+</header>
+
+<div class="ewrap">
+
+  <section class="ebanner" aria-label="ECOSSISTEMA SUPER DBA">
+    <pre id="asciiBanner" aria-hidden="true">ECOSSISTEMA SUPER DBA</pre>
+    <p class="ebanner__meta" id="hostMeta"><span>carregando…</span></p>
+  </section>
+
+  <section class="estats" id="statsRow" aria-label="Resumo"></section>
+
+  <section class="echarts" aria-label="Distribuição">
+    <div class="epanel echart">
+      <span class="eleg">VMs por tecnologia</span>
+      <h4>Donut · mock v1</h4>
+      <div id="chartVms"></div>
+    </div>
+    <div class="epanel echart">
+      <span class="eleg">Labs por tecnologia</span>
+      <h4>Barras · mock v1</h4>
+      <div id="chartLabs"></div>
+    </div>
+  </section>
+
+  <div class="elayout">
+    <div id="navDrawer">
+      <nav class="epanel emenu" aria-label="Menu principal">
+        <span class="eleg">Menu</span>
+        <div class="emenu__cols">
+          <div>
+            <div class="eblock">
+              <h3>HOST</h3>
+              <button type="button" class="eopt" id="btnStartAll"><span class="eopt__key">ON)</span><span>start_all<span class="eopt__sub">— Start all lab instances</span></span></button>
+              <button type="button" class="eopt" id="btnStopAll"><span class="eopt__key">OFF)</span><span>stop_all<span class="eopt__sub">— Stop all lab instances</span></span></button>
+              <a class="eopt" href="vm-manager/"><span class="eopt__key">VM</span><span>vm_manager<span class="eopt__sub">— Hypervisor table</span></span></a>
+              <a class="eopt" href="key-manager/"><span class="eopt__key">KEY</span><span>key_manager<span class="eopt__sub">— SSH private keys</span></span></a>
+            </div>
+            <div class="eblock">
+              <h3>ENVIRONMENTS</h3>
+              <a class="eopt" href="oracle/"><span class="eopt__key">1)</span><span>Oracle Super DBA<span class="eopt__sub">— RAC / Data Guard / RMAN</span></span></a>
+              <a class="eopt" href="mysql/"><span class="eopt__key">2)</span><span>MySQL Super DBA<span class="eopt__sub">— GTID / Cluster / Router</span></span></a>
+              <a class="eopt" href="sqlserver/"><span class="eopt__key">3)</span><span>SQL Server Super DBA<span class="eopt__sub">— AlwaysOn / TDE</span></span></a>
+              <a class="eopt" href="postgresql/"><span class="eopt__key">4)</span><span>PostgreSQL Super DBA<span class="eopt__sub">— Patroni / PITR</span></span></a>
+              <a class="eopt" href="mongodb/"><span class="eopt__key">5)</span><span>MongoDB Super DBA<span class="eopt__sub">— Replica Set / Sharding</span></span></a>
+            </div>
+            <div class="eblock">
+              <h3>OPERATIONS</h3>
+              <a class="eopt" href="operacoes/#upgrade"><span class="eopt__key">↑</span><span>Upgrade<span class="eopt__sub">— Guided upgrade</span></span></a>
+              <a class="eopt" href="operacoes/#backup"><span class="eopt__key">◉</span><span>Backup<span class="eopt__sub">— XtraBackup / dump</span></span></a>
+              <a class="eopt" href="operacoes/#restore"><span class="eopt__key">↩</span><span>Restore<span class="eopt__sub">— Backup recovery</span></span></a>
+              <a class="eopt" href="operacoes/#migration"><span class="eopt__key">⇄</span><span>Migration<span class="eopt__sub">— Cross-engine copy</span></span></a>
+              <a class="eopt" href="operacoes/#security"><span class="eopt__key">⚿</span><span>Security<span class="eopt__sub">— TLS / Auth / Audit</span></span></a>
+              <a class="eopt" href="operacoes/#performance"><span class="eopt__key">◔</span><span>Performance<span class="eopt__sub">— Tuning lab</span></span></a>
+              <a class="eopt" href="operacoes/#observability"><span class="eopt__key">◎</span><span>Observability<span class="eopt__sub">— Metrics &amp; logs</span></span></a>
+            </div>
+          </div>
+          <div>
+            <div class="eblock">
+              <h3>MONITORING</h3>
+              <a class="eopt" href="terminal/?app=innotop"><span class="eopt__key">◌</span><span>Innotop<span class="eopt__sub">— MySQL TUI monitor</span></span></a>
+              <a class="eopt" href="terminal/?app=btop"><span class="eopt__key">◌</span><span>Btop<span class="eopt__sub">— Host TUI monitor</span></span></a>
+              <a class="eopt" href="terminal/?app=dolphie"><span class="eopt__key">◌</span><span>Dolphie<span class="eopt__sub">— MySQL TUI monitor</span></span></a>
+              <a class="eopt" href="monitoramento/#grafana"><span class="eopt__key">◌</span><span>Grafana<span class="eopt__sub">— Dashboards (mock)</span></span></a>
+              <a class="eopt" href="monitoramento/#prometheus"><span class="eopt__key">◌</span><span>Prometheus<span class="eopt__sub">— Metrics (mock)</span></span></a>
+            </div>
+            <div class="eblock">
+              <h3>LOAD BALANCE</h3>
+              <button type="button" class="eopt" data-soon="App Cadastro"><span class="eopt__key">≈</span><span>App Cadastro<span class="eopt__sub">— Universal cluster access</span></span></button>
+              <button type="button" class="eopt" data-soon="Load Balancer"><span class="eopt__key">≈</span><span>Load Balancer<span class="eopt__sub">— Router / ProxySQL / HAProxy</span></span></button>
+            </div>
+            <div class="eblock">
+              <h3>LABS</h3>
+              <div id="labsList"><p style="color:var(--eco-faint);font-size:12px">carregando labs…</p></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <aside class="epanel estatus" aria-label="Status das VMs">
+      <span class="eleg">Status</span>
+      <div id="statusGroups"><p style="color:var(--eco-faint);font-size:12px">carregando…</p></div>
+    </aside>
+  </div>
+
+  <footer class="efoot">
+    <span class="mock">MOCK v1 — sem backend</span>
+    <span>srv-lnx-01 | DBA BRABO PLATFORM | Enterprise Training Ecosystem</span>
+    <span style="flex:1"></span>
+    <a href="../">Portal</a>
+    <a href="../mentor/">Área do mentor</a>
+    <a href="README.md">Roadmap</a>
+  </footer>
+
+</div>
+
+<div class="etoast" id="toast" role="status"></div>
+<script src="js/hub.js"></script>
+</body>
+</html>

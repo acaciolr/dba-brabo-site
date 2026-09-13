@@ -1,0 +1,33 @@
+{
+  "_comment": "MOCK Fase 1 — inventário fictício das VMs de lab. Na v4 estes dados virão do backend (SSH gateway).",
+  "host": { "name": "srv-lnx-01", "ip": "216.xxx.xxx.xxx", "user": "acaciolr", "version": "v1.0", "uptime": "54 days" },
+  "groups": [
+    { "tech": "ORACLE", "vms": [
+      { "name": "ora-node-01", "cpu": 4, "ram": 16, "status": "OFFLINE" },
+      { "name": "ora-node-02", "cpu": 4, "ram": 16, "status": "OFFLINE" },
+      { "name": "ora-rac-01", "cpu": 8, "ram": 32, "status": "OFFLINE" },
+      { "name": "ora-rac-02", "cpu": 8, "ram": 32, "status": "OFFLINE" },
+      { "name": "ora-dg", "cpu": 4, "ram": 16, "status": "OFFLINE" }
+    ]},
+    { "tech": "MYSQL", "vms": [
+      { "name": "mysql-node-01", "cpu": 2, "ram": 8, "status": "OFFLINE" },
+      { "name": "mysql-node-02", "cpu": 2, "ram": 8, "status": "OFFLINE" },
+      { "name": "mysql-router", "cpu": 1, "ram": 2, "status": "OFFLINE" }
+    ]},
+    { "tech": "SQL SERVER", "vms": [
+      { "name": "sql-primary", "cpu": 4, "ram": 16, "status": "OFFLINE" },
+      { "name": "sql-secondary", "cpu": 4, "ram": 16, "status": "OFFLINE" },
+      { "name": "sql-witness", "cpu": 1, "ram": 2, "status": "OFFLINE" }
+    ]},
+    { "tech": "POSTGRESQL", "vms": [
+      { "name": "pg-primary", "cpu": 2, "ram": 8, "status": "OFFLINE" },
+      { "name": "pg-replica", "cpu": 2, "ram": 8, "status": "OFFLINE" },
+      { "name": "patroni", "cpu": 1, "ram": 2, "status": "OFFLINE" }
+    ]},
+    { "tech": "MONGODB", "vms": [
+      { "name": "mongo-config", "cpu": 2, "ram": 4, "status": "OFFLINE" },
+      { "name": "mongo-router", "cpu": 2, "ram": 4, "status": "OFFLINE" },
+      { "name": "mongo-rs01", "cpu": 2, "ram": 8, "status": "OFFLINE" }
+    ]}
+  ]
+}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Labs — ECOSSISTEMA SUPER DBA</title>
+<meta name="description" content="9 laboratórios guiados: objetivo, pré-requisitos, passos, validação e troubleshooting.">
+<meta name="theme-color" content="#0B0D10">
+<link rel="icon" href="../../assets/logo/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="../css/tui.css">
+</head>
+<body>
+
+<header class="etop">
+  <span class="etop__title"><a href="../" style="color:inherit;text-decoration:none">← ECOSSISTEMA</a> / LABS</span>
+  <span class="etop__sp"></span>
+  <span class="etop__clock" id="clock">--/--/---- --:--:--</span>
+  <span>v1.0</span>
+</header>
+
+<div class="ewrap">
+
+  <section class="epanel erun" id="crash-chaos">
+    <span class="eleg">LAB · ALL</span>
+    <h2>Crash &amp; Chaos <span class="etag">destrutivo controlado</span></h2>
+    <p><b>Objetivo:</b> provar que a recuperação funciona matando processo, disco cheio e kill -9 — fora de incidente, com rollback.</p>
+    <h5>Pré-requisitos</h5>
+    <p>Backup válido e testado + snapshot da VM + janela declarada. Sem os três, o lab não começa.</p>
+    <h5>Passos</h5>
+    <ol>
+      <li>Baseline: throughput e latência normais anotados.</li>
+      <li>Falha 1: <code>kill -9</code> no processo do banco → observa crash recovery no log.</li>
+      <li>Falha 2: enche o disco de archive/dump até o alerta → libera e confirma retomada.</li>
+      <li>Falha 3: derruba a réplica/standby → mede RPO real do atraso.</li>
+    </ol>
+    <h5>Validação</h5>
+    <p>Banco volta sozinho (crash recovery), zero perda além do RPO declarado, tempo de volta anotado = RTO real.</p>
+    <h5>Se falhar</h5>
+    <p>Não repete a falha: restaura o snapshot, lê o log do início ao fim e entende antes da próxima rodada.</p>
+  </section>
+
+  <section class="epanel erun" id="replica-failover">
+    <span class="eleg">LAB · MYSQL</span>
+    <h2>Replica Failover <span class="etag">GTID</span></h2>
+    <p><b>Objetivo:</b> promover réplica sem perder escrita e sem split-brain.</p>
+    <h5>Pré-requisitos</h5>
+    <p>GTID ligado, <code>super_read_only</code> na réplica, usuário de app com endpoint único (nunca IP direto).</p>
+    <h5>Passos</h5>
+    <ol>
+      <li>Trava escrita no source: <code>SET GLOBAL read_only = ON</code>.</li>
+      <li>Espera <code>Retrieved_Gtid_Set = Executed_Gtid_Set</code> na réplica.</li>
+      <li>Promove: <code>STOP REPLICA; RESET REPLICA ALL; SET GLOBAL read_only = OFF</code>.</li>
+      <li>Aponta app para o novo primário e escreve a linha de prova.</li>
+    </ol>
+    <h5>Validação</h5>
+    <p>Linha escrita antes da morte legível depois + <code>SHOW REPLICA STATUS</code> vazio no promovido.</p>
+    <h5>Se falhar</h5>
+    <p>Escrita nos dois lados = volta atrás e refaz com <code>read_only</code> no antigo antes de liberar o novo.</p>
+  </section>
+
+  <section class="epanel erun" id="pitr">
+    <span class="eleg">LAB · ALL</span>
+    <h2>PITR — voltar no tempo <span class="etag">RPO real</span></h2>
+    <p><b>Objetivo:</b> recuperar o banco num timestamp exato (tabela dropada às 14:32 volta às 14:31).</p>
+    <h5>Pré-requisitos</h5>
+    <p>Backup full + cadeia contínua (binlog/WAL/archive/redo) cobrindo o ponto alvo.</p>
+    <h5>Passos</h5>
+    <ol>
+      <li>Anota o alvo: <code>2026-09-13 14:31:00</code>.</li>
+      <li>Restaura o full numa instância isolada (nunca por cima da produção no treino).</li>
+      <li>Aplica logs até o alvo (<code>STOPAT</code> / <code>recovery_target_time</code> / <code>--stop-datetime</code>).</li>
+      <li>Abre, confere a tabela, exporta só o necessário.</li>
+    </ol>
+    <h5>Validação</h5>
+    <p>Linha deletada de volta + horário do último evento aplicado = alvo pedido.</p>
+    <h5>Se falhar</h5>
+    <p>Buraco na cadeia (log faltando) = RPO maior que o declarado: ajusta retenção e repete.</p>
+  </section>
+
+  <section class="epanel erun" id="rac">
+    <span class="eleg">LAB · ORACLE</span>
+    <h2>RAC — matar um nó sem derrubar o serviço <span class="etag">quorum</span></h2>
+    <p><b>Objetivo:</b> provar failover de instância com o app conectado (TAF/FAN ou retry do driver).</p>
+    <h5>Pré-requisitos</h5>
+    <p>2 nós + voting/OCR íntegros, serviço com failover configurado, carga sintética rodando.</p>
+    <h5>Passos</h5>
+    <ol>
+      <li>Baseline: sessões distribuídas (<code>GV$SESSION</code> por instância).</li>
+      <li>Derruba o nó 2 (<code>crsctl stop crs</code> no nó, nunca <code>-f</code> no cluster).</li>
+      <li>Observa: fencing, remasterização, sessões migrando.</li>
+      <li>Volta o nó e observa o rebalanceamento.</li>
+    </ol>
+    <h5>Validação</h5>
+    <p>Carga continua com erro transitório documentado; sem split-brain (um primário ativo por recurso).</p>
+    <h5>Se falhar</h5>
+    <p>App sem retry falha junto — o lab prova a lacuna do DRIVER, não só do banco: configura e repete.</p>
+  </section>
+
+  <section class="epanel erun" id="dataguard">
+    <span class="eleg">LAB · ORACLE</span>
+    <h2>Data Guard — switchover ensaiado <span class="etag">zero perda planejada</span></h2>
+    <p><b>Objetivo:</b> trocar primário e standby sem perder transação e voltar atrás.</p>
+    <h5>Pré-requisitos</h5>
+    <p>SYNC (ou FastSync) com apply lag zerado, flashback ligado nos dois lados (volta rápida).</p>
+    <h5>Passos</h5>
+    <ol>
+      <li>Confere lag zerado (<code>V$DATAGUARD_STATS</code>).</li>
+      <li><code>SWITCHOVER TO standby</code> via DGMGRL.</li>
+      <li>Valida app no novo primário + nova cadeia de redo.</li>
+      <li>Switchback: volta ao original pelo mesmo protocolo.</li>
+    </ol>
+    <h5>Validação</h5>
+    <p>Zero gap + sequência de standby intacta + tempo total anotado (é o RTO do DR).</p>
+    <h5>Se falhar</h5>
+    <p>Flashback restore nos dois e recomeça do switchover — nunca "conserta" roles na mão.</p>
+  </section>
+
+  <section class="epanel erun" id="alwayson">
+    <span class="eleg">LAB · SQL SERVER</span>
+    <h2>AlwaysOn — failover de AG <span class="etag">quorum WSFC</span></h2>
+    <p><b>Objetivo:</b> failover planejado e forçado com perda medida, sem surprise.</p>
+    <h5>Pré-requisitos</h5>
+    <p>AG síncrono saudável, quorum com voto ímpar, listener testado pelo app (nunca IP do nó).</p>
+    <h5>Passos</h5>
+    <ol>
+      <li>Failover planejado pelo SSMS/dashboard com o AG sincronizado.</li>
+      <li>Mede tempo de indisponibilidade da escrita.</li>
+      <li>Forçado com perda: mata o primário, força quorum se preciso, mede o gap no LSN.</li>
+      <li>Reconstrói a réplica antiga como secundária.</li>
+    </ol>
+    <h5>Validação</h5>
+    <p>Listener responde, <code>sys.dm_hadr_*</code> saudável, gap do forçado documentado em MB/segundos.</p>
+    <h5>Se falhar</h5>
+    <p>Quorum perdido = cluster parado por design: devolve um voto antes de forçar qualquer coisa.</p>
+  </section>
+
+  <section class="epanel erun" id="group-replication">
+    <span class="eleg">LAB · MYSQL</span>
+    <h2>Group Replication — quorum e certificação <span class="etag">consenso</span></h2>
+    <p><b>Objetivo:</b> ver maioria decidir e conflito abortar — na prática, não no slide.</p>
+    <h5>Pré-requisitos</h5>
+    <p>3 nós ímpares, GTID, tabelas com PK (sem PK o membro nem entra).</p>
+    <h5>Passos</h5>
+    <ol>
+      <li>Forma o grupo e confere <code>MEMBER_STATE=ONLINE</code> nos 3.</li>
+      <li>Mata 1: grupo segue (maioria). Mata 2: grupo trava escrita (sem maioria, por design).</li>
+      <li>Volta os nós e observa recuperação distribuída (ou clone se o binlog purgou).</li>
+      <li>Em multi-primary: escreve a mesma linha nos dois e lê o erro de certificação.</li>
+    </ol>
+    <h5>Validação</h5>
+    <p>Comportamento de quorum reproduzido + erro de certificação explicado (não é bug, é o mecanismo).</p>
+    <h5>Se falhar</h5>
+    <p>Membro em ERROR: lê o log antes de reingressar; divergiu = reprovisiona, nunca "pula".</p>
+  </section>
+
+  <section class="epanel erun" id="patroni">
+    <span class="eleg">LAB · POSTGRESQL</span>
+    <h2>Patroni — failover sem split-brain <span class="etag">DCS</span></h2>
+    <p><b>Objetivo:</b> matar o primary e ver o DCS eleger sem dois primários.</p>
+    <h5>Pré-requisitos</h5>
+    <p>DCS (etcd/ZooKeeper) com 3 membros, streaming + slots, VIP ou proxy na frente.</p>
+    <h5>Passos</h5>
+    <ol>
+      <li><code>patronictl list</code>: 1 Leader + réplicas em streaming.</li>
+      <li>Mata o Leader (stop, não rm).</li>
+      <li>Observa eleição no log do DCS + promote da réplica mais avançada.</li>
+      <li>Volta o antigo como réplica (rejoin, não disputa).</li>
+    </ol>
+    <h5>Validação</h5>
+    <p>Um Leader por vez em todo o teste + lag zerado pós-failover + app sem reconfiguração manual.</p>
+    <h5>Se falhar</h5>
+    <p>Dois Leaders = DCS particionado: resolve a rede/consenso antes de tocar no Postgres.</p>
+  </section>
+
+  <section class="epanel erun" id="replica-set">
+    <span class="eleg">LAB · MONGODB</span>
+    <h2>Replica Set — eleição e Write Concern <span class="etag">maioria</span></h2>
+    <p><b>Objetivo:</b> sentir na pele por que <code>w:1</code> perde dado e <code>w:majority</code> não.</p>
+    <h5>Pré-requisitos</h5>
+    <p>3 membros (ímpar), keyfile entre eles, app com retry + readPreference consciente.</p>
+    <h5>Passos</h5>
+    <ol>
+      <li><code>rs.status()</code>: 1 PRIMARY + 2 SECONDARY.</li>
+      <li>Escreve com <code>w:1</code>, mata o primary antes de replicar: dado some (proposital).</li>
+      <li>Repete com <code>w:majority</code> + <code>j:true</code>: dado sobrevive ao failover.</li>
+      <li><code>rs.stepDown()</code>: eleição limpa e novo primary em segundos.</li>
+    </ol>
+    <h5>Validação</h5>
+    <p>Diferença w:1 vs majority demonstrada com dado real + eleição sem intervenção.</p>
+    <h5>Se falhar</h5>
+    <p>Eleição travada = sem maioria (2 de 3 fora): devolve membro antes de culpar o driver.</p>
+  </section>
+
+  <footer class="efoot">
+    <span class="mock">Runbooks estáticos — detalhe completo na área do mentor</span>
+    <span style="flex:1"></span>
+    <a href="../">Hub</a>
+    <a href="../../mentor/">Área do mentor</a>
+  </footer>
+</div>
+
+<div class="etoast" id="toast" role="status"></div>
+<script src="../js/eco.js"></script>
+<script>relogio();</script>
+</body>
+</html>

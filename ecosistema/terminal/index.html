@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Console — ECOSSISTEMA SUPER DBA</title>
+<meta name="description" content="Terminal mock por VM (xterm.js, sem SSH real na Fase 1).">
+<meta name="theme-color" content="#0B0D10">
+<link rel="icon" href="../../assets/logo/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css">
+<link rel="stylesheet" href="../css/tui.css">
+</head>
+<body>
+
+<header class="etop">
+  <span class="etop__title"><a href="../" style="color:inherit;text-decoration:none">← ECOSSISTEMA</a> / CONSOLE <span id="vmName" style="color:var(--eco-fg)"></span></span>
+  <span class="etop__sp"></span>
+  <span class="mock" style="color:var(--eco-amber);border:1px solid rgba(210,153,34,.5);border-radius:4px;padding:0 8px;font-size:11px">MOCK v1</span>
+  <span>v1.0</span>
+</header>
+
+<div class="ewrap">
+  <section class="eterm" aria-label="Console da VM">
+    <div class="eterm__bar">
+      <span class="eterm__dots"><i></i><i></i><i></i></span>
+      <span id="termTitle">console</span>
+    </div>
+    <div id="xterm"></div>
+    <div class="eterm__fallback" id="fallback" hidden>
+      <p style="color:var(--eco-amber);font-size:12px">xterm.js indisponível (offline?) — fallback estático. Digite <b>help</b> + Enter.</p>
+      <pre id="fakeOut"></pre>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <span id="fakePrompt" style="color:var(--eco-green-hi)">$</span>
+        <input id="fakeIn" autocomplete="off" spellcheck="false" style="flex:1;background:#000;border:1px solid var(--eco-line);border-radius:4px;color:var(--eco-fg);font-family:var(--eco-mono);font-size:13px;padding:6px 8px">
+      </div>
+    </div>
+  </section>
+
+  <footer class="efoot">
+    <span class="mock">MOCK v1 — sem SSH real</span>
+    <span>Arquitetura: Pages → Terminal UI → SSH Gateway (futuro) → Private Key → VM</span>
+    <span style="flex:1"></span>
+    <a href="../vm-manager/">VM Manager</a>
+    <a href="../">Hub</a>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+<script src="../js/eco.js"></script>
+<script src="../js/term.js"></script>
+</body>
+</html>

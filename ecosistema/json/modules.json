@@ -1,0 +1,9 @@
+{
+  "_comment": "Módulos por ecossistema (páginas próprias na Fase C) + total de aulas do dashboard.",
+  "aulas": 180,
+  "oracle": ["RAC", "ASM", "Data Guard", "RMAN", "OEM", "Exadata", "ODA", "OCI"],
+  "mysql": ["InnoDB", "Replication", "Cluster", "ClusterSet", "HeatWave", "Router", "XtraBackup"],
+  "sqlserver": ["AlwaysOn", "Log Shipping", "Replication", "TDE", "Extended Events", "Query Store"],
+  "postgresql": ["Patroni", "Streaming", "WAL", "PITR", "PgBouncer", "HAProxy"],
+  "mongodb": ["Replica Set", "Sharding", "Config Server", "Mongos", "Backup", "Ops Manager"]
+}

@@ -1,0 +1,14 @@
+{
+  "_comment": "MOCK Fase 1 — catálogo fictício de labs. Páginas próprias chegam na Fase C.",
+  "labs": [
+    { "id": "crash-chaos", "nome": "Crash & Chaos", "tech": "ALL", "desc": "Testes destrutivos controlados" },
+    { "id": "replica-failover", "nome": "Replica Failover", "tech": "MYSQL", "desc": "Promoção de réplica MySQL" },
+    { "id": "pitr", "nome": "PITR", "tech": "ALL", "desc": "Point-in-time recovery" },
+    { "id": "rac", "nome": "RAC", "tech": "ORACLE", "desc": "Cluster ativo-ativo Oracle" },
+    { "id": "dataguard", "nome": "Data Guard", "tech": "ORACLE", "desc": "Switchover e failover" },
+    { "id": "alwayson", "nome": "AlwaysOn", "tech": "SQL SERVER", "desc": "Failover de Availability Group" },
+    { "id": "group-replication", "nome": "Group Replication", "tech": "MYSQL", "desc": "Quorum e certificação" },
+    { "id": "patroni", "nome": "Patroni", "tech": "POSTGRESQL", "desc": "Failover sem split-brain" },
+    { "id": "replica-set", "nome": "Replica Set", "tech": "MONGODB", "desc": "Eleição e Write Concern" }
+  ]
+}

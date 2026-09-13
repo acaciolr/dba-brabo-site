@@ -1,0 +1,7 @@
+{
+  "_comment": "MOCK Fase 1 — usuários fictícios, só display. Login real chega na v2 (SQLite).",
+  "users": [
+    { "user": "acaciolr", "role": "admin", "nome": "Acácio — DBA BRABO" },
+    { "user": "aluno01", "role": "aluno", "nome": "Aluno 01" }
+  ]
+}

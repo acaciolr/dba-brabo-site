@@ -7,7 +7,8 @@
       "consultoria": "Consultoria", "projetos": "Projetos", "certificacoes": "Certificações",
       "stack": "Stack", "eventos": "Eventos", "roadmap": "Roadmap", "faq": "FAQ",
       "comunidade": "Entrar na comunidade",
-      "aluno": "Área do aluno"
+      "aluno": "Área do aluno",
+      "mentor": "Área do mentor"
     },
     "aluno_breve": "Em breve",
     "hero": {
@@ -102,7 +103,8 @@
       "consultoria": "Consulting", "projetos": "Projects", "certificacoes": "Certifications",
       "stack": "Stack", "eventos": "Events", "roadmap": "Roadmap", "faq": "FAQ",
       "comunidade": "Join the community",
-      "aluno": "Student area"
+      "aluno": "Student area",
+      "mentor": "Mentor area"
     },
     "aluno_breve": "Coming soon",
     "hero": {

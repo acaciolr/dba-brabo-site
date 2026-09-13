@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQL Server Super DBA — ECOSSISTEMA SUPER DBA</title>
+<meta name="description" content="Ambiente SQL Server: AlwaysOn, Log Shipping, Replication, TDE, Extended Events, Query Store.">
+<meta name="theme-color" content="#0B0D10">
+<link rel="icon" href="../../assets/logo/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="../css/tui.css">
+<style>.minicio h1{font-family:Poppins,sans-serif}.minicio h1 .accent{background:linear-gradient(100deg,var(--accent,#F08A6E),#E8B33C);-webkit-background-clip:text;background-clip:text;color:transparent}</style>
+</head>
+<body data-tech="sqlserver">
+
+<header class="etop">
+  <span class="etop__title"><a href="../" style="color:inherit;text-decoration:none">← ECOSSISTEMA</a> / SQLSERVER</span>
+  <span class="etop__sp"></span>
+  <span class="etop__clock" id="clock">--/--/---- --:--:--</span>
+  <span>v1.0</span>
+</header>
+
+<div class="ewrap">
+  <section class="ebanner" style="text-align:left" data-accent>
+    <p class="eyebrow" style="margin:0 0 6px;color:var(--eco-green-hi);font-size:11px;letter-spacing:.14em">AMBIENTE · MOCK v1</p>
+    <h1 id="techName" style="font-family:Poppins,sans-serif;font-size:clamp(1.8rem,4.5vw,3rem);margin:0 0 8px">SQL Server</h1>
+    <p style="color:var(--eco-dim);font-size:13px;margin:0">AlwaysOn · Log Shipping · Replication · TDE · Extended Events · Query Store</p>
+  </section>
+
+  <section class="epanel" style="padding:22px clamp(12px,2vw,22px) 18px;margin-top:16px">
+    <span class="eleg">Módulos</span>
+    <div class="estats" id="modGrid" style="margin:0"></div>
+  </section>
+
+  <section class="epanel estatus" style="margin-top:16px" aria-label="VMs SQL Server">
+    <span class="eleg">VMs · console</span>
+    <div id="vmList"><p style="color:var(--eco-faint);font-size:12px">carregando…</p></div>
+  </section>
+
+  <footer class="efoot">
+    <span class="mock">MOCK v1 — sem backend</span>
+    <span style="flex:1"></span>
+    <a href="../">Hub</a>
+    <a href="../vm-manager/">VM Manager</a>
+    <a href="../../mentor/">Área do mentor</a>
+  </footer>
+</div>
+
+<div class="etoast" id="toast" role="status"></div>
+<script src="../js/eco.js"></script>
+<script src="../js/tech.js"></script>
+</body>
+</html>
