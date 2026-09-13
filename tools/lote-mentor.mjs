@@ -31,6 +31,44 @@ const TIPOS = new Set(['texto', 'lista', 'terminal', 'passos', 'aviso', 'diagram
 function falhar(msg) { console.error(`ERRO: ${msg}`); process.exitCode = 1; }
 
 const argv = process.argv.slice(2);
+if (argv[0] === '--auditar' && argv[1]) {
+  const erros = [];
+  const dest = path.join(RAIZ, 'conteudo-mentor', `${argv[1]}.json`);
+  let base;
+  try { base = JSON.parse(fs.readFileSync(dest, 'utf8')); }
+  catch (e) { console.error(`FALHA: JSON inválido — ${e.message}`); process.exit(1); }
+  const ids = Object.keys(base.topicos);
+  for (const id of ids) {
+    if (/object Object/i.test(id)) erros.push(`chave corrompida: ${id}`);
+    const t = base.topicos[id];
+    if (!t.titulo) erros.push(`${id}: sem titulo`);
+    if (!Array.isArray(t.blocos) || !t.blocos.length) erros.push(`${id}: sem blocos`);
+    (t.blocos || []).forEach((b, i) => { if (!b || !TIPOS.has(b.t)) erros.push(`${id}: bloco ${i} tipo inválido`); });
+  }
+  const destIx = path.join(RAIZ, 'data', 'mentor-indice.json');
+  const ix = JSON.parse(fs.readFileSync(destIx, 'utf8'));
+  const tr = ix.trilhas.find(t => t.slug === argv[1]);
+  const idsIx = [];
+  for (const m of (tr && tr.modulos) || []) for (const t of m.topicos || []) idsIx.push(t.id);
+  for (const id of ids) if (!idsIx.includes(id)) erros.push(`conteúdo sem índice: ${id}`);
+  for (const id of idsIx) if (!ids.includes(id)) erros.push(`índice sem conteúdo: ${id}`);
+  const aula = (slug) => {
+    const t = base.topicos[slug];
+    if (!t) return;
+    const hs = t.blocos.map(b => b.h || '').filter(Boolean);
+    console.log(`  ${slug}: ${t.blocos.length} blocos | 1o='${hs[0]}'`);
+    const nums = hs.map(h => /^Aula (\d+)/.exec(h)).filter(Boolean).map(m => +m[1]);
+    for (let i = 1; i < nums.length; i++) {
+      if (nums[i] < nums[i - 1]) erros.push(`${slug}: aula fora de ordem (${nums[i - 1]} antes de ${nums[i]})`);
+    }
+  };
+  console.log(`trilha ${argv[1]}: ${ids.length} tópicos`);
+  ['shell', 'python', 'powershell', 'ansible', 'terraform', 'saltstack', 'vagrant'].forEach(aula);
+  if (erros.length) { console.error('FALHAS:'); erros.forEach(e => console.error('  ! ' + e)); process.exit(1); }
+  console.log('AUDITORIA OK — JSON válido, tipos válidos, índice sincronizado, aulas em ordem.');
+  process.exit(0);
+}
+
 if (argv[0] === '--resumo' && argv[1]) {
   const dest = path.join(RAIZ, 'conteudo-mentor', `${argv[1]}.json`);
   const base = JSON.parse(fs.readFileSync(dest, 'utf8'));

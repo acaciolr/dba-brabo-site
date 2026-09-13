@@ -3392,7 +3392,7 @@
       {
        "id": "ansible",
        "nome": "Ansible",
-       "estado": "pendente"
+       "estado": "revisado"
       },
       {
        "id": "shell",
@@ -3427,16 +3427,6 @@
       {
        "id": "vagrant",
        "nome": "Vagrant",
-       "estado": "revisado"
-      },
-      {
-       "id": "comparativo",
-       "nome": "Comparativo Bash/PowerShell/Python",
-       "estado": "revisado"
-      },
-      {
-       "id": "projetos-finais",
-       "nome": "Projetos finais e framework DBRE",
        "estado": "revisado"
       }
      ]
