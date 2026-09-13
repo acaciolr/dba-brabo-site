@@ -58,6 +58,25 @@ if (argv[0] === '--estado' && argv[1] && argv[2] && argv[3]) {
   process.exit(0);
 }
 
+if (argv[0] === '--remover-topico' && argv[1] && argv[2]) {
+  const dest = path.join(RAIZ, 'conteudo-mentor', `${argv[1]}.json`);
+  const base = JSON.parse(fs.readFileSync(dest, 'utf8'));
+  delete base.topicos[argv[2]];
+  fs.writeFileSync(dest, JSON.stringify(base));
+  const destIx = path.join(RAIZ, 'data', 'mentor-indice.json');
+  const ix = JSON.parse(fs.readFileSync(destIx, 'utf8'));
+  const tr = ix.trilhas.find(t => t.slug === argv[1]);
+  let n = 0;
+  for (const m of (tr && tr.modulos) || []) {
+    const antes = m.topicos.length;
+    m.topicos = m.topicos.filter(t => String(t.id) !== argv[2] && typeof t.id === 'string');
+    n += antes - m.topicos.length;
+  }
+  fs.writeFileSync(destIx, JSON.stringify(ix, null, 1) + '\n');
+  console.log(`removido ${argv[1]}/${argv[2]} do conteúdo e ${n} entrada(s) do índice`);
+  process.exit(0);
+}
+
 const alvos = argv.filter(a => a !== '--resumo').map(a => path.resolve(a));
 if (!alvos.length && !argv.includes('--resumo')) {
   alvos.push(...(fs.existsSync(LOTE) ? fs.readdirSync(LOTE).filter(f => f.endsWith('.json')).sort().map(f => path.join(LOTE, f)) : []));
@@ -85,7 +104,7 @@ for (const arq of alvos) {
   let base;
   try { base = JSON.parse(fs.readFileSync(dest, 'utf8')); }
   catch (e) { falhar(`${nome}: base corrompida — ${e.message}`); continue; }
-  if (!base.topicos || !base.topicos[topico]) { falhar(`${nome}: tópico inexistente (${trilha}/${topico})`); continue; }
+  if ((!base.topicos || !base.topicos[topico]) && modo !== 'criar-topico') { falhar(`${nome}: tópico inexistente (${trilha}/${topico})`); continue; }
 
   if (modo === 'anexar-blocos') {
     if (!Array.isArray(lote.blocos) || !lote.blocos.length) { falhar(`${nome}: blocos vazio`); continue; }
@@ -96,6 +115,20 @@ for (const arq of alvos) {
   } else if (modo === 'substituir-topico') {
     if (!lote.topico || typeof lote.topico !== 'object') { falhar(`${nome}: campo topico ausente`); continue; }
     base.topicos[topico] = lote.topico;
+  } else if (modo === 'criar-topico') {
+    if (base.topicos[topico]) { falhar(`${nome}: tópico já existe (${trilha}/${topico})`); continue; }
+    const conteudo = lote.conteudo;
+    if (!conteudo || typeof conteudo !== 'object' || !Array.isArray(conteudo.blocos)) { falhar(`${nome}: campo conteudo.blocos ausente`); continue; }
+    if (!lote.modulo || !lote.nome) { falhar(`${nome}: criar-topico exige modulo e nome`); continue; }
+    base.topicos[topico] = conteudo;
+    const destIx = path.join(RAIZ, 'data', 'mentor-indice.json');
+    const ix = JSON.parse(fs.readFileSync(destIx, 'utf8'));
+    const tr = ix.trilhas.find(t => t.slug === trilha);
+    const mod = tr && tr.modulos.find(m => m.id === lote.modulo);
+    if (!mod) { falhar(`${nome}: modulo ${lote.modulo} inexistente no índice`); continue; }
+    mod.topicos.push({ id: topico, nome: lote.nome, estado: lote.estado || 'revisado' });
+    fs.writeFileSync(destIx, JSON.stringify(ix, null, 1) + '\n');
+    console.log(`  índice ${trilha}/${lote.modulo}: +${topico} (${lote.nome})`);
   } else { falhar(`${nome}: modo desconhecido (${modo})`); continue; }
 
   if (lote.marcarRevisado) base.topicos[topico].revisado = true;
