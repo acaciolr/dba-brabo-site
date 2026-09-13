@@ -80,8 +80,8 @@
           <span class="badge badge--accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20h-20"/></svg> Avançado</span>
           <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> 4 módulos</span>
-          <span class="badge">9 tópicos</span>
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> 8 módulos</span>
+          <span class="badge">20 tópicos</span>
           
           <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15 9.5A3 3 0 0 0 12 8c-1.7 0-3 .9-3 2s1.3 2 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-3-1.5"/><path d="M12 6v12"/></svg> Sob consulta</span>
@@ -1228,6 +1228,1115 @@ salt &#39;db02&#39; mysql.query labdb &quot;SELECT * FROM teste;&quot;</code></p
     </div></div>
       <div class="tblock"><p class="tblock__label">Tecnologias</p>
            <div class="badges"><span class="badge badge--accent">SaltStack Pillar</span><span class="badge badge--accent">Jinja</span><span class="badge badge--accent">mysql_user</span><span class="badge badge--accent">GTID</span><span class="badge badge--accent">state.highstate</span></div></div>
+    </div></div></div>
+  </div>
+    </div></div></div>
+  </div>
+  <div class="acc" id="mod-05">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">05</span>
+      <span class="acc__label">Algoritmos e lógica — a base antes da linguagem
+        <span class="acc__hint" style="display:block;margin-top:2px">Nível faculdade, sem enrolação: o que é um algoritmo, variáveis e tipos, as três estruturas de controle, funções e teste de mesa — com exemplos de DBA desde a primeira aula.</span></span>
+      <span class="badge">3 tópicos</span>
+      <span class="badge badge--accent">detalhado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      
+  <div class="acc acc--sub" id="t-logica-algoritmos">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">01</span>
+      <span class="acc__label">O que é um algoritmo: entrada, processamento e saída
+        <span class="acc__hint" style="display:block;margin-top:2px">Todo script de DBA é um algoritmo: recebe dados, decide e age. Aprenda a escrever o raciocínio em pseudocódigo antes de tocar em qualquer linguagem.</span></span>
+      <span class="badge">Básico</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Um algoritmo é uma sequência finita de passos não ambíguos que transforma uma entrada numa saída. Finitude importa: um procedimento que nunca termina não é algoritmo, é bug. Não ambiguidade importa: &#39;verificar a réplica&#39; não é passo executável, mas &#39;ler Seconds_Behind_Source e comparar com 60&#39; é. A variável é uma caixa nomeada que guarda um valor com um tipo: inteiro (server_id), decimal (lag em segundos pode ser fracionário), texto (hostname) e lógico (verdadeiro/falso — réplica saudável ou não). O tipo decide quais operações fazem sentido: somar dois hostnames não existe, mas comparar dois lags sim. Pseudocódigo é o algoritmo escrito em português estruturado — o rascunho que você testa com a cabeça antes de gastar tempo com sintaxe de linguagem.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>Todo algoritmo se descreve em três partes: ENTRADA (o que ele recebe — ex.: o valor de Seconds_Behind_Source), PROCESSAMENTO (o que ele faz — comparar com o limite) e SAÍDA (o que ele produz — &#39;OK&#39; ou &#39;ALERTA&#39;).</li><li>Declarar uma variável é reservar a caixa e dizer o tipo: lag_segundos como inteiro-vindo-do-MySQL, limite como inteiro fixo em 60.</li><li>Operadores relacionais (&gt;, &lt;, =, diferente) comparam valores e devolvem um lógico; operadores lógicos (E, OU, NÃO) combinam lógicos entre si.</li><li>A precedência decide a ordem: aritmética antes de comparação, comparação antes de lógica — e parênteses passam por cima de tudo quando a intenção não está óbvia.</li><li>O pseudocódigo pronto vira o esqueleto do script final em qualquer linguagem: cada linha estruturada corresponde a 1–3 linhas de Bash ou Python.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Antes de codar qualquer automação, escrever o bloco ENTRADA/PROCESSAMENTO/SAÍDA num comentário no topo do script.</li><li>Nomear variáveis pelo que guardam (lag_segundos, host_origem), nunca por x, aux ou temp — nome ruim esconde bug de lógica.</li><li>Uma variável, um conceito: se lag_segundos passa a guardar também mensagem de erro, o algoritmo quebrou — crie outra variável.</li><li>Testar o pseudocódigo com três valores concretos: o normal (lag 5), o limite (lag 60) e o absurdo (lag NULL quando a replicação está parada).</li><li>Guardar o pseudocódigo como comentário no script final: daqui a seis meses, é ele que explica o porquê.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">O script roda sem erro mas decide errado (alerta quando não devia, ou vice-versa).</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Bug de lógica, não de sintaxe: comparação invertida (usou &lt; em vez de &gt;) ou limite com unidade errada (milissegundos comparados como segundos).</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Voltar ao pseudocódigo e executar à mão com os valores reais do incidente. Bug de lógica se caça no raciocínio, não no manual da linguagem.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Erro de tipo: não consigo somar, comparar ou concatenar.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Variável com tipo diferente do esperado — o clássico é número lido como texto (&#39;60&#39; em vez de 60) ou NULL onde se esperava número.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Explicitar a conversão logo na entrada (texto-para-inteiro) e tratar o NULL como caso separado antes de qualquer comparação.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">O procedimento &#39;às vezes funciona&#39;, sem padrão aparente.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Passo ambíguo que depende de estado externo: &#39;pegar o lag atual&#39; muda entre duas leituras, ou a réplica avaliada não é sempre a mesma.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Congelar a entrada no início (ler uma vez, guardar em variável) e nomear exatamente qual instância está sendo avaliada.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Pseudocódigo: classificar a saúde da réplica</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">text</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>ALGORITMO saude_replica
+  ENTRADA: lag_segundos (inteiro ou NULO), limite = 60
+  SAÍDA: texto (&#39;OK&#39;, &#39;ALERTA&#39; ou &#39;PARADA&#39;)
+
+  SE lag_segundos É NULO ENTÃO
+    RETORNAR &#39;PARADA&#39;        // thread de I/O ou SQL parada
+  SENÃO SE lag_segundos &gt; limite ENTÃO
+    RETORNAR &#39;ALERTA&#39;
+  SENÃO
+    RETORNAR &#39;OK&#39;
+  FIM-SE
+FIM-ALGORITMO
+
+// teste com valores concretos:
+// lag=5    -&gt; &#39;OK&#39;      | lag=300 -&gt; &#39;ALERTA&#39; | lag=NULO -&gt; &#39;PARADA&#39;</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Tabela verdade mínima (AND, OR, NOT)</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">text</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>A = &#39;io_thread ok&#39;    B = &#39;sql_thread ok&#39;
+
+A E B  -&gt; réplica saudável SÓ se ambos verdadeiros
+  V E V = V | V E F = F | F E qualquer = F
+
+A OU B -&gt; basta um verdadeiro (ex.: &#39;tem backup full OU incremental válido&#39;)
+  F OU F = F | qualquer outro caso = V
+
+NÃO A -&gt; inverte (ex.: NÃO &#39;disco cheio&#39; = &#39;disco com espaço&#39;)
+
+// regra de bolso: E estreita (exige tudo), OU alarga (aceita qualquer)</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Precedência e parênteses</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">text</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>// sem parênteses, a leitura engana:
+lag &gt; 60 E tentativas &lt; 3 OU emergencia
+
+// o computador lê assim (E antes de OU):
+(lag &gt; 60 E tentativas &lt; 3) OU emergencia
+
+// se a intenção era outra, escreva-a:
+lag &gt; 60 E (tentativas &lt; 3 OU emergencia)
+
+// regra de bolso: na dúvida, parênteses. Clareza vence economia.</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">Pseudocódigo</span><span class="badge badge--accent">Variáveis e tipos</span><span class="badge badge--accent">Operadores</span><span class="badge badge--accent">E/P/S</span><span class="badge badge--accent">Lógica proposicional</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-estruturas-controle">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">02</span>
+      <span class="acc__label">As três estruturas: sequência, seleção e repetição
+        <span class="acc__hint" style="display:block;margin-top:2px">Todo programa do planeta se monta com três peças. Dominar SE/SENÃO e os dois loops é dominar 90% dos scripts de DBA.</span></span>
+      <span class="badge">Básico → Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Qualquer algoritmo se constrói com três estruturas: SEQUÊNCIA (faça A, depois B), SELEÇÃO (se condição, faça A, senão faça B) e REPETIÇÃO (enquanto condição, repita A). A seleção tem duas formas: o SE/SENÃO para dois caminhos e a seleção múltipla (ESCOLHA/CASO) para vários valores de uma mesma variável — como o estado da réplica (Connecting, Yes, No). A repetição também tem duas formas: o PARA, quando você sabe quantas vezes repete (varrer as 3 réplicas), e o ENQUANTO, quando repete até uma condição mudar (tentar conectar até conseguir ou esgotar 5 tentativas). Curto-circuito é o avaliador preguiçoso do E/OU: em &#39;réplica existe E lag &gt; 60&#39;, se a primeira parte é falsa a segunda nem é avaliada — o que evita erro ao consultar lag de réplica inexistente.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>A sequência executa de cima para baixo; a ordem das linhas é o comportamento — trocar duas linhas pode trocar o resultado.</li><li>O SE avalia a condição uma vez e escolhe um caminho; SENÃO SE encadeia vários testes sobre o mesmo valor sem aninhar SE dentro de SE.</li><li>O PARA percorre uma faixa conhecida com contador (réplica 1 até 3) e termina sozinho; é o loop que não vira infinito.</li><li>O ENQUANTO testa antes de cada volta e precisa de algo dentro do corpo que aproxime o fim (incrementar tentativa, dormir 5s) — sem isso, loop infinito.</li><li>O curto-circuito ordena as condições da mais barata/segura para a mais cara/arriscada: primeiro &#39;réplica responde&#39;, depois &#39;lag &gt; 60&#39;.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Preferir SENÃO SE encadeado a SE aninhado: cada nível de aninhamento dobra o custo de leitura do código.</li><li>Preferir PARA quando o conjunto é conhecido (lista de hosts, lista de bancos); reservar ENQUANTO para espera com condição de saída e limite de tentativas.</li><li>Todo ENQUANTO de espera precisa de dois freios: número máximo de voltas E pausa entre elas (sleep) — sem pausa vira ataque contra o próprio banco.</li><li>Ordenar condições aproveitando o curto-circuito: teste barato que elimina a maioria dos casos sempre primeiro.</li><li>Documentar a condição de saída do loop num comentário: &#39;sai quando conectar ou após 5 tentativas&#39;.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Loop que nunca termina e precisa de Ctrl+C.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Condição de saída que nunca fica verdadeira: contador não incrementado, ou comparação com valor que o corpo nunca produz.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Imprimir a variável de controle a cada volta (modo verboso) e conferir se ela caminha para a saída. Adicionar limite máximo de voltas como rede de segurança.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">O SENÃO executa mesmo quando o SE parecia verdadeiro.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Comparação de tipos diferentes (&#39;60&#39; texto vs 60 número) ou espaços invisíveis no valor vindo do banco.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Imprimir o valor entre delimitadores (ex.: [60 ]) para enxergar espaços, e normalizar o tipo na entrada.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Erro ao avaliar a segunda condição mesmo com a primeira falsa.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">A linguagem ou a ordem escrita não aplica curto-circuito onde se esperava — avaliou &#39;lag &gt; 60&#39; com lag NULO.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Reordenar para testar existência/validade primeiro e, se a linguagem não garante curto-circuito, aninhar o segundo teste dentro do primeiro.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Pseudocódigo: varrer N réplicas com PARA</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">text</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>ALGORITMO checar_fleet
+  ENTRADA: lista_hosts = [&#39;db02&#39;, &#39;db03&#39;, &#39;db04&#39;], limite = 60
+  SAÍDA: relatório por host
+
+  PARA cada host EM lista_hosts FAÇA
+    lag = ler_lag(host)                 // pode voltar NULO
+    status = saude_replica(lag, limite) // função do tópico anterior
+    ESCREVER host + &#39;: &#39; + status
+  FIM-PARA
+
+// com 3 hosts, o corpo executa exatamente 3 vezes: sem infinito.</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Pseudocódigo: esperar o MySQL subir com ENQUANTO</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">text</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>ALGORITMO esperar_mysql
+  ENTRADA: host, max_tentativas = 12, pausa = 5s
+  SAÍDA: &#39;PRONTO&#39; ou &#39;TIMEOUT&#39;
+
+  tentativa = 1
+  ENQUANTO tentativa &lt;= max_tentativas FAÇA
+    SE mysql_responde(host) ENTÃO
+      RETORNAR &#39;PRONTO&#39;
+    FIM-SE
+    esperar(pausa)
+    tentativa = tentativa + 1     // sem esta linha: loop infinito
+  FIM-ENQUANTO
+  RETORNAR &#39;TIMEOUT&#39;
+
+// 12 x 5s = 60s de espera máxima, com pausa: sem martelar o servidor.</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Seleção múltipla: interpretar o estado da thread</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">text</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>ESCOLHA estado_io_thread
+  CASO &#39;Yes&#39;:        acao = &#39;nada a fazer&#39;
+  CASO &#39;Connecting&#39;: acao = &#39;aguardar 30s e reler&#39;
+  CASO &#39;No&#39;:         acao = &#39;ler Last_IO_Error e abrir incidente&#39;
+  PADRÃO:            acao = &#39;estado desconhecido: investigar&#39;
+FIM-ESCOLHA
+
+// um CASO por valor + PADRÃO obrigatório: valor novo do MySQL
+// cai no PADRÃO em vez de passar batido.</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">SE/SENÃO</span><span class="badge badge--accent">ESCOLHA/CASO</span><span class="badge badge--accent">PARA</span><span class="badge badge--accent">ENQUANTO</span><span class="badge badge--accent">Curto-circuito</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-funcoes-teste-mesa">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">03</span>
+      <span class="acc__label">Funções, teste de mesa e noção de custo
+        <span class="acc__hint" style="display:block;margin-top:2px">Quebrar o problema em funções nomeadas, provar o algoritmo executando à mão e estimar o custo antes que o loop varra o fleet inteiro em produção.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Decomposição é quebrar um problema grande em funções pequenas, cada uma com um nome que diz o que ela entrega: ler_lag(host), classificar(lag), alertar(host, status). A função recebe PARÂMETROS (a entrada), executa o corpo e devolve um RETORNO (a saída); o que nasce dentro dela (variável local) morre com ela — escopo local evita que duas partes do programa pisem na mesma variável. Teste de mesa é executar o algoritmo à mão, linha a linha, anotando o valor de cada variável numa tabela: é o debugger mais antigo do mundo e pega bug de lógica antes de qualquer execução. Custo (complexidade) conta quantas operações o algoritmo faz em função do tamanho da entrada: checar N réplicas uma vez é O(n) — dobra o fleet, dobra o tempo; comparar cada réplica com todas as outras é O(n²) — com 100 nós, 10 mil comparações.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>Identifique os verbos do problema (ler, classificar, alertar) e vire cada um uma função com entrada e saída explícitas.</li><li>Parâmetros entram com cópia do valor: mudar o parâmetro dentro da função não muda a variável de quem chamou.</li><li>O RETORNO carrega o resultado para fora; função sem retorno útil serve só por efeito colateral (escrever log) — use com parcimônia.</li><li>O teste de mesa monta uma coluna por variável e uma linha por passo; ao final, o retorno anotado precisa bater com o esperado dos três casos (normal, limite, absurdo).</li><li>Para estimar custo, conte quantas vezes o corpo do loop mais interno executa: um loop sobre N é O(n); dois aninhados sobre N são O(n²).</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Regra dos 20: função que passa de ~20 linhas provavelmente esconde duas funções — quebre.</li><li>Uma função, um nível de abstração: ou ela decide (classificar) ou ela executa detalhe (conectar no socket) — misturar os dois dificulta teste.</li><li>Fazer o teste de mesa dos três casos antes de codar; se a mesa não fecha no papel, não fechará no servidor.</li><li>Em fleet, preferir O(n) com uma passada por host; desconfiar de loop dentro de loop cruzando inventário com métricas.</li><li>Medir tempo real com amostra pequena (3 hosts) e extrapolar: 3 hosts × 2s = 6s prevê ~200s para 100 hosts — número que decide entre script serial e paralelo.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Função altera variável que ela nem deveria conhecer.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Uso de variável global onde se devia passar parâmetro e devolver retorno — efeito colateral invisível.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Transformar a global em parâmetro de entrada e retorno de saída; a função passa a declarar tudo o que toca na assinatura.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Teste de mesa bate, mas o programa diverge.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">A mesa usou valores idealizados; o real traz NULL, texto com espaço ou ordem diferente (réplica fora do ar no meio da lista).</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Refazer a mesa com os valores reais capturados do incidente, incluindo o caso que falhou — a mesa só prova os casos que ela contém.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Script rápido no lab, impraticável no fleet real.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Custo O(n²) ou espera serial sem timeout: no lab com 2 hosts ninguém percebe, com 200 o script não termina no turno.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Contar as operações internas, colocar timeout por host e paralelizar por lotes — ou trocar o algoritmo, não o hardware.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Função em pseudocódigo com contrato claro</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">text</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>FUNÇÃO classificar(lag, limite) -&gt; texto
+  // ENTRADA: lag (inteiro ou NULO), limite (inteiro)
+  // SAÍDA: &#39;OK&#39; | &#39;ALERTA&#39; | &#39;PARADA&#39;
+  // Não lê rede, não escreve disco: só decide. (função pura)
+  SE lag É NULO ENTÃO RETORNAR &#39;PARADA&#39;
+  SE lag &gt; limite ENTÃO RETORNAR &#39;ALERTA&#39;
+  RETORNAR &#39;OK&#39;
+FIM-FUNÇÃO
+
+// quem chama: status = classificar(300, 60)  -&gt; &#39;ALERTA&#39;</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Teste de mesa da função (caso limite)</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">text</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>Chamada: classificar(lag=60, limite=60)
+
+| passo | lag | limite | teste            | retorno |
+|-------|-----|--------|------------------|---------|
+| 1     | 60  | 60     | 60 É NULO? não   | -       |
+| 2     | 60  | 60     | 60 &gt; 60? não     | -       |
+| 3     | 60  | 60     | -                | &#39;OK&#39;    |
+
+// esperado: no limite exato, ainda OK (alerta só ACIMA).
+// decisão de negócio documentada na mesa, não no achismo.</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Custo: O(n) vs O(n²) no fleet</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">text</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>// O(n): uma passada por host — dobra o fleet, dobra o tempo
+PARA cada host EM fleet FAÇA        // N voltas
+  checar(host)                       // custo fixo
+FIM-PARA                             // total ~ N operações
+
+// O(n²): cada host comparado com todos — 100 hosts = 10.000 pares
+PARA cada a EM fleet FAÇA            // N voltas
+  PARA cada b EM fleet FAÇA          // N voltas de novo
+    comparar(a, b)
+  FIM-PARA
+FIM-PARA                             // total ~ N x N operações
+
+// regra de bolso: viu loop dentro de loop sobre o mesmo
+// inventário, pare e pergunte se existe jeito de uma passada só.</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">Funções</span><span class="badge badge--accent">Parâmetros e retorno</span><span class="badge badge--accent">Escopo</span><span class="badge badge--accent">Teste de mesa</span><span class="badge badge--accent">Complexidade O(n)</span></div></div>
+    </div></div></div>
+  </div>
+    </div></div></div>
+  </div>
+  <div class="acc" id="mod-06">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">06</span>
+      <span class="acc__label">Bash/Shell — do primeiro script ao runbook executável
+        <span class="acc__hint" style="display:block;margin-top:2px">Curso completo de Shell orientado a DBA: sintaxe e quoting, testes e desvios, loops e funções, modo estrito, e dois scripts reais — backup com rotação e healthcheck de réplica.</span></span>
+      <span class="badge">3 tópicos</span>
+      <span class="badge badge--accent">detalhado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      
+  <div class="acc acc--sub" id="t-bash-fundamentos">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">01</span>
+      <span class="acc__label">Sintaxe, variáveis, quoting e o código de saída
+        <span class="acc__hint" style="display:block;margin-top:2px">Atribuição sem espaço, aspas simples vs duplas, o $? que tudo decide e os testes que sustentam cada IF dos seus scripts.</span></span>
+      <span class="badge">Básico</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>O Shell executa comandos e conecta o resultado deles: cada comando termina com um CÓDIGO DE SAÍDA (0 = sucesso, diferente de 0 = falha) guardado em $?. O IF do Bash não testa valores booleanos como outras linguagens — ele testa se um comando saiu com 0. Variáveis se criam por atribuição SEM espaços ao redor do = (LAG=5, nunca LAG = 5, que o Shell lê como três comandos). Quoting decide quando a variável expande: aspas duplas expandem ($HOST vira o valor), aspas simples não (&#39;$HOST&#39; continua literal), e $() captura a saída de um comando numa variável. Pipes (|) ligam a saída de um comando à entrada do outro, e redirecionamentos (&gt;, &gt;&gt;, 2&gt;) mandam saída para arquivos — com 2&gt; separado para erros, porque misturar erro com dado corrompe relatório.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>O shebang (#!/usr/bin/env bash) na primeira linha diz ao sistema qual interpretador executa o arquivo; chmod +x libera a execução direta.</li><li>VAR=valor guarda; $VAR ou ${VAR} lê — com chaves quando o nome cola em outro texto (${HOST}_backup).</li><li>Aspas duplas para quase tudo (preservam espaços e expandem variáveis); aspas simples para literais (regex, senhas com $ e ! que não podem expandir).</li><li>Comando entre $() vira texto: LAG=$(mysql -NBe &#39;SELECT ...&#39;) guarda o resultado da consulta na variável.</li><li>test/[ ] avalia condições de arquivo (-f existe?, -s não vazio?) e texto/número (-z vazio?, -eq igual numérico); [[ ]] é a versão moderna, sem pegadinhas de expansão.</li><li>Todo comando devolve exit code: encadear com &amp;&amp; (só segue se deu 0) e || (só executa se falhou) cria fluxos de uma linha.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Sempre citar variáveis: &quot;$HOST&quot;, nunca $HOST solto — valor vazio ou com espaço quebra o comando de formas criativas.</li><li>Atribuição sem espaço: rever LAG = 5 toda vez que o erro for &#39;command not found&#39; apontando para o nome da variável.</li><li>Usar [[ ]] em scripts novos; reservar [ ] para quando precisar de portabilidade POSIX explícita.</li><li>Comparar número com -eq/-gt e texto com =/!= — trocar um pelo outro é o bug mais comum do primeiro mês.</li><li>Separar stdout de stderr (2&gt;erro.log) em todo script de cron: sem isso, erro e dado se misturam e o log mente.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">command not found apontando para o nome da minha variável.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Espaço ao redor do = na atribuição: LAG = 5 executa LAG como comando.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Colar o =: LAG=5. Configurar o editor para destacar atribuições ajuda a nunca mais errar.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Variável com $ ou ! funciona no terminal e quebra no script.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Aspas duplas expandindo (ou histórico expandindo !) caracteres que deviam ser literais.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Trocar para aspas simples nesses valores e, em senhas, preferir arquivo de credenciais a variável inline.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">IF sempre verdadeiro (ou sempre falso) independente do valor.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Teste de texto onde devia ser numérico ([ &quot;$LAG&quot; = 60 ] compara texto) ou variável vazia sem aspas colapsando o teste.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Usar -eq para números, citar sempre (&quot;$LAG&quot;) e imprimir o valor entre colchetes antes do IF para ver o real.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Primeiro script: ler o lag e decidir</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>#!/usr/bin/env bash
+# lag.sh — lê Seconds_Behind_Source e classifica
+LAG=$(mysql -h 127.0.0.1 -u monitor -p&#39;&lt;senha&gt;&#39; -NBe \
+  &quot;SHOW REPLICA STATUS&quot; | awk &#39;{print $32}&#39;)
+# -NBe: sem cabeçalho, em lote; awk extrai a coluna do lag
+
+echo &quot;lag atual: [${LAG}]&quot;
+
+if [[ -z &quot;${LAG}&quot; ]]; then
+  echo &#39;PARADA: sem leitura (replicação parada?)&#39;
+  exit 2
+elif [[ &quot;${LAG}&quot; -gt 60 ]]; then
+  echo &quot;ALERTA: lag ${LAG}s acima do limite&quot;
+  exit 1
+else
+  echo &quot;OK: lag ${LAG}s&quot;
+  exit 0
+fi
+# exit 0/1/2: o chamador (cron, monitor) decide pelo código</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Quoting, captura e encadeamento</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>HOST=&#39;db01&#39;                    # aspas simples: literal
+ARQ=&quot;backup-${HOST}.sql&quot;      # duplas: expande ${HOST}
+DATA=$(date +%F)                # $(): saída do comando vira texto
+
+mkdir -p backups &amp;&amp; cd backups  # &amp;&amp;: só entra se o mkdir deu 0
+mysqldump -h &quot;${HOST}&quot; labdb &gt; &quot;labdb-${DATA}.sql&quot; 2&gt;erros.log || {
+  echo &#39;dump falhou, ver erros.log&#39;
+  exit 1
+}
+ls -lh labdb-*.sql             # pipe e glob: lista só os dumps</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">Bash</span><span class="badge badge--accent">Shebang</span><span class="badge badge--accent">Quoting</span><span class="badge badge--accent">Exit code</span><span class="badge badge--accent">test / [[ ]]</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-bash-fluxo-funcoes">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">02</span>
+      <span class="acc__label">Loops, funções, argumentos e o modo estrito
+        <span class="acc__hint" style="display:block;margin-top:2px">FOR sobre o inventário, WHILE com freio, funções com retorno por exit code e o set -euo pipefail que transforma script frágil em script confiável.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Função em Bash agrupa comandos sob um nome: recebe argumentos posicionais ($1 primeiro, $2 segundo, $@ todos) e devolve resultado de dois jeitos — texto pela saída padrão (capturado com $()) ou sucesso/falha pelo exit code (return 0/1). O chamador escolhe: valor com $(funcao), decisão com IF funcao. O modo estrito (set -euo pipefail) muda o contrato do script: -e aborta no primeiro comando com falha, -u aborta ao usar variável inexistente, -o pipefail reprova o pipe inteiro se qualquer etapa falhar (sem ele, mysqldump falhando mas gzip passando devolve 0 — backup vazio com cara de sucesso). trap captura sinais e erros para limpeza: remover arquivo temporário mesmo quando o script morre no meio.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>FOR percorre lista fixa: for H in db01 db02 db03 — ou expansão $(cat hosts.txt) para inventário em arquivo.</li><li>WHILE lê linha a linha (while read -r) ou espera condição com contador e sleep — sempre com limite de voltas.</li><li>Função se define uma vez e se chama pelo nome; local declara variável interna para não vazar para o resto do script.</li><li>return devolve 0–255 (decisão); echo devolve texto (valor) — misturar os dois na mesma função confunde quem chama.</li><li>set -euo pipefail no topo após o shebang; comandos que PODEM falhar ganham || true explícito para não abortar.</li><li>trap &#39;rm -f $TMP&#39; EXIT garante limpeza do temporário em qualquer saída — normal ou por erro.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Todo script de produção começa com #!/usr/bin/env bash + set -euo pipefail + trap de limpeza — sem exceção.</li><li>Funções em snake_case (checar_lag), variáveis em MAIÚSCULAS só para ambiente/exportadas; o resto minúsculo.</li><li>Um echo de uso (usage) quando faltar argumento: falhar com mensagem é melhor que rodar contra o host errado.</li><li>Inventário em arquivo (hosts.txt), nunca hardcoded no loop — adicionar réplica vira editar texto, não código.</li><li>Comandos que podem falhar legitimamente (grep sem match) levam || true com comentário explicando o porquê.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Script aborta do nada após adicionar set -e.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Comando com exit diferente de 0 num contexto que o -e observa: grep sem ocorrência, ou teste em IF escrito como comando solto.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Rodar com bash -x para ver a última linha antes do aborto; proteger o comando intencionalmente falhável com || true.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Variável definida na função some — ou pior, suja o resto do script.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Faltou local: a variável da função é global por padrão no Bash.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Declarar local em toda variável interna de função; a única saída da função é echo (texto) ou return (código).</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">unbound variable em variável que &#39;existe&#39;.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">O -u acusa variável com nome digitado errado, ou variável só definida num caminho que não executou.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Usar expansão com default (${VAR:-padrao}) para opcionais e corrigir o typo — o -u está fazendo o trabalho dele.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Função de checagem reutilizável + loop no inventário</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>#!/usr/bin/env bash
+set -euo pipefail
+
+LIMITE=${1:-60}   # $1 ou 60 se omitido; ${...:-...} = default
+
+checar_lag() {           # $1 = host; devolve texto + exit code
+  local host=&quot;$1&quot;
+  local lag
+  lag=$(mysql -h &quot;${host}&quot; -u monitor -p&#39;&lt;senha&gt;&#39; -NBe \
+    &quot;SHOW REPLICA STATUS&quot; | awk &#39;{print $32}&#39;) || return 2
+  [[ -z &quot;${lag}&quot; ]] &amp;&amp; { echo &quot;${host}: PARADA&quot;; return 2; }
+  [[ &quot;${lag}&quot; -gt &quot;${LIMITE}&quot; ]] &amp;&amp; { echo &quot;${host}: ALERTA ${lag}s&quot;; return 1; }
+  echo &quot;${host}: OK ${lag}s&quot;; return 0
+}
+
+while read -r host; do       # inventário em hosts.txt, um por linha
+  checar_lag &quot;${host}&quot; || true   # || true: um host ruim não aborta o fleet
+ done &lt; hosts.txt</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Espera com freio + limpeza garantida</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>#!/usr/bin/env bash
+set -euo pipefail
+TMP=$(mktemp)
+trap &#39;rm -f &quot;${TMP}&quot;&#39; EXIT   # limpa mesmo se abortar
+
+tentativa=1; max=12
+until mysqladmin -h db01 -u monitor -p&#39;&lt;senha&gt;&#39; ping &gt; /dev/null 2&gt;&amp;1; do
+  [[ &quot;${tentativa}&quot; -ge &quot;${max}&quot; ]] &amp;&amp; { echo &#39;TIMEOUT após 60s&#39;; exit 1; }
+  echo &quot;tentativa ${tentativa}/${max}...&quot;
+  sleep 5
+  tentativa=$((tentativa + 1))
+done
+echo &#39;MySQL respondendo.&#39;</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">Bash functions</span><span class="badge badge--accent">set -euo pipefail</span><span class="badge badge--accent">trap</span><span class="badge badge--accent">FOR / WHILE</span><span class="badge badge--accent">$1 / $@ / $?</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-bash-dba-pratica">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">03</span>
+      <span class="acc__label">Dois runbooks reais: backup com rotação e healthcheck com alerta
+        <span class="acc__hint" style="display:block;margin-top:2px">Juntando tudo: script de dump com retenção de 7 dias e script de saúde da réplica pronto para o cron — comentados linha a linha.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Runbook executável é o procedimento operacional escrito como script idempotente e agendado: o backup roda todo dia às 2h pelo cron, gera dump com data no nome, valida que o arquivo não está vazio, apaga os mais velhos que a retenção e registra tudo em log com timestamp. O healthcheck roda a cada 5 minutos, avalia as threads de replicação e o lag, e só faz barulho (exit diferente de 0 + mensagem) quando há problema — monitoramento que alerta no estado bom é ruído que ensina a ignorar alerta. O cron agenda com cinco campos (minuto hora dia-mês mês dia-semana); a saída do script vai para log com &gt;&gt; e o erro com 2&gt;&gt;, porque script de cron sem log é caixa-preta.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>O backup monta o nome com data (labdb-2026-09-13.sql), executa mysqldump --single-transaction e confere tamanho mínimo do arquivo.</li><li>find com -mtime +7 -delete remove dumps além da retenção; o log registra quantos arquivos restaram.</li><li>O healthcheck lê Replica_IO_Running, Replica_SQL_Running e Seconds_Behind_Source numa única passada e decide OK/ALERTA/PARADA.</li><li>Cada script termina com exit code semântico (0 ok, 1 alerta, 2 falha de execução) para o cron e o monitor reagirem.</li><li>O crontab chama com caminho absoluto e redireciona saída e erro para logs datados; MAILTO vazio quando o alerta é pelo exit code do monitor.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Credencial em ~/.my.cnf (modo 600), nunca -p na linha do cron — ps expõe a linha de comando para todo o servidor.</li><li>Testar restore do dump gerado num container antes de confiar na rotação — backup sem restore testado é promessa.</li><li>Começar o cron em horário de mentira (a cada 5 min de dia) e só depois mover para 2h da manhã, com o log provando 3 execuções boas.</li><li>Log com timestamp em cada linha (ts/exec com date) para correlacionar com o alerta do monitor.</li><li>Versionar os dois scripts no git junto do hosts.txt e do crontab comentado no README do lab.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Script funciona na mão e falha no cron.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Ambiente mínimo do cron: PATH curto, sem alias, sem variáveis da sua sessão interativa.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Usar caminhos absolutos (/usr/bin/mysqldump), definir PATH no topo do script e testar com env -i ./script.sh simulando o ambiente vazio.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Dump gerado com 0 bytes e o script disse OK.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Sem pipefail/checagem: o mysqldump falhou mas o redirecionamento criou o arquivo vazio e o exit veio 0.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Com set -o pipefail + teste de tamanho mínimo (-s) após o dump; arquivo abaixo do mínimo = falha explícita.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Discos enchendo mesmo com rotação.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">find com -mtime calculado errado, ou dumps fora do padrão de nome que o find não alcança.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Rodar o find sem -delete primeiro para listar o que seria apagado; padronizar o nome de todos os dumps no mesmo formato.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">backup-mysql.sh — dump diário com rotação de 7 dias</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>#!/usr/bin/env bash
+set -euo pipefail
+# usa ~/.my.cnf [client] user/password — sem senha na linha de comando
+DIR=/var/backups/mysql; RETENCAO=7; HOJE=$(date +%F)
+mkdir -p &quot;${DIR}&quot;
+
+ARQ=&quot;${DIR}/labdb-${HOJE}.sql.gz&quot;
+mysqldump --single-transaction --routines --events \
+  --set-gtid-purged=ON --databases labdb | gzip &gt; &quot;${ARQ}&quot;
+
+[[ -s &quot;${ARQ}&quot; ]] || { echo &quot;ERRO: dump vazio&quot;; exit 2; }
+find &quot;${DIR}&quot; -name &#39;labdb-*.sql.gz&#39; -mtime +${RETENCAO} -delete
+ echo &quot;$(date &#39;+%F %T&#39;) backup OK: ${ARQ} ($(du -h &quot;${ARQ}&quot; | cut -f1))&quot; \
+  &gt;&gt; &quot;${DIR}/backup.log&quot;
+ls &quot;${DIR}&quot;/labdb-*.sql.gz | wc -l   # quantos dumps restaram</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">healthcheck-replica.sh + crontab</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>#!/usr/bin/env bash
+# healthcheck: 0=OK 1=alerta 2=erro de execução
+set -euo pipefail
+HOST=${1:-db02}; LIMITE=${2:-60}
+OUT=$(mysql -h &quot;${HOST}&quot; -NBe &#39;SHOW REPLICA STATUS&#39;) || exit 2
+IO=$(echo &quot;${OUT}&quot; | awk &#39;{print $11}&#39;)    # Replica_IO_Running
+SQL=$(echo &quot;${OUT}&quot; | awk &#39;{print $12}&#39;)   # Replica_SQL_Running
+LAG=$(echo &quot;${OUT}&quot; | awk &#39;{print $32}&#39;)   # Seconds_Behind_Source
+[[ &quot;${IO}&quot; == Yes &amp;&amp; &quot;${SQL}&quot; == Yes ]] || { echo &quot;PARADA io=${IO} sql=${SQL}&quot;; exit 1; }
+[[ &quot;${LAG}&quot; -gt &quot;${LIMITE}&quot; ]] &amp;&amp; { echo &quot;ALERTA lag=${LAG}s&quot;; exit 1; }
+echo &quot;OK lag=${LAG}s&quot;; exit 0
+
+# crontab (crontab -e):
+# PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# 0 2 * * * /opt/dba/backup-mysql.sh &gt;&gt; /var/log/mysql-backup.log 2&gt;&amp;1
+# */5 * * * * /opt/dba/healthcheck-replica.sh db02 60 &gt;&gt; /var/log/mysql-health.log 2&gt;&amp;1</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">mysqldump</span><span class="badge badge--accent">cron</span><span class="badge badge--accent">find -mtime</span><span class="badge badge--accent">mysql client</span><span class="badge badge--accent">~/.my.cnf</span></div></div>
+    </div></div></div>
+  </div>
+    </div></div></div>
+  </div>
+  <div class="acc" id="mod-07">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">07</span>
+      <span class="acc__label">Python — a linguagem dos relatórios e da orquestração
+        <span class="acc__hint" style="display:block;margin-top:2px">Curso completo orientado a DBA: sintaxe e estruturas, arquivos e tratamento de erro com logging, e o mysql-connector com query parametrizada e coleta de métricas do fleet.</span></span>
+      <span class="badge">3 tópicos</span>
+      <span class="badge badge--accent">detalhado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      
+  <div class="acc acc--sub" id="t-python-fundamentos">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">01</span>
+      <span class="acc__label">Sintaxe, tipos, fluxo e funções em Python
+        <span class="acc__hint" style="display:block;margin-top:2px">Indentação como sintaxe, tipos que importam para DBA, f-strings, listas e dicionários, e funções que viram seus blocos de automação.</span></span>
+      <span class="badge">Básico</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Python troca chaves e ponto-e-vírgula por INDENTAÇÃO: o bloco é definido pelos 4 espaços — indentar errado não é estilo, é erro de sintaxe ou, pior, lógica silenciosamente diferente. A tipagem é dinâmica (você não declara o tipo) mas forte (não soma texto com número sem conversão explícita): int para contadores e portas, float para latências, str para hostnames, bool para flags e None para &#39;sem valor&#39; — o NULL do Python, que exige teste com IS None, nunca ==. Listas guardam sequências (inventário de hosts), dicionários guardam pares chave-valor (métricas por host: {&#39;lag&#39;: 5}) e f-strings (f&quot;lag={lag}s&quot;) montam mensagens sem concatenação manual. O venv (ambiente virtual) isola as dependências do projeto: pip install dentro do venv não suja o Python do sistema e requirements.txt congela as versões.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>if/elif/else testa condições; a comparação de igualdade é == (um = é atribuição — trocar os dois é o erro clássico).</li><li>for percorre qualquer sequência (for host in hosts) sem contador manual; while repete sob condição com freio explícito.</li><li>List comprehension ([x for x in ...]) resume um loop de filtro/transformação numa linha — legível até certo tamanho, depois volte ao for.</li><li>def nome(param) define função; return devolve o valor; sem return a função devolve None.</li><li>f-strings interpolam variáveis e expressões (f&quot;{lag/60:.1f}min&quot;); .1f formata o decimal — relatório sem formatação é dado bruto.</li><li>python -m venv .venv + source .venv/bin/activate isola o projeto; pip freeze &gt; requirements.txt registra o ambiente reproduzível.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Um projeto, um venv, um requirements.txt — mysql-connector-python com versão fixada, nunca latest solto.</li><li>Comparar com == e identidade/ausência com is None; nunca usar == None.</li><li>Nomear coleções no plural (hosts, metricas) e o item no singular (host, metrica) — o for lê como frase.</li><li>Funções pequenas com um retorno claro; o script principal protegido por if __name__ == &quot;__main__&quot; para poder importar as funções sem executar.</li><li>Rodar python -m py_compile ou um linter antes de agendar: erro de indentação descoberto no cron é madrugada perdida.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">IndentationError ou o bloco executa coisa que não devia.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Mistura de tab e espaço, ou indentação inconsistente entre linhas do mesmo bloco.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Configurar o editor para inserir 4 espaços (nunca tab) e exibir whitespace; reindentar o bloco inteiro em vez de remendar linha a linha.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">TypeError ao somar/concatenar valores vindos do banco.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Driver devolveu Decimal ou None onde o código esperava int/str — tipagem forte cobrando conversão.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Converter na borda (int(lag), str(host)) e tratar None antes da operação, não depois da exceção.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">ModuleNotFoundError no servidor, mas funciona no notebook.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Pacote instalado fora do venv, ou script do cron usando o Python do sistema em vez do .venv.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Recriar o venv no servidor a partir do requirements.txt e chamar o interpretador pelo caminho absoluto (.venv/bin/python) no cron.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Classificador de lag em Python (espelho do pseudocódigo)</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">python</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>def classificar(lag, limite=60):
+    &quot;&quot;&quot;Devolve &#39;OK&#39;, &#39;ALERTA&#39; ou &#39;PARADA&#39;. lag pode ser None.&quot;&quot;&quot;
+    if lag is None:
+        return &quot;PARADA&quot;
+    if lag &gt; limite:
+        return &quot;ALERTA&quot;
+    return &quot;OK&quot;
+
+
+fleet = [{&quot;host&quot;: &quot;db02&quot;, &quot;lag&quot;: 5},
+         {&quot;host&quot;: &quot;db03&quot;, &quot;lag&quot;: 300},
+         {&quot;host&quot;: &quot;db04&quot;, &quot;lag&quot;: None}]
+
+for item in fleet:
+    status = classificar(item[&quot;lag&quot;])
+    print(f&quot;{item[&#39;host&#39;]}: {status}&quot;)
+# db02: OK | db03: ALERTA | db04: PARADA</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Ambiente isolado reproduzível</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>python3 -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install &quot;mysql-connector-python==8.3.0&quot;
+pip freeze &gt; requirements.txt
+cat requirements.txt
+
+# no servidor, recriar igual:
+# python3 -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
+# cron chama: /opt/dba/.venv/bin/python /opt/dba/coleta.py</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">Python 3</span><span class="badge badge--accent">venv / pip</span><span class="badge badge--accent">f-strings</span><span class="badge badge--accent">listas e dicts</span><span class="badge badge--accent">mysql-connector-python</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-python-arquivos-erros">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">02</span>
+      <span class="acc__label">Arquivos, JSON, exceções e logging
+        <span class="acc__hint" style="display:block;margin-top:2px">Ler inventário de arquivo, gravar métricas em JSON/CSV, tratar erro com try/except sem engolir exceção e logar com nível em vez de print.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Automação real lê e escreve arquivos: o inventário mora num hosts.txt ou JSON, e a coleta vira JSON (para integrar) ou CSV (para planilha). O with abre e fecha sozinho — arquivo aberto sem with e sem close vaza descritor até o script morrer. Exceção é o mecanismo de erro do Python: try tenta, except captura por tipo (FileNotFoundError, ValueError), else roda se deu certo e finally sempre limpa. A regra de ouro é capturar o tipo específico e deixar o resto subir: except genérico que engole tudo transforma falha de conexão em relatório vazio com cara de sucesso. logging substitui print em produção com NÍVEIS (DEBUG &lt; INFO &lt; WARNING &lt; ERROR): você liga DEBUG para investigar e mantém INFO no dia a dia sem editar código.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>with open(...) as f garante fechamento; json.load lê inventário estruturado, json.dump grava a coleta com indent=2.</li><li>csv.DictWriter grava dicionários como linhas de planilha com cabeçalho — o formato que a gerência abre sem pedir ajuda.</li><li>try/except por tipo: FileNotFoundError para arquivo ausente, ValueError para conversão inválida; Exception genérica só na borda, para logar e sair com código.</li><li>O bloco else separa o caminho feliz do tratamento; finally fecha conexão do banco mesmo quando a query explode.</li><li>logging.basicConfig(level=INFO, format com timestamp) uma vez no main; módulos usam logger = logging.getLogger(__name__).</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Inventário em JSON versionado (hosts.json) com host, porta e papel — adicionar réplica sem tocar no código.</li><li>Nunca gravar relatório pela metade: escrever em arquivo temporário e renomear no fim (escrita atômica).</li><li>Logar a decisão (host X classificado ALERTA por lag 300) e não só o dado — log conta história, print solta número.</li><li>Exit code semântico via sys.exit(0/1/2) igual ao Bash, para o cron e o monitor reagirem do mesmo jeito.</li><li>Credencial via variável de ambiente (os.getenv) ou arquivo 600 — nunca hardcoded no .py que vai para o git.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Relatório sai vazio ou pela metade sem erro visível.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">except genérico engolindo a falha real, ou escrita sem flush/close antes da leitura.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Apertar o except para o tipo esperado e deixar o resto estourar com traceback; usar with em toda escrita.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">UnicodeDecodeError lendo arquivo com acento.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">open() sem encoding usa o default da plataforma, que varia entre o notebook e o servidor.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Sempre open(..., encoding=&quot;utf-8&quot;) nos dois lados, leitura e escrita.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">JSON inválido quebrando a integração seguinte.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Dump de tipos que JSON não representa (datetime, Decimal do driver MySQL) ou escrita concorrente no mesmo arquivo.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Converter na borda (str(valor) / float) com default=str no dump, e escrita atômica via temporário + rename.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Inventário JSON + coleta com tratamento e log</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">python</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>import json, logging, sys
+
+logging.basicConfig(level=logging.INFO,
+                    format=&quot;%(asctime)s %(levelname)s %(message)s&quot;)
+log = logging.getLogger(&quot;coleta&quot;)
+
+def carregar_inventario(caminho):
+    try:
+        with open(caminho, encoding=&quot;utf-8&quot;) as f:
+            return json.load(f)          # [{&quot;host&quot;: &quot;db02&quot;, ...}]
+    except FileNotFoundError:
+        log.error(&quot;inventario %s nao encontrado&quot;, caminho)
+        sys.exit(2)
+    except json.JSONDecodeError as e:
+        log.error(&quot;inventario invalido: %s&quot;, e)
+        sys.exit(2)
+
+if __name__ == &quot;__main__&quot;:
+    hosts = carregar_inventario(&quot;hosts.json&quot;)
+    log.info(&quot;%d hosts carregados&quot;, len(hosts))</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Escrita atômica do relatório</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">python</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>import json, os, tempfile
+
+def gravar_relatorio(dados, destino):
+    # escreve no temporário e renomeia: quem lê nunca pega metade
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(destino))
+    try:
+        with os.fdopen(fd, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+            json.dump(dados, f, indent=2, default=str)
+        os.replace(tmp, destino)
+    except BaseException:
+        os.unlink(tmp)   # falhou? remove o rascunho
+        raise</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">json / csv</span><span class="badge badge--accent">try/except</span><span class="badge badge--accent">logging</span><span class="badge badge--accent">with</span><span class="badge badge--accent">os.getenv</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-python-mysql">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">03</span>
+      <span class="acc__label">Falando com o MySQL: queries parametrizadas e coleta de métricas
+        <span class="acc__hint" style="display:block;margin-top:2px">Conectar com mysql-connector, o porquê inegociável do placeholder %s contra injection, e um coletor de SHOW GLOBAL STATUS do fleet inteiro.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>O mysql-connector-python abre conexão TCP com o MySQL e devolve cursor para executar SQL e buscar linhas; dictionary=True entrega cada linha como dict (row[&#39;Variable_name&#39;]) em vez de tupla posicional — código que sobrevive a mudança na ordem das colunas. Query PARAMETRIZADA separa código de dado: o SQL leva placeholders %s e os valores vão num segundo argumento; o driver escapa e tipa — concatenar valor na string (f&quot;... WHERE id = {id}&quot;) entrega a query à injection, sem exceção e sem &#39;é só lab&#39;. Conexão é recurso escasso: abrir, usar e fechar (try/finally ou context manager), com connect_timeout para não pendurar o fleet quando um host cai. SHOW GLOBAL STATUS expõe centenas de contadores (Threads_connected, Questions, Uptime); coletar alguns por host em loop gera a série histórica que vira gráfico e alerta.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>connect(host, user, password, connection_timeout) abre; cursor(dictionary=True) executa; fetchall/fetchone lê; close() devolve ao servidor.</li><li>cursor.execute(&quot;SELECT * FROM t WHERE id = %s&quot;, (id,)) parametriza — a tupla com vírgula mesmo para um único valor.</li><li>commit() confirma escrita; sem ele, o INSERT volta atrás no close — leitura não precisa de commit.</li><li>SHOW GLOBAL STATUS LIKE &#39;Threads_connected&#39; filtra no servidor; o coletor guarda por host com timestamp único da rodada.</li><li>Falha num host (timeout) registra erro no relatório e segue para o próximo — um nó fora do ar não cancela a coleta do fleet.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Placeholder %s sempre que houver valor variável no SQL — sem exceção, inclusive em scripts internos e labs.</li><li>Usuário de coleta com privilégio mínimo (SELECT em performance_schema + SHOW STATUS), nunca root no script.</li><li>Timeout curto (5s) por host e rodada com timestamp único: métricas comparáveis entre hosts.</li><li>Fechar cursor e conexão em finally — vazamento de conexão derruba o max_connections com o tempo.</li><li>Agendar a coleta no cron a cada 5 min gravando JSON datado; retenção de 7 dias igual ao backup.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">InterfaceError ou &#39;MySQL Connection not available&#39; intermitente.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Conexão reutilizada após timeout do servidor (wait_timeout) ou não fechada e reaproveitada suja.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Abrir-fechar por rodada (conexão curta) ou validar com ping(reconnect=True) antes de usar; nunca guardar conexão aberta entre execuções do cron.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Dados com acento voltam trocados (mojibake).</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Charset da conexão diferente do charset da tabela (latin1 vs utf8mb4).</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Passar charset=&#39;utf8mb4&#39; no connect e conferir SHOW VARIABLES LIKE &#39;character_set%&#39; nos dois lados.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Coleta trava minutos num host fora do ar.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Sem connection_timeout: o TCP espera o timeout do SO, que é generoso demais para automação.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">connection_timeout=5 no connect + try/except por host com log de erro e continuação do loop.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Consulta segura + escrita com commit</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">python</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>import mysql.connector, os
+
+cnx = mysql.connector.connect(
+    host=&quot;db01&quot;, user=&quot;coleta&quot;,
+    password=os.getenv(&quot;MYSQL_COLETA_PW&quot;),
+    connection_timeout=5, charset=&quot;utf8mb4&quot;)
+try:
+    cur = cnx.cursor(dictionary=True)
+    # PARAMETRIZADA: valor fora da string SQL — anti-injection
+    cur.execute(&quot;SELECT * FROM labdb.teste WHERE id = %s&quot;, (1,))
+    print(cur.fetchone())
+    cur.execute(&quot;INSERT INTO labdb.coleta (host, lag) VALUES (%s, %s&quot;,
+                (&quot;db02&quot;, 5))
+    cnx.commit()   # sem commit, o INSERT desfaz no close
+finally:
+    cur.close(); cnx.close()</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Coletor de métricas do fleet</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">python</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>import datetime, mysql.connector
+
+METRICAS = [&quot;Threads_connected&quot;, &quot;Questions&quot;, &quot;Uptime&quot;,
+              &quot;Slow_queries&quot;, &quot;Innodb_buffer_pool_hit_rate&quot;]
+
+def coletar(host, user, pw):
+    cnx = mysql.connector.connect(host=host, user=user, password=pw,
+                                    connection_timeout=5)
+    try:
+        cur = cnx.cursor()
+        cur.execute(&quot;SHOW GLOBAL STATUS WHERE Variable_name IN (%s)&quot;
+                    % &quot;, &quot;.join([&quot;%s&quot;] * len(METRICAS)), tuple(METRICAS))
+        return {k: v for k, v in cur.fetchall()}
+    finally:
+        cnx.close()
+
+rodada = datetime.datetime.now(datetime.timezone.utc).isoformat()
+for h in [&quot;db01&quot;, &quot;db02&quot;]:
+    try:
+        print(h, rodada, coletar(h, &quot;coleta&quot;, &quot;&lt;senha&gt;&quot;))
+    except Exception as e:   # borda: loga e segue o fleet
+        print(f&quot;{h}: ERRO {e}&quot;)</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">mysql-connector-python</span><span class="badge badge--accent">Query parametrizada</span><span class="badge badge--accent">SHOW GLOBAL STATUS</span><span class="badge badge--accent">Cursor dict</span><span class="badge badge--accent">connection_timeout</span></div></div>
+    </div></div></div>
+  </div>
+    </div></div></div>
+  </div>
+  <div class="acc" id="mod-08">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">08</span>
+      <span class="acc__label">Lógica declarativa — programando sem mandar executar
+        <span class="acc__hint" style="display:block;margin-top:2px">A lógica do outro paradigma: expressões HCL, count vs for_each e blocos dynamic no Terraform; condicionais, loops, Jinja2 e handlers no Ansible — com o my.cnf gerado por template.</span></span>
+      <span class="badge">2 tópicos</span>
+      <span class="badge badge--accent">detalhado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      
+  <div class="acc acc--sub" id="t-terraform-logica">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">01</span>
+      <span class="acc__label">Expressões, condicionais e repetição em HCL
+        <span class="acc__hint" style="display:block;margin-top:2px">Variáveis validadas, o ternário que liga backup, for que gera lista de réplicas e a diferença entre count e for_each que decide se sua réplica sobrevive a uma remoção.</span></span>
+      <span class="badge">Intermediário → Avançado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>HCL é declarativa: você descreve o estado DESEJADO e o Terraform calcula o caminho — não há &#39;execute isto depois daquilo&#39;, há dependências inferidas das referências entre recursos. A lógica mora nas EXPRESSÕES: variáveis tipadas (string, number, bool, list, map, object) com validation que rejeita valor ruim no plan, locals para valores derivados (nomes padronizados), o ternário cond ? a : b para liga/desliga (backup ligado só em produção) e as funções (length, merge, join, format) para transformar. Repetição tem duas formas com consequência operacional: count cria N cópias indexadas por número (remover o item 0 renumera tudo e recria), for_each cria um mapa indexado por chave estável (remover db03 afeta só db03). Blocos dynamic geram sub-blocos repetidos (várias regras de SG) a partir de uma lista.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>variable declara tipo, default e bloco validation com condition e error_message — o plan falha cedo com mensagem sua, não com erro críptico do provider.</li><li>locals derivam o que se repete: nome = &quot;${var.projeto}-${var.ambiente}&quot; usado em todos os recursos sem divergência.</li><li>O ternário decide valores: backup_retention_period = var.prod ? 7 : 0 — um .tfvars separa lab de produção.</li><li>for_each = toset(var.replicas) cria uma instância por chave; each.key identifica; remover um elemento do set destrói só aquele recurso.</li><li>dynamic &quot;ingress&quot; com for_each gera N regras de SG a partir de var.portas_liberadas — sem copiar bloco.</li><li>terraform validate + fmt -check no CI barram sintaxe quebrada e formatação divergente antes do plan.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>for_each como default para qualquer coleção nomeada (réplicas, bancos, usuários); count só para N idênticos descartáveis.</li><li>validation em toda variável que aceita conjunto fechado (ambiente em [lab, prod], engine em versão fixada).</li><li>Um .tfvars por ambiente (lab.tfvars, prod.tfvars) — o mesmo código, comportamentos diferentes, sem IF no recurso.</li><li>Outputs para tudo que outro módulo ou humano precisa (endpoint, porta) — nada de copiar valor do console.</li><li>plan -out + apply do arquivo em produção: o que foi revisado é o que aplica, sem deriva entre leitura e execução.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Removi uma réplica da lista e o Terraform quer recriar as outras.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">count: a lista encolheu e os índices realocaram — para o Terraform, db02 virou db01 e tudo &#39;mudou&#39;.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Migrar para for_each (moved blocos se necessário) para identidade por chave; regra definitiva: coleção nomeada usa for_each.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Plan mostra mudança em todo apply sem ninguém ter mexido no código.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Atributo volátil ou calculado fora do controle (timestamp, senha gerada sem keepers) — deriva permanente.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Identificar o atributo no diff do plan; ignorar com lifecycle.ignore_changes se for cosmético, ou fixar a fonte (keepers/random controlado).</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Ciclo de dependência: Terraform reclama de cycle.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">A depende de B que depende de A — comum com SG referenciando instância que referencia o SG.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Quebrar o ciclo referenciando por variável (id passado por input) ou separando o recurso de amarração (ex.: regra de SG em recurso próprio).</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Réplicas por for_each + backup condicional</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">hcl</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>variable &quot;ambiente&quot; {
+  type = string
+  validation {
+    condition     = contains([&quot;lab&quot;, &quot;prod&quot;], var.ambiente)
+    error_message = &quot;ambiente deve ser lab ou prod.&quot;
+  }
+}
+
+variable &quot;replicas&quot; {
+  type    = set(string)
+  default = [&quot;db02&quot;, &quot;db03&quot;]
+}
+
+locals {
+  prod = var.ambiente == &quot;prod&quot;
+  nome = &quot;dbabrabo-${var.ambiente}&quot;
+}
+
+resource &quot;docker_container&quot; &quot;replica&quot; {
+  for_each = var.replicas          # chave estável: remover db03 só mata db03
+  name     = &quot;${local.nome}-${each.key}&quot;
+  image    = docker_image.mysql.image_id
+  env = [
+    &quot;MYSQL_ROOT_PASSWORD=${var.root_password}&quot;,
+    &quot;MYSQL_ROLE=replica&quot;,
+    # ternário: retenção 7 em prod, 0 no lab
+    &quot;BACKUP_RETENTION=${local.prod ? 7 : 0}&quot;
+  ]
+}</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Dynamic: N regras de SG a partir de lista</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">hcl</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>variable &quot;portas_liberadas&quot; {
+  type = list(object({
+    porta = number
+    cidr  = string
+    desc  = string
+  }))
+  default = [
+    { porta = 3306, cidr = &quot;10.0.0.0/8&quot;, desc = &quot;MySQL app&quot; },
+    { porta = 22, cidr = &quot;192.168.0.0/16&quot;, desc = &quot;SSH admin&quot; },
+  ]
+}
+
+resource &quot;aws_security_group&quot; &quot;mysql&quot; {
+  name = &quot;mysql-lab&quot;
+  dynamic &quot;ingress&quot; {
+    for_each = var.portas_liberadas
+    content {
+      from_port   = ingress.value.porta
+      to_port     = ingress.value.porta
+      protocol    = &quot;tcp&quot;
+      cidr_blocks = [ingress.value.cidr]
+      description = ingress.value.desc
+    }
+  }
+}
+# adicionar porta = +1 item na lista. Sem copiar bloco, sem divergir.</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Porta de qualidade: fmt, validate, plan</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>terraform fmt -check -recursive   # formatação: falha se divergir
+terraform validate              # sintaxe + tipos, sem credencial
+terraform plan -var-file=lab.tfvars -out lab.plan
+# ler o plan: + create, ~ change, - destroy — nada fora do esperado?
+terraform apply lab.plan</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">HCL</span><span class="badge badge--accent">for_each vs count</span><span class="badge badge--accent">dynamic blocks</span><span class="badge badge--accent">validation</span><span class="badge badge--accent">terraform plan</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-ansible-jinja-logica">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">02</span>
+      <span class="acc__label">Ansible: condicionais, loops, Jinja2 e handlers
+        <span class="acc__hint" style="display:block;margin-top:2px">O playbook como algoritmo declarativo: when, loop e register no lugar do IF e do FOR, template Jinja2 gerando o my.cnf por host e handler reiniciando o MySQL só quando muda.</span></span>
+      <span class="badge">Intermediário → Avançado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>O Ansible executa um PLAYBOOK (YAML) contra um INVENTÁRIO: cada PLAY mira um grupo de hosts e roda TASKS em ordem — módulos idempotentes (apt, copy, template, service, mysql_user) que convergem em vez de executar cegamente. A lógica usa as mesmas três estruturas do módulo 05, traduzidas: when é o SE (executa a task só se a condição), loop é o PARA (repete a task por item, com item como variável) e register é a atribuição (guarda o resultado — changed, stdout — para o próximo when). O Jinja2 ({{ var }}, {% if %}, filtros como | default e | join) renderiza arquivos e condicionais; handlers são tasks que só disparam no fim e uma única vez quando notificadas (restart do MySQL só se o .cnf mudou). Check mode (--check) é o dry-run: mostra o que mudaria sem mudar.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>O inventário (hosts.ini ou YAML) agrupa: [source] db01, [replica] db02 db03 — o play mira o grupo, não IPs soltos.</li><li>Facts (ansible_facts) expõem SO, memória e IPs do host; when: ansible_os_family == &#39;Debian&#39; adapta a task por plataforma.</li><li>register guarda o retorno; when: resultado.changed decide a próxima task — encadeamento sem shell.</li><li>template: copia .cnf.j2 renderizado por host (server_id por inventory_hostname) e notify: restart mysql.</li><li>O handler restart mysql roda uma vez no fim do play e só se notificado — dez tasks mudando config geram um restart, não dez.</li><li>ansible-vault criptografa senhas em vars; --check --diff valida antes, mostrando linha a linha o que mudaria.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Tudo em roles (mysql/{tasks,handlers,templates,defaults}) quando passar de um playbook — playbook gigante vira monolito.</li><li>when com condição legível e comentada; condição complexa vira variável em vars (ex.: eh_replica) testável.</li><li>loop com lista nomeada em vez de with_items legado; loop_control.label para log legível por item.</li><li>Idempotência verificável: rodar o playbook duas vezes, a segunda com changed=0 — igual ao teste do Salt.</li><li>Segredos só via vault; nunca senha em vars aberto, nunca -e na linha de comando em host compartilhado.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Task diz changed em toda execução, nunca converge.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Módulo sem idempotência real (command/shell em vez do módulo próprio) ou template renderizando diferente a cada run (timestamp, ordem de dict).</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Trocar command por módulo nativo (mysql_user, template, lineinfile); estabilizar o template (ordenar com | sort) até changed=0 na segunda run.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">when não filtra e a task roda onde não devia (ou o inverso).</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Comparação de tipos (string &#39;true&#39; vs booleano) ou variável indefinida avaliada como falsa silenciosa.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Debugar com - debug: var=nome_variavel antes do when; forçar tipo com | bool e default com | default(false).</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Handler não reiniciou o MySQL após mudança de config.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">notify com nome diferente do handler (typo com hífen vs underscore) — o Ansible não avisa, só não dispara.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Padronizar nomes e conferir com --check: handlers aparecem como &#39;notified&#39; no resumo; nome errado nunca aparece.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Playbook: MySQL com template por host</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">yaml</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code># inventory.ini:
+# [source]
+# db01 server_id=1
+# [replica]
+# db02 server_id=2
+# db03 server_id=3
+
+- name: MySQL por papel
+  hosts: source:replica
+  become: true
+  vars_files: [vault.yml]   # senhas criptografadas com ansible-vault
+  tasks:
+    - name: Instalar MySQL
+      apt: { name: mysql-server-8.0, state: present, update_cache: true }
+
+    - name: Entregar my.cnf do host
+      template:
+        src: lab.cnf.j2
+        dest: /etc/mysql/conf.d/lab.cnf
+        mode: &#39;0644&#39;
+      notify: restart mysql
+
+    - name: Criar usuário de replicação (só no source)
+      community.mysql.mysql_user:
+        name: repl
+        password: &quot;{{ repl_password }}&quot;
+        priv: &quot;*.*:REPLICATION SLAVE&quot;
+        state: present
+      when: &quot;&#39;source&#39; in group_names&quot;
+
+  handlers:
+    - name: restart mysql
+      service: { name: mysql, state: restarted }</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Template Jinja2 + loop de usuários</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">yaml</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code># templates/lab.cnf.j2
+[mysqld]
+server_id = {{ server_id }}
+bind-address = 0.0.0.0
+log_bin = mysql-bin
+binlog_format = ROW
+gtid_mode = ON
+enforce_gtid_consistency = ON
+{% if &#39;replica&#39; in group_names %}
+super_read_only = ON
+{% endif %}
+
+# loop: vários usuários de leitura a partir de lista
+# - name: Criar leitores
+#   community.mysql.mysql_user:
+#     name: &quot;{{ item.nome }}&quot;
+#     password: &quot;{{ item.senha }}&quot;
+#     priv: &quot;labdb.*:SELECT&quot;
+#   loop: &quot;{{ leitores }}&quot;          # lista definida em vars
+#   loop_control: { label: &quot;{{ item.nome }}&quot; }</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Dry-run, execução e cofre</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>ansible-vault create vault.yml   # guarda repl_password e senhas
+# vault.yml: repl_password: &quot;&lt;senha-repl&gt;&quot;
+
+ansible-playbook -i inventory.ini mysql.yml --check --diff
+# revisa linha a linha; changed previsto, nada aplicado
+
+ansible-playbook -i inventory.ini mysql.yml --ask-vault-pass
+ansible-playbook -i inventory.ini mysql.yml --ask-vault-pass
+# 2ª execução: changed=0 em tudo = idempotente, igual ao Salt</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">Ansible</span><span class="badge badge--accent">Jinja2</span><span class="badge badge--accent">when / loop</span><span class="badge badge--accent">handlers</span><span class="badge badge--accent">ansible-vault</span></div></div>
     </div></div></div>
   </div>
     </div></div></div>

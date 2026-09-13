@@ -585,6 +585,699 @@
         }
       ],
       "detalhado": true
+    },
+    {
+      "id": "05",
+      "titulo": "Algoritmos e lógica — a base antes da linguagem",
+      "resumo": "Nível faculdade, sem enrolação: o que é um algoritmo, variáveis e tipos, as três estruturas de controle, funções e teste de mesa — com exemplos de DBA desde a primeira aula.",
+      "nivel": "Básico → Intermediário",
+      "topicos": [
+        {
+          "slug": "logica-algoritmos",
+          "titulo": "O que é um algoritmo: entrada, processamento e saída",
+          "nivel": "Básico",
+          "resumo": "Todo script de DBA é um algoritmo: recebe dados, decide e age. Aprenda a escrever o raciocínio em pseudocódigo antes de tocar em qualquer linguagem.",
+          "conceito": "Um algoritmo é uma sequência finita de passos não ambíguos que transforma uma entrada numa saída. Finitude importa: um procedimento que nunca termina não é algoritmo, é bug. Não ambiguidade importa: 'verificar a réplica' não é passo executável, mas 'ler Seconds_Behind_Source e comparar com 60' é. A variável é uma caixa nomeada que guarda um valor com um tipo: inteiro (server_id), decimal (lag em segundos pode ser fracionário), texto (hostname) e lógico (verdadeiro/falso — réplica saudável ou não). O tipo decide quais operações fazem sentido: somar dois hostnames não existe, mas comparar dois lags sim. Pseudocódigo é o algoritmo escrito em português estruturado — o rascunho que você testa com a cabeça antes de gastar tempo com sintaxe de linguagem.",
+          "comoFunciona": [
+            "Todo algoritmo se descreve em três partes: ENTRADA (o que ele recebe — ex.: o valor de Seconds_Behind_Source), PROCESSAMENTO (o que ele faz — comparar com o limite) e SAÍDA (o que ele produz — 'OK' ou 'ALERTA').",
+            "Declarar uma variável é reservar a caixa e dizer o tipo: lag_segundos como inteiro-vindo-do-MySQL, limite como inteiro fixo em 60.",
+            "Operadores relacionais (>, <, =, diferente) comparam valores e devolvem um lógico; operadores lógicos (E, OU, NÃO) combinam lógicos entre si.",
+            "A precedência decide a ordem: aritmética antes de comparação, comparação antes de lógica — e parênteses passam por cima de tudo quando a intenção não está óbvia.",
+            "O pseudocódigo pronto vira o esqueleto do script final em qualquer linguagem: cada linha estruturada corresponde a 1–3 linhas de Bash ou Python."
+          ],
+          "naPratica": [
+            "Antes de codar qualquer automação, escrever o bloco ENTRADA/PROCESSAMENTO/SAÍDA num comentário no topo do script.",
+            "Nomear variáveis pelo que guardam (lag_segundos, host_origem), nunca por x, aux ou temp — nome ruim esconde bug de lógica.",
+            "Uma variável, um conceito: se lag_segundos passa a guardar também mensagem de erro, o algoritmo quebrou — crie outra variável.",
+            "Testar o pseudocódigo com três valores concretos: o normal (lag 5), o limite (lag 60) e o absurdo (lag NULL quando a replicação está parada).",
+            "Guardar o pseudocódigo como comentário no script final: daqui a seis meses, é ele que explica o porquê."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "O script roda sem erro mas decide errado (alerta quando não devia, ou vice-versa).",
+              "causa": "Bug de lógica, não de sintaxe: comparação invertida (usou < em vez de >) ou limite com unidade errada (milissegundos comparados como segundos).",
+              "acao": "Voltar ao pseudocódigo e executar à mão com os valores reais do incidente. Bug de lógica se caça no raciocínio, não no manual da linguagem."
+            },
+            {
+              "sintoma": "Erro de tipo: não consigo somar, comparar ou concatenar.",
+              "causa": "Variável com tipo diferente do esperado — o clássico é número lido como texto ('60' em vez de 60) ou NULL onde se esperava número.",
+              "acao": "Explicitar a conversão logo na entrada (texto-para-inteiro) e tratar o NULL como caso separado antes de qualquer comparação."
+            },
+            {
+              "sintoma": "O procedimento 'às vezes funciona', sem padrão aparente.",
+              "causa": "Passo ambíguo que depende de estado externo: 'pegar o lag atual' muda entre duas leituras, ou a réplica avaliada não é sempre a mesma.",
+              "acao": "Congelar a entrada no início (ler uma vez, guardar em variável) e nomear exatamente qual instância está sendo avaliada."
+            }
+          ],
+          "tecnologias": [
+            "Pseudocódigo",
+            "Variáveis e tipos",
+            "Operadores",
+            "E/P/S",
+            "Lógica proposicional"
+          ],
+          "comandos": [
+            {
+              "desc": "Pseudocódigo: classificar a saúde da réplica",
+              "lang": "text",
+              "code": "ALGORITMO saude_replica\n  ENTRADA: lag_segundos (inteiro ou NULO), limite = 60\n  SAÍDA: texto ('OK', 'ALERTA' ou 'PARADA')\n\n  SE lag_segundos É NULO ENTÃO\n    RETORNAR 'PARADA'        // thread de I/O ou SQL parada\n  SENÃO SE lag_segundos > limite ENTÃO\n    RETORNAR 'ALERTA'\n  SENÃO\n    RETORNAR 'OK'\n  FIM-SE\nFIM-ALGORITMO\n\n// teste com valores concretos:\n// lag=5    -> 'OK'      | lag=300 -> 'ALERTA' | lag=NULO -> 'PARADA'"
+            },
+            {
+              "desc": "Tabela verdade mínima (AND, OR, NOT)",
+              "lang": "text",
+              "code": "A = 'io_thread ok'    B = 'sql_thread ok'\n\nA E B  -> réplica saudável SÓ se ambos verdadeiros\n  V E V = V | V E F = F | F E qualquer = F\n\nA OU B -> basta um verdadeiro (ex.: 'tem backup full OU incremental válido')\n  F OU F = F | qualquer outro caso = V\n\nNÃO A -> inverte (ex.: NÃO 'disco cheio' = 'disco com espaço')\n\n// regra de bolso: E estreita (exige tudo), OU alarga (aceita qualquer)"
+            },
+            {
+              "desc": "Precedência e parênteses",
+              "lang": "text",
+              "code": "// sem parênteses, a leitura engana:\nlag > 60 E tentativas < 3 OU emergencia\n\n// o computador lê assim (E antes de OU):\n(lag > 60 E tentativas < 3) OU emergencia\n\n// se a intenção era outra, escreva-a:\nlag > 60 E (tentativas < 3 OU emergencia)\n\n// regra de bolso: na dúvida, parênteses. Clareza vence economia."
+            }
+          ]
+        },
+        {
+          "slug": "estruturas-controle",
+          "titulo": "As três estruturas: sequência, seleção e repetição",
+          "nivel": "Básico → Intermediário",
+          "resumo": "Todo programa do planeta se monta com três peças. Dominar SE/SENÃO e os dois loops é dominar 90% dos scripts de DBA.",
+          "conceito": "Qualquer algoritmo se constrói com três estruturas: SEQUÊNCIA (faça A, depois B), SELEÇÃO (se condição, faça A, senão faça B) e REPETIÇÃO (enquanto condição, repita A). A seleção tem duas formas: o SE/SENÃO para dois caminhos e a seleção múltipla (ESCOLHA/CASO) para vários valores de uma mesma variável — como o estado da réplica (Connecting, Yes, No). A repetição também tem duas formas: o PARA, quando você sabe quantas vezes repete (varrer as 3 réplicas), e o ENQUANTO, quando repete até uma condição mudar (tentar conectar até conseguir ou esgotar 5 tentativas). Curto-circuito é o avaliador preguiçoso do E/OU: em 'réplica existe E lag > 60', se a primeira parte é falsa a segunda nem é avaliada — o que evita erro ao consultar lag de réplica inexistente.",
+          "comoFunciona": [
+            "A sequência executa de cima para baixo; a ordem das linhas é o comportamento — trocar duas linhas pode trocar o resultado.",
+            "O SE avalia a condição uma vez e escolhe um caminho; SENÃO SE encadeia vários testes sobre o mesmo valor sem aninhar SE dentro de SE.",
+            "O PARA percorre uma faixa conhecida com contador (réplica 1 até 3) e termina sozinho; é o loop que não vira infinito.",
+            "O ENQUANTO testa antes de cada volta e precisa de algo dentro do corpo que aproxime o fim (incrementar tentativa, dormir 5s) — sem isso, loop infinito.",
+            "O curto-circuito ordena as condições da mais barata/segura para a mais cara/arriscada: primeiro 'réplica responde', depois 'lag > 60'."
+          ],
+          "naPratica": [
+            "Preferir SENÃO SE encadeado a SE aninhado: cada nível de aninhamento dobra o custo de leitura do código.",
+            "Preferir PARA quando o conjunto é conhecido (lista de hosts, lista de bancos); reservar ENQUANTO para espera com condição de saída e limite de tentativas.",
+            "Todo ENQUANTO de espera precisa de dois freios: número máximo de voltas E pausa entre elas (sleep) — sem pausa vira ataque contra o próprio banco.",
+            "Ordenar condições aproveitando o curto-circuito: teste barato que elimina a maioria dos casos sempre primeiro.",
+            "Documentar a condição de saída do loop num comentário: 'sai quando conectar ou após 5 tentativas'."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Loop que nunca termina e precisa de Ctrl+C.",
+              "causa": "Condição de saída que nunca fica verdadeira: contador não incrementado, ou comparação com valor que o corpo nunca produz.",
+              "acao": "Imprimir a variável de controle a cada volta (modo verboso) e conferir se ela caminha para a saída. Adicionar limite máximo de voltas como rede de segurança."
+            },
+            {
+              "sintoma": "O SENÃO executa mesmo quando o SE parecia verdadeiro.",
+              "causa": "Comparação de tipos diferentes ('60' texto vs 60 número) ou espaços invisíveis no valor vindo do banco.",
+              "acao": "Imprimir o valor entre delimitadores (ex.: [60 ]) para enxergar espaços, e normalizar o tipo na entrada."
+            },
+            {
+              "sintoma": "Erro ao avaliar a segunda condição mesmo com a primeira falsa.",
+              "causa": "A linguagem ou a ordem escrita não aplica curto-circuito onde se esperava — avaliou 'lag > 60' com lag NULO.",
+              "acao": "Reordenar para testar existência/validade primeiro e, se a linguagem não garante curto-circuito, aninhar o segundo teste dentro do primeiro."
+            }
+          ],
+          "tecnologias": [
+            "SE/SENÃO",
+            "ESCOLHA/CASO",
+            "PARA",
+            "ENQUANTO",
+            "Curto-circuito"
+          ],
+          "comandos": [
+            {
+              "desc": "Pseudocódigo: varrer N réplicas com PARA",
+              "lang": "text",
+              "code": "ALGORITMO checar_fleet\n  ENTRADA: lista_hosts = ['db02', 'db03', 'db04'], limite = 60\n  SAÍDA: relatório por host\n\n  PARA cada host EM lista_hosts FAÇA\n    lag = ler_lag(host)                 // pode voltar NULO\n    status = saude_replica(lag, limite) // função do tópico anterior\n    ESCREVER host + ': ' + status\n  FIM-PARA\n\n// com 3 hosts, o corpo executa exatamente 3 vezes: sem infinito."
+            },
+            {
+              "desc": "Pseudocódigo: esperar o MySQL subir com ENQUANTO",
+              "lang": "text",
+              "code": "ALGORITMO esperar_mysql\n  ENTRADA: host, max_tentativas = 12, pausa = 5s\n  SAÍDA: 'PRONTO' ou 'TIMEOUT'\n\n  tentativa = 1\n  ENQUANTO tentativa <= max_tentativas FAÇA\n    SE mysql_responde(host) ENTÃO\n      RETORNAR 'PRONTO'\n    FIM-SE\n    esperar(pausa)\n    tentativa = tentativa + 1     // sem esta linha: loop infinito\n  FIM-ENQUANTO\n  RETORNAR 'TIMEOUT'\n\n// 12 x 5s = 60s de espera máxima, com pausa: sem martelar o servidor."
+            },
+            {
+              "desc": "Seleção múltipla: interpretar o estado da thread",
+              "lang": "text",
+              "code": "ESCOLHA estado_io_thread\n  CASO 'Yes':        acao = 'nada a fazer'\n  CASO 'Connecting': acao = 'aguardar 30s e reler'\n  CASO 'No':         acao = 'ler Last_IO_Error e abrir incidente'\n  PADRÃO:            acao = 'estado desconhecido: investigar'\nFIM-ESCOLHA\n\n// um CASO por valor + PADRÃO obrigatório: valor novo do MySQL\n// cai no PADRÃO em vez de passar batido."
+            }
+          ]
+        },
+        {
+          "slug": "funcoes-teste-mesa",
+          "titulo": "Funções, teste de mesa e noção de custo",
+          "nivel": "Intermediário",
+          "resumo": "Quebrar o problema em funções nomeadas, provar o algoritmo executando à mão e estimar o custo antes que o loop varra o fleet inteiro em produção.",
+          "conceito": "Decomposição é quebrar um problema grande em funções pequenas, cada uma com um nome que diz o que ela entrega: ler_lag(host), classificar(lag), alertar(host, status). A função recebe PARÂMETROS (a entrada), executa o corpo e devolve um RETORNO (a saída); o que nasce dentro dela (variável local) morre com ela — escopo local evita que duas partes do programa pisem na mesma variável. Teste de mesa é executar o algoritmo à mão, linha a linha, anotando o valor de cada variável numa tabela: é o debugger mais antigo do mundo e pega bug de lógica antes de qualquer execução. Custo (complexidade) conta quantas operações o algoritmo faz em função do tamanho da entrada: checar N réplicas uma vez é O(n) — dobra o fleet, dobra o tempo; comparar cada réplica com todas as outras é O(n²) — com 100 nós, 10 mil comparações.",
+          "comoFunciona": [
+            "Identifique os verbos do problema (ler, classificar, alertar) e vire cada um uma função com entrada e saída explícitas.",
+            "Parâmetros entram com cópia do valor: mudar o parâmetro dentro da função não muda a variável de quem chamou.",
+            "O RETORNO carrega o resultado para fora; função sem retorno útil serve só por efeito colateral (escrever log) — use com parcimônia.",
+            "O teste de mesa monta uma coluna por variável e uma linha por passo; ao final, o retorno anotado precisa bater com o esperado dos três casos (normal, limite, absurdo).",
+            "Para estimar custo, conte quantas vezes o corpo do loop mais interno executa: um loop sobre N é O(n); dois aninhados sobre N são O(n²)."
+          ],
+          "naPratica": [
+            "Regra dos 20: função que passa de ~20 linhas provavelmente esconde duas funções — quebre.",
+            "Uma função, um nível de abstração: ou ela decide (classificar) ou ela executa detalhe (conectar no socket) — misturar os dois dificulta teste.",
+            "Fazer o teste de mesa dos três casos antes de codar; se a mesa não fecha no papel, não fechará no servidor.",
+            "Em fleet, preferir O(n) com uma passada por host; desconfiar de loop dentro de loop cruzando inventário com métricas.",
+            "Medir tempo real com amostra pequena (3 hosts) e extrapolar: 3 hosts × 2s = 6s prevê ~200s para 100 hosts — número que decide entre script serial e paralelo."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Função altera variável que ela nem deveria conhecer.",
+              "causa": "Uso de variável global onde se devia passar parâmetro e devolver retorno — efeito colateral invisível.",
+              "acao": "Transformar a global em parâmetro de entrada e retorno de saída; a função passa a declarar tudo o que toca na assinatura."
+            },
+            {
+              "sintoma": "Teste de mesa bate, mas o programa diverge.",
+              "causa": "A mesa usou valores idealizados; o real traz NULL, texto com espaço ou ordem diferente (réplica fora do ar no meio da lista).",
+              "acao": "Refazer a mesa com os valores reais capturados do incidente, incluindo o caso que falhou — a mesa só prova os casos que ela contém."
+            },
+            {
+              "sintoma": "Script rápido no lab, impraticável no fleet real.",
+              "causa": "Custo O(n²) ou espera serial sem timeout: no lab com 2 hosts ninguém percebe, com 200 o script não termina no turno.",
+              "acao": "Contar as operações internas, colocar timeout por host e paralelizar por lotes — ou trocar o algoritmo, não o hardware."
+            }
+          ],
+          "tecnologias": [
+            "Funções",
+            "Parâmetros e retorno",
+            "Escopo",
+            "Teste de mesa",
+            "Complexidade O(n)"
+          ],
+          "comandos": [
+            {
+              "desc": "Função em pseudocódigo com contrato claro",
+              "lang": "text",
+              "code": "FUNÇÃO classificar(lag, limite) -> texto\n  // ENTRADA: lag (inteiro ou NULO), limite (inteiro)\n  // SAÍDA: 'OK' | 'ALERTA' | 'PARADA'\n  // Não lê rede, não escreve disco: só decide. (função pura)\n  SE lag É NULO ENTÃO RETORNAR 'PARADA'\n  SE lag > limite ENTÃO RETORNAR 'ALERTA'\n  RETORNAR 'OK'\nFIM-FUNÇÃO\n\n// quem chama: status = classificar(300, 60)  -> 'ALERTA'"
+            },
+            {
+              "desc": "Teste de mesa da função (caso limite)",
+              "lang": "text",
+              "code": "Chamada: classificar(lag=60, limite=60)\n\n| passo | lag | limite | teste            | retorno |\n|-------|-----|--------|------------------|---------|\n| 1     | 60  | 60     | 60 É NULO? não   | -       |\n| 2     | 60  | 60     | 60 > 60? não     | -       |\n| 3     | 60  | 60     | -                | 'OK'    |\n\n// esperado: no limite exato, ainda OK (alerta só ACIMA).\n// decisão de negócio documentada na mesa, não no achismo."
+            },
+            {
+              "desc": "Custo: O(n) vs O(n²) no fleet",
+              "lang": "text",
+              "code": "// O(n): uma passada por host — dobra o fleet, dobra o tempo\nPARA cada host EM fleet FAÇA        // N voltas\n  checar(host)                       // custo fixo\nFIM-PARA                             // total ~ N operações\n\n// O(n²): cada host comparado com todos — 100 hosts = 10.000 pares\nPARA cada a EM fleet FAÇA            // N voltas\n  PARA cada b EM fleet FAÇA          // N voltas de novo\n    comparar(a, b)\n  FIM-PARA\nFIM-PARA                             // total ~ N x N operações\n\n// regra de bolso: viu loop dentro de loop sobre o mesmo\n// inventário, pare e pergunte se existe jeito de uma passada só."
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "06",
+      "titulo": "Bash/Shell — do primeiro script ao runbook executável",
+      "resumo": "Curso completo de Shell orientado a DBA: sintaxe e quoting, testes e desvios, loops e funções, modo estrito, e dois scripts reais — backup com rotação e healthcheck de réplica.",
+      "nivel": "Básico → Intermediário",
+      "topicos": [
+        {
+          "slug": "bash-fundamentos",
+          "titulo": "Sintaxe, variáveis, quoting e o código de saída",
+          "nivel": "Básico",
+          "resumo": "Atribuição sem espaço, aspas simples vs duplas, o $? que tudo decide e os testes que sustentam cada IF dos seus scripts.",
+          "conceito": "O Shell executa comandos e conecta o resultado deles: cada comando termina com um CÓDIGO DE SAÍDA (0 = sucesso, diferente de 0 = falha) guardado em $?. O IF do Bash não testa valores booleanos como outras linguagens — ele testa se um comando saiu com 0. Variáveis se criam por atribuição SEM espaços ao redor do = (LAG=5, nunca LAG = 5, que o Shell lê como três comandos). Quoting decide quando a variável expande: aspas duplas expandem ($HOST vira o valor), aspas simples não ('$HOST' continua literal), e $() captura a saída de um comando numa variável. Pipes (|) ligam a saída de um comando à entrada do outro, e redirecionamentos (>, >>, 2>) mandam saída para arquivos — com 2> separado para erros, porque misturar erro com dado corrompe relatório.",
+          "comoFunciona": [
+            "O shebang (#!/usr/bin/env bash) na primeira linha diz ao sistema qual interpretador executa o arquivo; chmod +x libera a execução direta.",
+            "VAR=valor guarda; $VAR ou ${VAR} lê — com chaves quando o nome cola em outro texto (${HOST}_backup).",
+            "Aspas duplas para quase tudo (preservam espaços e expandem variáveis); aspas simples para literais (regex, senhas com $ e ! que não podem expandir).",
+            "Comando entre $() vira texto: LAG=$(mysql -NBe 'SELECT ...') guarda o resultado da consulta na variável.",
+            "test/[ ] avalia condições de arquivo (-f existe?, -s não vazio?) e texto/número (-z vazio?, -eq igual numérico); [[ ]] é a versão moderna, sem pegadinhas de expansão.",
+            "Todo comando devolve exit code: encadear com && (só segue se deu 0) e || (só executa se falhou) cria fluxos de uma linha."
+          ],
+          "naPratica": [
+            "Sempre citar variáveis: \"$HOST\", nunca $HOST solto — valor vazio ou com espaço quebra o comando de formas criativas.",
+            "Atribuição sem espaço: rever LAG = 5 toda vez que o erro for 'command not found' apontando para o nome da variável.",
+            "Usar [[ ]] em scripts novos; reservar [ ] para quando precisar de portabilidade POSIX explícita.",
+            "Comparar número com -eq/-gt e texto com =/!= — trocar um pelo outro é o bug mais comum do primeiro mês.",
+            "Separar stdout de stderr (2>erro.log) em todo script de cron: sem isso, erro e dado se misturam e o log mente."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "command not found apontando para o nome da minha variável.",
+              "causa": "Espaço ao redor do = na atribuição: LAG = 5 executa LAG como comando.",
+              "acao": "Colar o =: LAG=5. Configurar o editor para destacar atribuições ajuda a nunca mais errar."
+            },
+            {
+              "sintoma": "Variável com $ ou ! funciona no terminal e quebra no script.",
+              "causa": "Aspas duplas expandindo (ou histórico expandindo !) caracteres que deviam ser literais.",
+              "acao": "Trocar para aspas simples nesses valores e, em senhas, preferir arquivo de credenciais a variável inline."
+            },
+            {
+              "sintoma": "IF sempre verdadeiro (ou sempre falso) independente do valor.",
+              "causa": "Teste de texto onde devia ser numérico ([ \"$LAG\" = 60 ] compara texto) ou variável vazia sem aspas colapsando o teste.",
+              "acao": "Usar -eq para números, citar sempre (\"$LAG\") e imprimir o valor entre colchetes antes do IF para ver o real."
+            }
+          ],
+          "tecnologias": [
+            "Bash",
+            "Shebang",
+            "Quoting",
+            "Exit code",
+            "test / [[ ]]"
+          ],
+          "comandos": [
+            {
+              "desc": "Primeiro script: ler o lag e decidir",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\n# lag.sh — lê Seconds_Behind_Source e classifica\nLAG=$(mysql -h 127.0.0.1 -u monitor -p'<senha>' -NBe \\\n  \"SHOW REPLICA STATUS\" | awk '{print $32}')\n# -NBe: sem cabeçalho, em lote; awk extrai a coluna do lag\n\necho \"lag atual: [${LAG}]\"\n\nif [[ -z \"${LAG}\" ]]; then\n  echo 'PARADA: sem leitura (replicação parada?)'\n  exit 2\nelif [[ \"${LAG}\" -gt 60 ]]; then\n  echo \"ALERTA: lag ${LAG}s acima do limite\"\n  exit 1\nelse\n  echo \"OK: lag ${LAG}s\"\n  exit 0\nfi\n# exit 0/1/2: o chamador (cron, monitor) decide pelo código"
+            },
+            {
+              "desc": "Quoting, captura e encadeamento",
+              "lang": "bash",
+              "code": "HOST='db01'                    # aspas simples: literal\nARQ=\"backup-${HOST}.sql\"      # duplas: expande ${HOST}\nDATA=$(date +%F)                # $(): saída do comando vira texto\n\nmkdir -p backups && cd backups  # &&: só entra se o mkdir deu 0\nmysqldump -h \"${HOST}\" labdb > \"labdb-${DATA}.sql\" 2>erros.log || {\n  echo 'dump falhou, ver erros.log'\n  exit 1\n}\nls -lh labdb-*.sql             # pipe e glob: lista só os dumps"
+            }
+          ]
+        },
+        {
+          "slug": "bash-fluxo-funcoes",
+          "titulo": "Loops, funções, argumentos e o modo estrito",
+          "nivel": "Intermediário",
+          "resumo": "FOR sobre o inventário, WHILE com freio, funções com retorno por exit code e o set -euo pipefail que transforma script frágil em script confiável.",
+          "conceito": "Função em Bash agrupa comandos sob um nome: recebe argumentos posicionais ($1 primeiro, $2 segundo, $@ todos) e devolve resultado de dois jeitos — texto pela saída padrão (capturado com $()) ou sucesso/falha pelo exit code (return 0/1). O chamador escolhe: valor com $(funcao), decisão com IF funcao. O modo estrito (set -euo pipefail) muda o contrato do script: -e aborta no primeiro comando com falha, -u aborta ao usar variável inexistente, -o pipefail reprova o pipe inteiro se qualquer etapa falhar (sem ele, mysqldump falhando mas gzip passando devolve 0 — backup vazio com cara de sucesso). trap captura sinais e erros para limpeza: remover arquivo temporário mesmo quando o script morre no meio.",
+          "comoFunciona": [
+            "FOR percorre lista fixa: for H in db01 db02 db03 — ou expansão $(cat hosts.txt) para inventário em arquivo.",
+            "WHILE lê linha a linha (while read -r) ou espera condição com contador e sleep — sempre com limite de voltas.",
+            "Função se define uma vez e se chama pelo nome; local declara variável interna para não vazar para o resto do script.",
+            "return devolve 0–255 (decisão); echo devolve texto (valor) — misturar os dois na mesma função confunde quem chama.",
+            "set -euo pipefail no topo após o shebang; comandos que PODEM falhar ganham || true explícito para não abortar.",
+            "trap 'rm -f $TMP' EXIT garante limpeza do temporário em qualquer saída — normal ou por erro."
+          ],
+          "naPratica": [
+            "Todo script de produção começa com #!/usr/bin/env bash + set -euo pipefail + trap de limpeza — sem exceção.",
+            "Funções em snake_case (checar_lag), variáveis em MAIÚSCULAS só para ambiente/exportadas; o resto minúsculo.",
+            "Um echo de uso (usage) quando faltar argumento: falhar com mensagem é melhor que rodar contra o host errado.",
+            "Inventário em arquivo (hosts.txt), nunca hardcoded no loop — adicionar réplica vira editar texto, não código.",
+            "Comandos que podem falhar legitimamente (grep sem match) levam || true com comentário explicando o porquê."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Script aborta do nada após adicionar set -e.",
+              "causa": "Comando com exit diferente de 0 num contexto que o -e observa: grep sem ocorrência, ou teste em IF escrito como comando solto.",
+              "acao": "Rodar com bash -x para ver a última linha antes do aborto; proteger o comando intencionalmente falhável com || true."
+            },
+            {
+              "sintoma": "Variável definida na função some — ou pior, suja o resto do script.",
+              "causa": "Faltou local: a variável da função é global por padrão no Bash.",
+              "acao": "Declarar local em toda variável interna de função; a única saída da função é echo (texto) ou return (código)."
+            },
+            {
+              "sintoma": "unbound variable em variável que 'existe'.",
+              "causa": "O -u acusa variável com nome digitado errado, ou variável só definida num caminho que não executou.",
+              "acao": "Usar expansão com default (${VAR:-padrao}) para opcionais e corrigir o typo — o -u está fazendo o trabalho dele."
+            }
+          ],
+          "tecnologias": [
+            "Bash functions",
+            "set -euo pipefail",
+            "trap",
+            "FOR / WHILE",
+            "$1 / $@ / $?"
+          ],
+          "comandos": [
+            {
+              "desc": "Função de checagem reutilizável + loop no inventário",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\nset -euo pipefail\n\nLIMITE=${1:-60}   # $1 ou 60 se omitido; ${...:-...} = default\n\nchecar_lag() {           # $1 = host; devolve texto + exit code\n  local host=\"$1\"\n  local lag\n  lag=$(mysql -h \"${host}\" -u monitor -p'<senha>' -NBe \\\n    \"SHOW REPLICA STATUS\" | awk '{print $32}') || return 2\n  [[ -z \"${lag}\" ]] && { echo \"${host}: PARADA\"; return 2; }\n  [[ \"${lag}\" -gt \"${LIMITE}\" ]] && { echo \"${host}: ALERTA ${lag}s\"; return 1; }\n  echo \"${host}: OK ${lag}s\"; return 0\n}\n\nwhile read -r host; do       # inventário em hosts.txt, um por linha\n  checar_lag \"${host}\" || true   # || true: um host ruim não aborta o fleet\n done < hosts.txt"
+            },
+            {
+              "desc": "Espera com freio + limpeza garantida",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\nset -euo pipefail\nTMP=$(mktemp)\ntrap 'rm -f \"${TMP}\"' EXIT   # limpa mesmo se abortar\n\ntentativa=1; max=12\nuntil mysqladmin -h db01 -u monitor -p'<senha>' ping > /dev/null 2>&1; do\n  [[ \"${tentativa}\" -ge \"${max}\" ]] && { echo 'TIMEOUT após 60s'; exit 1; }\n  echo \"tentativa ${tentativa}/${max}...\"\n  sleep 5\n  tentativa=$((tentativa + 1))\ndone\necho 'MySQL respondendo.'"
+            }
+          ]
+        },
+        {
+          "slug": "bash-dba-pratica",
+          "titulo": "Dois runbooks reais: backup com rotação e healthcheck com alerta",
+          "nivel": "Intermediário",
+          "resumo": "Juntando tudo: script de dump com retenção de 7 dias e script de saúde da réplica pronto para o cron — comentados linha a linha.",
+          "conceito": "Runbook executável é o procedimento operacional escrito como script idempotente e agendado: o backup roda todo dia às 2h pelo cron, gera dump com data no nome, valida que o arquivo não está vazio, apaga os mais velhos que a retenção e registra tudo em log com timestamp. O healthcheck roda a cada 5 minutos, avalia as threads de replicação e o lag, e só faz barulho (exit diferente de 0 + mensagem) quando há problema — monitoramento que alerta no estado bom é ruído que ensina a ignorar alerta. O cron agenda com cinco campos (minuto hora dia-mês mês dia-semana); a saída do script vai para log com >> e o erro com 2>>, porque script de cron sem log é caixa-preta.",
+          "comoFunciona": [
+            "O backup monta o nome com data (labdb-2026-09-13.sql), executa mysqldump --single-transaction e confere tamanho mínimo do arquivo.",
+            "find com -mtime +7 -delete remove dumps além da retenção; o log registra quantos arquivos restaram.",
+            "O healthcheck lê Replica_IO_Running, Replica_SQL_Running e Seconds_Behind_Source numa única passada e decide OK/ALERTA/PARADA.",
+            "Cada script termina com exit code semântico (0 ok, 1 alerta, 2 falha de execução) para o cron e o monitor reagirem.",
+            "O crontab chama com caminho absoluto e redireciona saída e erro para logs datados; MAILTO vazio quando o alerta é pelo exit code do monitor."
+          ],
+          "naPratica": [
+            "Credencial em ~/.my.cnf (modo 600), nunca -p na linha do cron — ps expõe a linha de comando para todo o servidor.",
+            "Testar restore do dump gerado num container antes de confiar na rotação — backup sem restore testado é promessa.",
+            "Começar o cron em horário de mentira (a cada 5 min de dia) e só depois mover para 2h da manhã, com o log provando 3 execuções boas.",
+            "Log com timestamp em cada linha (ts/exec com date) para correlacionar com o alerta do monitor.",
+            "Versionar os dois scripts no git junto do hosts.txt e do crontab comentado no README do lab."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Script funciona na mão e falha no cron.",
+              "causa": "Ambiente mínimo do cron: PATH curto, sem alias, sem variáveis da sua sessão interativa.",
+              "acao": "Usar caminhos absolutos (/usr/bin/mysqldump), definir PATH no topo do script e testar com env -i ./script.sh simulando o ambiente vazio."
+            },
+            {
+              "sintoma": "Dump gerado com 0 bytes e o script disse OK.",
+              "causa": "Sem pipefail/checagem: o mysqldump falhou mas o redirecionamento criou o arquivo vazio e o exit veio 0.",
+              "acao": "Com set -o pipefail + teste de tamanho mínimo (-s) após o dump; arquivo abaixo do mínimo = falha explícita."
+            },
+            {
+              "sintoma": "Discos enchendo mesmo com rotação.",
+              "causa": "find com -mtime calculado errado, ou dumps fora do padrão de nome que o find não alcança.",
+              "acao": "Rodar o find sem -delete primeiro para listar o que seria apagado; padronizar o nome de todos os dumps no mesmo formato."
+            }
+          ],
+          "tecnologias": [
+            "mysqldump",
+            "cron",
+            "find -mtime",
+            "mysql client",
+            "~/.my.cnf"
+          ],
+          "comandos": [
+            {
+              "desc": "backup-mysql.sh — dump diário com rotação de 7 dias",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\nset -euo pipefail\n# usa ~/.my.cnf [client] user/password — sem senha na linha de comando\nDIR=/var/backups/mysql; RETENCAO=7; HOJE=$(date +%F)\nmkdir -p \"${DIR}\"\n\nARQ=\"${DIR}/labdb-${HOJE}.sql.gz\"\nmysqldump --single-transaction --routines --events \\\n  --set-gtid-purged=ON --databases labdb | gzip > \"${ARQ}\"\n\n[[ -s \"${ARQ}\" ]] || { echo \"ERRO: dump vazio\"; exit 2; }\nfind \"${DIR}\" -name 'labdb-*.sql.gz' -mtime +${RETENCAO} -delete\n echo \"$(date '+%F %T') backup OK: ${ARQ} ($(du -h \"${ARQ}\" | cut -f1))\" \\\n  >> \"${DIR}/backup.log\"\nls \"${DIR}\"/labdb-*.sql.gz | wc -l   # quantos dumps restaram"
+            },
+            {
+              "desc": "healthcheck-replica.sh + crontab",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\n# healthcheck: 0=OK 1=alerta 2=erro de execução\nset -euo pipefail\nHOST=${1:-db02}; LIMITE=${2:-60}\nOUT=$(mysql -h \"${HOST}\" -NBe 'SHOW REPLICA STATUS') || exit 2\nIO=$(echo \"${OUT}\" | awk '{print $11}')    # Replica_IO_Running\nSQL=$(echo \"${OUT}\" | awk '{print $12}')   # Replica_SQL_Running\nLAG=$(echo \"${OUT}\" | awk '{print $32}')   # Seconds_Behind_Source\n[[ \"${IO}\" == Yes && \"${SQL}\" == Yes ]] || { echo \"PARADA io=${IO} sql=${SQL}\"; exit 1; }\n[[ \"${LAG}\" -gt \"${LIMITE}\" ]] && { echo \"ALERTA lag=${LAG}s\"; exit 1; }\necho \"OK lag=${LAG}s\"; exit 0\n\n# crontab (crontab -e):\n# PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n# 0 2 * * * /opt/dba/backup-mysql.sh >> /var/log/mysql-backup.log 2>&1\n# */5 * * * * /opt/dba/healthcheck-replica.sh db02 60 >> /var/log/mysql-health.log 2>&1"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "07",
+      "titulo": "Python — a linguagem dos relatórios e da orquestração",
+      "resumo": "Curso completo orientado a DBA: sintaxe e estruturas, arquivos e tratamento de erro com logging, e o mysql-connector com query parametrizada e coleta de métricas do fleet.",
+      "nivel": "Básico → Intermediário",
+      "topicos": [
+        {
+          "slug": "python-fundamentos",
+          "titulo": "Sintaxe, tipos, fluxo e funções em Python",
+          "nivel": "Básico",
+          "resumo": "Indentação como sintaxe, tipos que importam para DBA, f-strings, listas e dicionários, e funções que viram seus blocos de automação.",
+          "conceito": "Python troca chaves e ponto-e-vírgula por INDENTAÇÃO: o bloco é definido pelos 4 espaços — indentar errado não é estilo, é erro de sintaxe ou, pior, lógica silenciosamente diferente. A tipagem é dinâmica (você não declara o tipo) mas forte (não soma texto com número sem conversão explícita): int para contadores e portas, float para latências, str para hostnames, bool para flags e None para 'sem valor' — o NULL do Python, que exige teste com IS None, nunca ==. Listas guardam sequências (inventário de hosts), dicionários guardam pares chave-valor (métricas por host: {'lag': 5}) e f-strings (f\"lag={lag}s\") montam mensagens sem concatenação manual. O venv (ambiente virtual) isola as dependências do projeto: pip install dentro do venv não suja o Python do sistema e requirements.txt congela as versões.",
+          "comoFunciona": [
+            "if/elif/else testa condições; a comparação de igualdade é == (um = é atribuição — trocar os dois é o erro clássico).",
+            "for percorre qualquer sequência (for host in hosts) sem contador manual; while repete sob condição com freio explícito.",
+            "List comprehension ([x for x in ...]) resume um loop de filtro/transformação numa linha — legível até certo tamanho, depois volte ao for.",
+            "def nome(param) define função; return devolve o valor; sem return a função devolve None.",
+            "f-strings interpolam variáveis e expressões (f\"{lag/60:.1f}min\"); .1f formata o decimal — relatório sem formatação é dado bruto.",
+            "python -m venv .venv + source .venv/bin/activate isola o projeto; pip freeze > requirements.txt registra o ambiente reproduzível."
+          ],
+          "naPratica": [
+            "Um projeto, um venv, um requirements.txt — mysql-connector-python com versão fixada, nunca latest solto.",
+            "Comparar com == e identidade/ausência com is None; nunca usar == None.",
+            "Nomear coleções no plural (hosts, metricas) e o item no singular (host, metrica) — o for lê como frase.",
+            "Funções pequenas com um retorno claro; o script principal protegido por if __name__ == \"__main__\" para poder importar as funções sem executar.",
+            "Rodar python -m py_compile ou um linter antes de agendar: erro de indentação descoberto no cron é madrugada perdida."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "IndentationError ou o bloco executa coisa que não devia.",
+              "causa": "Mistura de tab e espaço, ou indentação inconsistente entre linhas do mesmo bloco.",
+              "acao": "Configurar o editor para inserir 4 espaços (nunca tab) e exibir whitespace; reindentar o bloco inteiro em vez de remendar linha a linha."
+            },
+            {
+              "sintoma": "TypeError ao somar/concatenar valores vindos do banco.",
+              "causa": "Driver devolveu Decimal ou None onde o código esperava int/str — tipagem forte cobrando conversão.",
+              "acao": "Converter na borda (int(lag), str(host)) e tratar None antes da operação, não depois da exceção."
+            },
+            {
+              "sintoma": "ModuleNotFoundError no servidor, mas funciona no notebook.",
+              "causa": "Pacote instalado fora do venv, ou script do cron usando o Python do sistema em vez do .venv.",
+              "acao": "Recriar o venv no servidor a partir do requirements.txt e chamar o interpretador pelo caminho absoluto (.venv/bin/python) no cron."
+            }
+          ],
+          "tecnologias": [
+            "Python 3",
+            "venv / pip",
+            "f-strings",
+            "listas e dicts",
+            "mysql-connector-python"
+          ],
+          "comandos": [
+            {
+              "desc": "Classificador de lag em Python (espelho do pseudocódigo)",
+              "lang": "python",
+              "code": "def classificar(lag, limite=60):\n    \"\"\"Devolve 'OK', 'ALERTA' ou 'PARADA'. lag pode ser None.\"\"\"\n    if lag is None:\n        return \"PARADA\"\n    if lag > limite:\n        return \"ALERTA\"\n    return \"OK\"\n\n\nfleet = [{\"host\": \"db02\", \"lag\": 5},\n         {\"host\": \"db03\", \"lag\": 300},\n         {\"host\": \"db04\", \"lag\": None}]\n\nfor item in fleet:\n    status = classificar(item[\"lag\"])\n    print(f\"{item['host']}: {status}\")\n# db02: OK | db03: ALERTA | db04: PARADA"
+            },
+            {
+              "desc": "Ambiente isolado reproduzível",
+              "lang": "bash",
+              "code": "python3 -m venv .venv\nsource .venv/bin/activate   # Windows: .venv\\Scripts\\activate\npip install \"mysql-connector-python==8.3.0\"\npip freeze > requirements.txt\ncat requirements.txt\n\n# no servidor, recriar igual:\n# python3 -m venv .venv && .venv/bin/pip install -r requirements.txt\n# cron chama: /opt/dba/.venv/bin/python /opt/dba/coleta.py"
+            }
+          ]
+        },
+        {
+          "slug": "python-arquivos-erros",
+          "titulo": "Arquivos, JSON, exceções e logging",
+          "nivel": "Intermediário",
+          "resumo": "Ler inventário de arquivo, gravar métricas em JSON/CSV, tratar erro com try/except sem engolir exceção e logar com nível em vez de print.",
+          "conceito": "Automação real lê e escreve arquivos: o inventário mora num hosts.txt ou JSON, e a coleta vira JSON (para integrar) ou CSV (para planilha). O with abre e fecha sozinho — arquivo aberto sem with e sem close vaza descritor até o script morrer. Exceção é o mecanismo de erro do Python: try tenta, except captura por tipo (FileNotFoundError, ValueError), else roda se deu certo e finally sempre limpa. A regra de ouro é capturar o tipo específico e deixar o resto subir: except genérico que engole tudo transforma falha de conexão em relatório vazio com cara de sucesso. logging substitui print em produção com NÍVEIS (DEBUG < INFO < WARNING < ERROR): você liga DEBUG para investigar e mantém INFO no dia a dia sem editar código.",
+          "comoFunciona": [
+            "with open(...) as f garante fechamento; json.load lê inventário estruturado, json.dump grava a coleta com indent=2.",
+            "csv.DictWriter grava dicionários como linhas de planilha com cabeçalho — o formato que a gerência abre sem pedir ajuda.",
+            "try/except por tipo: FileNotFoundError para arquivo ausente, ValueError para conversão inválida; Exception genérica só na borda, para logar e sair com código.",
+            "O bloco else separa o caminho feliz do tratamento; finally fecha conexão do banco mesmo quando a query explode.",
+            "logging.basicConfig(level=INFO, format com timestamp) uma vez no main; módulos usam logger = logging.getLogger(__name__)."
+          ],
+          "naPratica": [
+            "Inventário em JSON versionado (hosts.json) com host, porta e papel — adicionar réplica sem tocar no código.",
+            "Nunca gravar relatório pela metade: escrever em arquivo temporário e renomear no fim (escrita atômica).",
+            "Logar a decisão (host X classificado ALERTA por lag 300) e não só o dado — log conta história, print solta número.",
+            "Exit code semântico via sys.exit(0/1/2) igual ao Bash, para o cron e o monitor reagirem do mesmo jeito.",
+            "Credencial via variável de ambiente (os.getenv) ou arquivo 600 — nunca hardcoded no .py que vai para o git."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Relatório sai vazio ou pela metade sem erro visível.",
+              "causa": "except genérico engolindo a falha real, ou escrita sem flush/close antes da leitura.",
+              "acao": "Apertar o except para o tipo esperado e deixar o resto estourar com traceback; usar with em toda escrita."
+            },
+            {
+              "sintoma": "UnicodeDecodeError lendo arquivo com acento.",
+              "causa": "open() sem encoding usa o default da plataforma, que varia entre o notebook e o servidor.",
+              "acao": "Sempre open(..., encoding=\"utf-8\") nos dois lados, leitura e escrita."
+            },
+            {
+              "sintoma": "JSON inválido quebrando a integração seguinte.",
+              "causa": "Dump de tipos que JSON não representa (datetime, Decimal do driver MySQL) ou escrita concorrente no mesmo arquivo.",
+              "acao": "Converter na borda (str(valor) / float) com default=str no dump, e escrita atômica via temporário + rename."
+            }
+          ],
+          "tecnologias": [
+            "json / csv",
+            "try/except",
+            "logging",
+            "with",
+            "os.getenv"
+          ],
+          "comandos": [
+            {
+              "desc": "Inventário JSON + coleta com tratamento e log",
+              "lang": "python",
+              "code": "import json, logging, sys\n\nlogging.basicConfig(level=logging.INFO,\n                    format=\"%(asctime)s %(levelname)s %(message)s\")\nlog = logging.getLogger(\"coleta\")\n\ndef carregar_inventario(caminho):\n    try:\n        with open(caminho, encoding=\"utf-8\") as f:\n            return json.load(f)          # [{\"host\": \"db02\", ...}]\n    except FileNotFoundError:\n        log.error(\"inventario %s nao encontrado\", caminho)\n        sys.exit(2)\n    except json.JSONDecodeError as e:\n        log.error(\"inventario invalido: %s\", e)\n        sys.exit(2)\n\nif __name__ == \"__main__\":\n    hosts = carregar_inventario(\"hosts.json\")\n    log.info(\"%d hosts carregados\", len(hosts))"
+            },
+            {
+              "desc": "Escrita atômica do relatório",
+              "lang": "python",
+              "code": "import json, os, tempfile\n\ndef gravar_relatorio(dados, destino):\n    # escreve no temporário e renomeia: quem lê nunca pega metade\n    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(destino))\n    try:\n        with os.fdopen(fd, \"w\", encoding=\"utf-8\") as f:\n            json.dump(dados, f, indent=2, default=str)\n        os.replace(tmp, destino)\n    except BaseException:\n        os.unlink(tmp)   # falhou? remove o rascunho\n        raise"
+            }
+          ]
+        },
+        {
+          "slug": "python-mysql",
+          "titulo": "Falando com o MySQL: queries parametrizadas e coleta de métricas",
+          "nivel": "Intermediário",
+          "resumo": "Conectar com mysql-connector, o porquê inegociável do placeholder %s contra injection, e um coletor de SHOW GLOBAL STATUS do fleet inteiro.",
+          "conceito": "O mysql-connector-python abre conexão TCP com o MySQL e devolve cursor para executar SQL e buscar linhas; dictionary=True entrega cada linha como dict (row['Variable_name']) em vez de tupla posicional — código que sobrevive a mudança na ordem das colunas. Query PARAMETRIZADA separa código de dado: o SQL leva placeholders %s e os valores vão num segundo argumento; o driver escapa e tipa — concatenar valor na string (f\"... WHERE id = {id}\") entrega a query à injection, sem exceção e sem 'é só lab'. Conexão é recurso escasso: abrir, usar e fechar (try/finally ou context manager), com connect_timeout para não pendurar o fleet quando um host cai. SHOW GLOBAL STATUS expõe centenas de contadores (Threads_connected, Questions, Uptime); coletar alguns por host em loop gera a série histórica que vira gráfico e alerta.",
+          "comoFunciona": [
+            "connect(host, user, password, connection_timeout) abre; cursor(dictionary=True) executa; fetchall/fetchone lê; close() devolve ao servidor.",
+            "cursor.execute(\"SELECT * FROM t WHERE id = %s\", (id,)) parametriza — a tupla com vírgula mesmo para um único valor.",
+            "commit() confirma escrita; sem ele, o INSERT volta atrás no close — leitura não precisa de commit.",
+            "SHOW GLOBAL STATUS LIKE 'Threads_connected' filtra no servidor; o coletor guarda por host com timestamp único da rodada.",
+            "Falha num host (timeout) registra erro no relatório e segue para o próximo — um nó fora do ar não cancela a coleta do fleet."
+          ],
+          "naPratica": [
+            "Placeholder %s sempre que houver valor variável no SQL — sem exceção, inclusive em scripts internos e labs.",
+            "Usuário de coleta com privilégio mínimo (SELECT em performance_schema + SHOW STATUS), nunca root no script.",
+            "Timeout curto (5s) por host e rodada com timestamp único: métricas comparáveis entre hosts.",
+            "Fechar cursor e conexão em finally — vazamento de conexão derruba o max_connections com o tempo.",
+            "Agendar a coleta no cron a cada 5 min gravando JSON datado; retenção de 7 dias igual ao backup."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "InterfaceError ou 'MySQL Connection not available' intermitente.",
+              "causa": "Conexão reutilizada após timeout do servidor (wait_timeout) ou não fechada e reaproveitada suja.",
+              "acao": "Abrir-fechar por rodada (conexão curta) ou validar com ping(reconnect=True) antes de usar; nunca guardar conexão aberta entre execuções do cron."
+            },
+            {
+              "sintoma": "Dados com acento voltam trocados (mojibake).",
+              "causa": "Charset da conexão diferente do charset da tabela (latin1 vs utf8mb4).",
+              "acao": "Passar charset='utf8mb4' no connect e conferir SHOW VARIABLES LIKE 'character_set%' nos dois lados."
+            },
+            {
+              "sintoma": "Coleta trava minutos num host fora do ar.",
+              "causa": "Sem connection_timeout: o TCP espera o timeout do SO, que é generoso demais para automação.",
+              "acao": "connection_timeout=5 no connect + try/except por host com log de erro e continuação do loop."
+            }
+          ],
+          "tecnologias": [
+            "mysql-connector-python",
+            "Query parametrizada",
+            "SHOW GLOBAL STATUS",
+            "Cursor dict",
+            "connection_timeout"
+          ],
+          "comandos": [
+            {
+              "desc": "Consulta segura + escrita com commit",
+              "lang": "python",
+              "code": "import mysql.connector, os\n\ncnx = mysql.connector.connect(\n    host=\"db01\", user=\"coleta\",\n    password=os.getenv(\"MYSQL_COLETA_PW\"),\n    connection_timeout=5, charset=\"utf8mb4\")\ntry:\n    cur = cnx.cursor(dictionary=True)\n    # PARAMETRIZADA: valor fora da string SQL — anti-injection\n    cur.execute(\"SELECT * FROM labdb.teste WHERE id = %s\", (1,))\n    print(cur.fetchone())\n    cur.execute(\"INSERT INTO labdb.coleta (host, lag) VALUES (%s, %s\",\n                (\"db02\", 5))\n    cnx.commit()   # sem commit, o INSERT desfaz no close\nfinally:\n    cur.close(); cnx.close()"
+            },
+            {
+              "desc": "Coletor de métricas do fleet",
+              "lang": "python",
+              "code": "import datetime, mysql.connector\n\nMETRICAS = [\"Threads_connected\", \"Questions\", \"Uptime\",\n              \"Slow_queries\", \"Innodb_buffer_pool_hit_rate\"]\n\ndef coletar(host, user, pw):\n    cnx = mysql.connector.connect(host=host, user=user, password=pw,\n                                    connection_timeout=5)\n    try:\n        cur = cnx.cursor()\n        cur.execute(\"SHOW GLOBAL STATUS WHERE Variable_name IN (%s)\"\n                    % \", \".join([\"%s\"] * len(METRICAS)), tuple(METRICAS))\n        return {k: v for k, v in cur.fetchall()}\n    finally:\n        cnx.close()\n\nrodada = datetime.datetime.now(datetime.timezone.utc).isoformat()\nfor h in [\"db01\", \"db02\"]:\n    try:\n        print(h, rodada, coletar(h, \"coleta\", \"<senha>\"))\n    except Exception as e:   # borda: loga e segue o fleet\n        print(f\"{h}: ERRO {e}\")"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "08",
+      "titulo": "Lógica declarativa — programando sem mandar executar",
+      "resumo": "A lógica do outro paradigma: expressões HCL, count vs for_each e blocos dynamic no Terraform; condicionais, loops, Jinja2 e handlers no Ansible — com o my.cnf gerado por template.",
+      "nivel": "Intermediário → Avançado",
+      "topicos": [
+        {
+          "slug": "terraform-logica",
+          "titulo": "Expressões, condicionais e repetição em HCL",
+          "nivel": "Intermediário → Avançado",
+          "resumo": "Variáveis validadas, o ternário que liga backup, for que gera lista de réplicas e a diferença entre count e for_each que decide se sua réplica sobrevive a uma remoção.",
+          "conceito": "HCL é declarativa: você descreve o estado DESEJADO e o Terraform calcula o caminho — não há 'execute isto depois daquilo', há dependências inferidas das referências entre recursos. A lógica mora nas EXPRESSÕES: variáveis tipadas (string, number, bool, list, map, object) com validation que rejeita valor ruim no plan, locals para valores derivados (nomes padronizados), o ternário cond ? a : b para liga/desliga (backup ligado só em produção) e as funções (length, merge, join, format) para transformar. Repetição tem duas formas com consequência operacional: count cria N cópias indexadas por número (remover o item 0 renumera tudo e recria), for_each cria um mapa indexado por chave estável (remover db03 afeta só db03). Blocos dynamic geram sub-blocos repetidos (várias regras de SG) a partir de uma lista.",
+          "comoFunciona": [
+            "variable declara tipo, default e bloco validation com condition e error_message — o plan falha cedo com mensagem sua, não com erro críptico do provider.",
+            "locals derivam o que se repete: nome = \"${var.projeto}-${var.ambiente}\" usado em todos os recursos sem divergência.",
+            "O ternário decide valores: backup_retention_period = var.prod ? 7 : 0 — um .tfvars separa lab de produção.",
+            "for_each = toset(var.replicas) cria uma instância por chave; each.key identifica; remover um elemento do set destrói só aquele recurso.",
+            "dynamic \"ingress\" com for_each gera N regras de SG a partir de var.portas_liberadas — sem copiar bloco.",
+            "terraform validate + fmt -check no CI barram sintaxe quebrada e formatação divergente antes do plan."
+          ],
+          "naPratica": [
+            "for_each como default para qualquer coleção nomeada (réplicas, bancos, usuários); count só para N idênticos descartáveis.",
+            "validation em toda variável que aceita conjunto fechado (ambiente em [lab, prod], engine em versão fixada).",
+            "Um .tfvars por ambiente (lab.tfvars, prod.tfvars) — o mesmo código, comportamentos diferentes, sem IF no recurso.",
+            "Outputs para tudo que outro módulo ou humano precisa (endpoint, porta) — nada de copiar valor do console.",
+            "plan -out + apply do arquivo em produção: o que foi revisado é o que aplica, sem deriva entre leitura e execução."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Removi uma réplica da lista e o Terraform quer recriar as outras.",
+              "causa": "count: a lista encolheu e os índices realocaram — para o Terraform, db02 virou db01 e tudo 'mudou'.",
+              "acao": "Migrar para for_each (moved blocos se necessário) para identidade por chave; regra definitiva: coleção nomeada usa for_each."
+            },
+            {
+              "sintoma": "Plan mostra mudança em todo apply sem ninguém ter mexido no código.",
+              "causa": "Atributo volátil ou calculado fora do controle (timestamp, senha gerada sem keepers) — deriva permanente.",
+              "acao": "Identificar o atributo no diff do plan; ignorar com lifecycle.ignore_changes se for cosmético, ou fixar a fonte (keepers/random controlado)."
+            },
+            {
+              "sintoma": "Ciclo de dependência: Terraform reclama de cycle.",
+              "causa": "A depende de B que depende de A — comum com SG referenciando instância que referencia o SG.",
+              "acao": "Quebrar o ciclo referenciando por variável (id passado por input) ou separando o recurso de amarração (ex.: regra de SG em recurso próprio)."
+            }
+          ],
+          "tecnologias": [
+            "HCL",
+            "for_each vs count",
+            "dynamic blocks",
+            "validation",
+            "terraform plan"
+          ],
+          "comandos": [
+            {
+              "desc": "Réplicas por for_each + backup condicional",
+              "lang": "hcl",
+              "code": "variable \"ambiente\" {\n  type = string\n  validation {\n    condition     = contains([\"lab\", \"prod\"], var.ambiente)\n    error_message = \"ambiente deve ser lab ou prod.\"\n  }\n}\n\nvariable \"replicas\" {\n  type    = set(string)\n  default = [\"db02\", \"db03\"]\n}\n\nlocals {\n  prod = var.ambiente == \"prod\"\n  nome = \"dbabrabo-${var.ambiente}\"\n}\n\nresource \"docker_container\" \"replica\" {\n  for_each = var.replicas          # chave estável: remover db03 só mata db03\n  name     = \"${local.nome}-${each.key}\"\n  image    = docker_image.mysql.image_id\n  env = [\n    \"MYSQL_ROOT_PASSWORD=${var.root_password}\",\n    \"MYSQL_ROLE=replica\",\n    # ternário: retenção 7 em prod, 0 no lab\n    \"BACKUP_RETENTION=${local.prod ? 7 : 0}\"\n  ]\n}"
+            },
+            {
+              "desc": "Dynamic: N regras de SG a partir de lista",
+              "lang": "hcl",
+              "code": "variable \"portas_liberadas\" {\n  type = list(object({\n    porta = number\n    cidr  = string\n    desc  = string\n  }))\n  default = [\n    { porta = 3306, cidr = \"10.0.0.0/8\", desc = \"MySQL app\" },\n    { porta = 22, cidr = \"192.168.0.0/16\", desc = \"SSH admin\" },\n  ]\n}\n\nresource \"aws_security_group\" \"mysql\" {\n  name = \"mysql-lab\"\n  dynamic \"ingress\" {\n    for_each = var.portas_liberadas\n    content {\n      from_port   = ingress.value.porta\n      to_port     = ingress.value.porta\n      protocol    = \"tcp\"\n      cidr_blocks = [ingress.value.cidr]\n      description = ingress.value.desc\n    }\n  }\n}\n# adicionar porta = +1 item na lista. Sem copiar bloco, sem divergir."
+            },
+            {
+              "desc": "Porta de qualidade: fmt, validate, plan",
+              "lang": "bash",
+              "code": "terraform fmt -check -recursive   # formatação: falha se divergir\nterraform validate              # sintaxe + tipos, sem credencial\nterraform plan -var-file=lab.tfvars -out lab.plan\n# ler o plan: + create, ~ change, - destroy — nada fora do esperado?\nterraform apply lab.plan"
+            }
+          ]
+        },
+        {
+          "slug": "ansible-jinja-logica",
+          "titulo": "Ansible: condicionais, loops, Jinja2 e handlers",
+          "nivel": "Intermediário → Avançado",
+          "resumo": "O playbook como algoritmo declarativo: when, loop e register no lugar do IF e do FOR, template Jinja2 gerando o my.cnf por host e handler reiniciando o MySQL só quando muda.",
+          "conceito": "O Ansible executa um PLAYBOOK (YAML) contra um INVENTÁRIO: cada PLAY mira um grupo de hosts e roda TASKS em ordem — módulos idempotentes (apt, copy, template, service, mysql_user) que convergem em vez de executar cegamente. A lógica usa as mesmas três estruturas do módulo 05, traduzidas: when é o SE (executa a task só se a condição), loop é o PARA (repete a task por item, com item como variável) e register é a atribuição (guarda o resultado — changed, stdout — para o próximo when). O Jinja2 ({{ var }}, {% if %}, filtros como | default e | join) renderiza arquivos e condicionais; handlers são tasks que só disparam no fim e uma única vez quando notificadas (restart do MySQL só se o .cnf mudou). Check mode (--check) é o dry-run: mostra o que mudaria sem mudar.",
+          "comoFunciona": [
+            "O inventário (hosts.ini ou YAML) agrupa: [source] db01, [replica] db02 db03 — o play mira o grupo, não IPs soltos.",
+            "Facts (ansible_facts) expõem SO, memória e IPs do host; when: ansible_os_family == 'Debian' adapta a task por plataforma.",
+            "register guarda o retorno; when: resultado.changed decide a próxima task — encadeamento sem shell.",
+            "template: copia .cnf.j2 renderizado por host (server_id por inventory_hostname) e notify: restart mysql.",
+            "O handler restart mysql roda uma vez no fim do play e só se notificado — dez tasks mudando config geram um restart, não dez.",
+            "ansible-vault criptografa senhas em vars; --check --diff valida antes, mostrando linha a linha o que mudaria."
+          ],
+          "naPratica": [
+            "Tudo em roles (mysql/{tasks,handlers,templates,defaults}) quando passar de um playbook — playbook gigante vira monolito.",
+            "when com condição legível e comentada; condição complexa vira variável em vars (ex.: eh_replica) testável.",
+            "loop com lista nomeada em vez de with_items legado; loop_control.label para log legível por item.",
+            "Idempotência verificável: rodar o playbook duas vezes, a segunda com changed=0 — igual ao teste do Salt.",
+            "Segredos só via vault; nunca senha em vars aberto, nunca -e na linha de comando em host compartilhado."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Task diz changed em toda execução, nunca converge.",
+              "causa": "Módulo sem idempotência real (command/shell em vez do módulo próprio) ou template renderizando diferente a cada run (timestamp, ordem de dict).",
+              "acao": "Trocar command por módulo nativo (mysql_user, template, lineinfile); estabilizar o template (ordenar com | sort) até changed=0 na segunda run."
+            },
+            {
+              "sintoma": "when não filtra e a task roda onde não devia (ou o inverso).",
+              "causa": "Comparação de tipos (string 'true' vs booleano) ou variável indefinida avaliada como falsa silenciosa.",
+              "acao": "Debugar com - debug: var=nome_variavel antes do when; forçar tipo com | bool e default com | default(false)."
+            },
+            {
+              "sintoma": "Handler não reiniciou o MySQL após mudança de config.",
+              "causa": "notify com nome diferente do handler (typo com hífen vs underscore) — o Ansible não avisa, só não dispara.",
+              "acao": "Padronizar nomes e conferir com --check: handlers aparecem como 'notified' no resumo; nome errado nunca aparece."
+            }
+          ],
+          "tecnologias": [
+            "Ansible",
+            "Jinja2",
+            "when / loop",
+            "handlers",
+            "ansible-vault"
+          ],
+          "comandos": [
+            {
+              "desc": "Playbook: MySQL com template por host",
+              "lang": "yaml",
+              "code": "# inventory.ini:\n# [source]\n# db01 server_id=1\n# [replica]\n# db02 server_id=2\n# db03 server_id=3\n\n- name: MySQL por papel\n  hosts: source:replica\n  become: true\n  vars_files: [vault.yml]   # senhas criptografadas com ansible-vault\n  tasks:\n    - name: Instalar MySQL\n      apt: { name: mysql-server-8.0, state: present, update_cache: true }\n\n    - name: Entregar my.cnf do host\n      template:\n        src: lab.cnf.j2\n        dest: /etc/mysql/conf.d/lab.cnf\n        mode: '0644'\n      notify: restart mysql\n\n    - name: Criar usuário de replicação (só no source)\n      community.mysql.mysql_user:\n        name: repl\n        password: \"{{ repl_password }}\"\n        priv: \"*.*:REPLICATION SLAVE\"\n        state: present\n      when: \"'source' in group_names\"\n\n  handlers:\n    - name: restart mysql\n      service: { name: mysql, state: restarted }"
+            },
+            {
+              "desc": "Template Jinja2 + loop de usuários",
+              "lang": "yaml",
+              "code": "# templates/lab.cnf.j2\n[mysqld]\nserver_id = {{ server_id }}\nbind-address = 0.0.0.0\nlog_bin = mysql-bin\nbinlog_format = ROW\ngtid_mode = ON\nenforce_gtid_consistency = ON\n{% if 'replica' in group_names %}\nsuper_read_only = ON\n{% endif %}\n\n# loop: vários usuários de leitura a partir de lista\n# - name: Criar leitores\n#   community.mysql.mysql_user:\n#     name: \"{{ item.nome }}\"\n#     password: \"{{ item.senha }}\"\n#     priv: \"labdb.*:SELECT\"\n#   loop: \"{{ leitores }}\"          # lista definida em vars\n#   loop_control: { label: \"{{ item.nome }}\" }"
+            },
+            {
+              "desc": "Dry-run, execução e cofre",
+              "lang": "bash",
+              "code": "ansible-vault create vault.yml   # guarda repl_password e senhas\n# vault.yml: repl_password: \"<senha-repl>\"\n\nansible-playbook -i inventory.ini mysql.yml --check --diff\n# revisa linha a linha; changed previsto, nada aplicado\n\nansible-playbook -i inventory.ini mysql.yml --ask-vault-pass\nansible-playbook -i inventory.ini mysql.yml --ask-vault-pass\n# 2ª execução: changed=0 em tudo = idempotente, igual ao Salt"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
     }
   ]
 }
