@@ -245,27 +245,13 @@ function telaInicial() {
   window.scrollTo(0, 0);
   const trilhas = app.indice.trilhas.filter(t => app.trilhas.includes(t.slug));
   const nTop = trilhas.reduce((a, t) => a + t.modulos.reduce((x, m) => x + m.topicos.length, 0), 0);
-  const cards = trilhas.map(t => {
-    const n = t.modulos.reduce((a, m) => a + m.topicos.length, 0);
-    return `<button type="button" class="minicio__card" data-trilha="${esc(t.slug)}" style="--accent:${esc(t.accent || 'var(--brand)')}">`
-      + `<span class="minicio__nome">${esc(t.nome)}</span>`
-      + `<span class="minicio__meta">${t.modulos.length} módulos · ${n} tópicos</span>`
-      + `<span class="minicio__desc">${esc(t.desc || '')}</span></button>`;
-  }).join('');
   el.innerHTML = `<div class="minicio">`
     + `<p class="eyebrow">${esc(T('mentor.inicio_olho', 'Material de apoio'))}</p>`
     + `<h1>${esc(T('mentor.inicio_h', 'Área do mentor – DBA BRABO'))}</h1>`
-    + `<p class="lead">${esc(T('mentor.inicio_p', 'Referência técnica das formações: passo a passo de execução, validação e diagnóstico. Escolha uma trilha abaixo ou busque um tópico na lateral.'))}</p>`
+    + `<p class="minicio__eco">${esc(T('mentor.inicio_eco', 'DBA BRABO – Ecossistema de formação técnica'))}</p>`
+    + `<p class="lead">${esc(T('mentor.inicio_p', 'Referência técnica das formações: passo a passo de execução, validação e diagnóstico. Escolha uma trilha na lateral ou busque um tópico.'))}</p>`
     + `<p class="minicio__conta">${esc(T('mentor.inicio_conta', 'Você está em:'))} <b>${esc(app.usuario || '')}</b> · ${trilhas.length} ${esc(T('mentor.inicio_trilhas', 'trilhas'))} · ${nTop} ${esc(T('mentor.inicio_topicos', 'tópicos'))}</p>`
-    + `<div class="minicio__grid">${cards}</div></div>`;
-  $$('.minicio__card', el).forEach(c => c.addEventListener('click', () => {
-    const sec = $(`#mnav .mtrilha[data-trilha="${CSS.escape(c.dataset.trilha)}"]`);
-    if (!sec) return;
-    $$('#mnav .mtrilha').forEach(s => s.classList.toggle('is-open', s === sec));
-    sec.scrollIntoView({ block: 'nearest' });
-    if (window.innerWidth <= 900) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }));
-  ligarCopiar(el);
+    + `</div>`;
 }
 
 /* ---------- navegacao lateral ------------------------------------------- */
