@@ -317,3 +317,37 @@
 /* Print de tela dentro do lab: emoldurado como janela, nao solto na pagina. */
 .mimg figcaption { margin-top: var(--s-3); }
 .mimg img { border: 1px solid var(--line); background: var(--bg-2); }
+
+/* ---------- 10 · tela inicial --------------------------------------------- */
+/* "Area do mentor - DBA BRABO": hero curto + cartoes por trilha, tudo com os
+   tokens do portal (herda dark/light/system automaticamente). */
+.mtopo__home {
+  display: flex; align-items: center; gap: var(--s-3);
+  background: none; border: 0; padding: 0; cursor: pointer; color: inherit; font: inherit;
+}
+.mtopo__home img { width: 30px; height: 30px; border-radius: 50%; }
+.mtopo__home b { font-family: var(--font-display); font-size: var(--fs-sm); }
+.mtopo__home:hover b { color: var(--brand); }
+
+.minicio { max-width: 980px; }
+.minicio h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); margin: var(--s-2) 0 var(--s-3); letter-spacing: -0.01em; }
+.minicio .lead { max-width: 68ch; }
+.minicio__conta { margin-top: var(--s-4); color: var(--fg-2); font-size: var(--fs-sm); }
+.minicio__conta b { color: var(--fg-0); }
+.minicio__grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--s-4); margin-top: var(--s-6);
+}
+.minicio__card {
+  position: relative; display: grid; gap: var(--s-1); align-content: start;
+  text-align: left; cursor: pointer; color: inherit;
+  background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--r-md);
+  padding: var(--s-4) var(--s-4) var(--s-4) calc(var(--s-4) + 4px); overflow: hidden;
+}
+.minicio__card::before {
+  content: ''; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--accent);
+}
+.minicio__card:hover { border-color: var(--line-strong); background: var(--bg-2); }
+.minicio__nome { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-sm); }
+.minicio__meta { font-family: var(--font-mono, monospace); font-size: var(--fs-xs); color: var(--fg-3); }
+.minicio__desc { font-size: var(--fs-xs); color: var(--fg-2); }

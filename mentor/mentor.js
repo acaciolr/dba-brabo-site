@@ -57,6 +57,37 @@ async function carregarIdioma() {
 }
 carregarIdioma();
 
+/* ---------- tema: espelha o portal (dark / light / system) ---------------- */
+/* Mesma chave do portal (dbabrabo-theme): quem escolheu la, encontra aqui.
+   Nada do portal e tocado — so se le a preferencia que ele gravou. */
+function setupTemaMentor() {
+  const KEY = 'dbabrabo-theme';
+  const ordem = ['dark', 'light', 'system'];
+  const aplicar = t => {
+    try {
+      document.documentElement.dataset.theme =
+        t === 'system' ? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : t;
+      document.documentElement.dataset.themePref = t;
+    } catch { document.documentElement.dataset.theme = 'dark'; }
+    const btn = $('#themeToggle');
+    if (btn) btn.setAttribute('aria-label', `Tema: ${t}. Clique para alternar.`);
+  };
+  let atual = 'dark';
+  try { atual = localStorage.getItem(KEY) || 'dark'; } catch {}
+  if (!ordem.includes(atual)) atual = 'dark';
+  aplicar(atual);
+  try {
+    matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { if (atual === 'system') aplicar('system'); });
+  } catch {}
+  const btn = $('#themeToggle');
+  if (btn) btn.addEventListener('click', () => {
+    atual = ordem[(ordem.indexOf(atual) + 1) % ordem.length];
+    try { localStorage.setItem(KEY, atual); } catch {}
+    aplicar(atual);
+  });
+}
+setupTemaMentor();
+
 /* ---------- estado ------------------------------------------------------ */
 const app = {
   usuario: null,      // login autenticado
@@ -191,7 +222,50 @@ async function abrirArea() {
   $('#acesso').style.display = 'none';
   $('#mentor').classList.add('is-on');
   montarNav();
-  restaurarHash();
+  /* Entrar mostra SEMPRE a tela inicial — nunca o ultimo topico.
+     (Antes, o hash/sessao restaurava a pagina onde se parou.) */
+  irParaInicio();
+}
+
+/* ---------- tela inicial -------------------------------------------------- */
+/* "Area do mentor - DBA BRABO": cartao de boas-vindas com as trilhas do
+   usuario. Entrar, recarregar ou clicar na marca cai sempre aqui. */
+function irParaInicio() {
+  try { history.replaceState(null, '', location.pathname); } catch {}
+  app.sel = null;
+  $$('#mnav .mtop').forEach(b => b.classList.remove('is-sel'));
+  telaInicial();
+}
+
+function telaInicial() {
+  const el = $('#mconteudo');
+  if (!el || !app.indice) return;
+  el.style.setProperty('--accent', 'var(--brand)');
+  el.scrollTo?.(0, 0);
+  window.scrollTo(0, 0);
+  const trilhas = app.indice.trilhas.filter(t => app.trilhas.includes(t.slug));
+  const nTop = trilhas.reduce((a, t) => a + t.modulos.reduce((x, m) => x + m.topicos.length, 0), 0);
+  const cards = trilhas.map(t => {
+    const n = t.modulos.reduce((a, m) => a + m.topicos.length, 0);
+    return `<button type="button" class="minicio__card" data-trilha="${esc(t.slug)}" style="--accent:${esc(t.accent || 'var(--brand)')}">`
+      + `<span class="minicio__nome">${esc(t.nome)}</span>`
+      + `<span class="minicio__meta">${t.modulos.length} módulos · ${n} tópicos</span>`
+      + `<span class="minicio__desc">${esc(t.desc || '')}</span></button>`;
+  }).join('');
+  el.innerHTML = `<div class="minicio">`
+    + `<p class="eyebrow">${esc(T('mentor.inicio_olho', 'Material de apoio'))}</p>`
+    + `<h1>${esc(T('mentor.inicio_h', 'Área do mentor – DBA BRABO'))}</h1>`
+    + `<p class="lead">${esc(T('mentor.inicio_p', 'Referência técnica das formações: passo a passo de execução, validação e diagnóstico. Escolha uma trilha abaixo ou busque um tópico na lateral.'))}</p>`
+    + `<p class="minicio__conta">${esc(T('mentor.inicio_conta', 'Você está em:'))} <b>${esc(app.usuario || '')}</b> · ${trilhas.length} ${esc(T('mentor.inicio_trilhas', 'trilhas'))} · ${nTop} ${esc(T('mentor.inicio_topicos', 'tópicos'))}</p>`
+    + `<div class="minicio__grid">${cards}</div></div>`;
+  $$('.minicio__card', el).forEach(c => c.addEventListener('click', () => {
+    const sec = $(`#mnav .mtrilha[data-trilha="${CSS.escape(c.dataset.trilha)}"]`);
+    if (!sec) return;
+    $$('#mnav .mtrilha').forEach(s => s.classList.toggle('is-open', s === sec));
+    sec.scrollIntoView({ block: 'nearest' });
+    if (window.innerWidth <= 900) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
+  ligarCopiar(el);
 }
 
 /* ---------- navegacao lateral ------------------------------------------- */
@@ -470,10 +544,20 @@ function ligarCopiar(raiz) {
 window.addEventListener('hashchange', () => {
   if (!app.indice) return;
   const h = location.hash.replace(/^#/, '');
-  if (!h) return;
+  /* Hash vazio (voltar apos limpar, marca clicada) = tela inicial. */
+  if (!h) { irParaInicio(); return; }
   const atual = app.sel ? `${app.sel.trilha}/${app.sel.modulo}/${app.sel.topico}` : '';
   if (h === atual) return;
   restaurarHash();
+});
+
+/* Marca DBA BRABO no topo volta sempre para a tela inicial. */
+document.addEventListener('DOMContentLoaded', () => {
+  const home = $('#btn-inicio');
+  if (home && !home.dataset.on) {
+    home.dataset.on = '1';
+    home.addEventListener('click', () => { if (app.indice) irParaInicio(); });
+  }
 });
 
 function restaurarHash() {
