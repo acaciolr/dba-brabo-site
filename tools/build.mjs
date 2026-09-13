@@ -579,7 +579,7 @@ function validar() {
       if (['.git', 'node_modules', '_conflitos', 'Banners'].includes(e.name)) continue;
       const abs = path.join(dir, e.name);
       if (e.isDirectory()) varrer(abs, achados);
-      else if (/ [2-9](\.[^.]+)?$/.test(e.name)) achados.push(path.relative(ROOT, abs));
+      else if (/ \d+(\.[^.]+)?$/.test(e.name)) achados.push(path.relative(ROOT, abs));
     }
     return achados;
   };

@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /mentor/
 
 Sitemap: https://dbabrabo.com.br/sitemap.xml
