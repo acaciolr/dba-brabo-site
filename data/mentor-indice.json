@@ -3309,6 +3309,28 @@
        "estado": "pendente"
       }
      ]
+    },
+    {
+     "id": "04-recovery-service",
+     "n": "04",
+     "nome": "Recovery Service",
+     "topicos": [
+      {
+       "id": "visao-geral",
+       "nome": "Visão geral do Autonomous Recovery Service",
+       "estado": "revisado"
+      },
+      {
+       "id": "onboarding-setup",
+       "nome": "Onboarding e setup completo",
+       "estado": "revisado"
+      },
+      {
+       "id": "operacao",
+       "nome": "Operação: restore, métricas, eventos e API",
+       "estado": "revisado"
+      }
+     ]
     }
    ]
   },
