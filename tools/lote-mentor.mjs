@@ -106,12 +106,14 @@ for (const arq of alvos) {
   catch (e) { falhar(`${nome}: base corrompida — ${e.message}`); continue; }
   if ((!base.topicos || !base.topicos[topico]) && modo !== 'criar-topico') { falhar(`${nome}: tópico inexistente (${trilha}/${topico})`); continue; }
 
-  if (modo === 'anexar-blocos') {
+  if (modo === 'anexar-blocos' || modo === 'prepor-blocos') {
     if (!Array.isArray(lote.blocos) || !lote.blocos.length) { falhar(`${nome}: blocos vazio`); continue; }
     for (const [i, b] of lote.blocos.entries()) {
       if (!b || !TIPOS.has(b.t)) { falhar(`${nome}: bloco ${i} com tipo inválido (${b && b.t})`); continue; }
     }
-    base.topicos[topico].blocos.push(...lote.blocos);
+    if (modo === 'anexar-blocos') base.topicos[topico].blocos.push(...lote.blocos);
+    else if (lote.apos != null) base.topicos[topico].blocos.splice(lote.apos, 0, ...lote.blocos);
+    else base.topicos[topico].blocos.unshift(...lote.blocos);
   } else if (modo === 'substituir-topico') {
     if (!lote.topico || typeof lote.topico !== 'object') { falhar(`${nome}: campo topico ausente`); continue; }
     base.topicos[topico] = lote.topico;
