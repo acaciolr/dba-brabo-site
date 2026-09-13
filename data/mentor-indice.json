@@ -3408,6 +3408,26 @@
        "id": "powershell",
        "nome": "PowerShell",
        "estado": "pendente"
+      },
+      {
+       "id": "terraform",
+       "nome": "Terraform",
+       "estado": "revisado"
+      },
+      {
+       "id": "saltstack",
+       "nome": "SaltStack",
+       "estado": "revisado"
+      },
+      {
+       "id": "docker",
+       "nome": "Docker",
+       "estado": "revisado"
+      },
+      {
+       "id": "vagrant",
+       "nome": "Vagrant",
+       "estado": "revisado"
       }
      ]
     },
