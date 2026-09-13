@@ -1278,6 +1278,1413 @@
         }
       ],
       "detalhado": true
+    },
+    {
+      "id": "09",
+      "titulo": "Linux para automação — o terreno onde os scripts pisam",
+      "resumo": "Filesystem, permissões, processamento de texto (grep/awk/sed), processos, systemd, cron, logs e SSH — o pré-requisito de todo o curso de automação.",
+      "nivel": "Básico",
+      "topicos": [
+        {
+          "slug": "linux-filesystem-permissoes",
+          "titulo": "Filesystem, usuários e permissões",
+          "nivel": "Básico",
+          "resumo": "Onde cada coisa mora (/etc, /var, /tmp, /home, /opt, /usr), quem é dono de quê e o rwx que decide se seu script roda ou falha.",
+          "conceito": "O Linux organiza tudo como arquivo numa hierarquia única: /etc guarda configuração (my.cnf, crontabs), /var guarda dado variável (logs em /var/log, backups, spools), /tmp é descartável entre reboots (nunca confie nele para persistir), /home guarda usuários humanos e /opt e /usr/local guardam software de terceiros (seus scripts de DBA moram bem em /opt/dba). Cada arquivo tem DONO (usuário), GRUPO e três trios de permissão rwx (read/write/execute) para dono, grupo e outros — lidos também em octal (755 = rwxr-xr-x). Diretório precisa de x para ser atravessado: sem x, nem ls dentro dele. O script só executa se tiver x E se o interpretador do shebang existir; usuário de automação roda com menor privilégio possível via sudo cirúrgico, nunca como root interativo.",
+          "comoFunciona": [
+            "ls -l mostra tipo, permissões, dono, grupo, tamanho e data — a primeira coluna (ex.: -rwxr-xr--) já conta a história do acesso.",
+            "chmod ajusta acesso (u+x libera execução para o dono; 750 fecha para outros); chown muda dono:grupo juntos.",
+            "Criar usuário de automação (dba_auto) sem shell interativo e com sudo restrito ao comando necessário elimina root compartilhado.",
+            "PATH define onde o shell procura comandos; script de cron usa caminho absoluto porque o PATH do cron é mínimo.",
+            "df -h e du -sh monitoram espaço; filesystem cheio é a causa número um de banco 'parado sem erro claro'."
+          ],
+          "naPratica": [
+            "Scripts de DBA em /opt/dba com dono root:dba, modo 750 — o time lê e executa, ninguém além do dono edita.",
+            "Credenciais em arquivos 600 (~/.my.cnf, ~/.pgpass); permissão aberta em credencial é incidente, não detalhe.",
+            "/tmp só para temporário com mktemp + trap de limpeza; resultado final sempre em /var/backups ou /opt/dba/output.",
+            "Documentar no README do lab qual usuário roda cada script e com qual sudo — automação sem dono declarado vira root de todo mundo.",
+            "Exercício: criar o usuário dba_auto, dar sudo só para systemctl restart mysql e provar que outro comando é negado."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Permission denied ao executar o script que 'está lá'.",
+              "causa": "Falta o x, ou falta x num diretório do caminho, ou o filesystem montou com noexec.",
+              "acao": "Checar em ordem: ls -l do arquivo, namei -l no caminho completo (mostra permissão de cada nível) e mount | grep noexec."
+            },
+            {
+              "sintoma": "Script funciona como root e falha como usuário de automação.",
+              "causa": "Arquivo, diretório ou comando acessível só ao root — ambiente diferente, não código diferente.",
+              "acao": "Rodar com sudo -u dba_auto para reproduzir; ajustar dono/permissão ou sudoers cirúrgico, nunca chmod 777."
+            },
+            {
+              "sintoma": "Banco parou de aceitar escrita 'do nada'.",
+              "causa": "Filesystem de dados ou de logs em 100% — o MySQL trava para se proteger.",
+              "acao": "df -h primeiro, sempre. Depois du -sh nos candidatos (binlogs, dumps esquecidos, /tmp) antes de culpar o motor."
+            }
+          ],
+          "tecnologias": [
+            "Linux FHS",
+            "rwx / octal",
+            "sudo",
+            "df / du",
+            "PATH"
+          ],
+          "comandos": [
+            {
+              "desc": "Ler permissões e corrigir um script",
+              "lang": "bash",
+              "code": "ls -l /opt/dba/backup-mysql.sh\n# -rw-r--r-- = sem x: edita mas não executa\nchmod 750 /opt/dba/backup-mysql.sh\nchown root:dba /opt/dba/backup-mysql.sh\nls -l /opt/dba/backup-mysql.sh\n# -rwxr-x--- root dba = dono executa, time executa, outros nem veem\n\nnamei -l /opt/dba/backup-mysql.sh   # permissão de CADA nível do caminho\ndf -h /var/lib/mysql                # espaço do dado\nid dba_auto                          # usuário de automação e seus grupos"
+            },
+            {
+              "desc": "Usuário de automação com sudo cirúrgico",
+              "lang": "bash",
+              "code": "useradd -r -s /usr/sbin/nologin -m dba_auto\n# visudo: libera SÓ o restart do mysql, sem senha, sem resto\n# dba_auto ALL=(root) NOPASSWD: /bin/systemctl restart mysql\n\nsudo -u dba_auto sudo -n systemctl restart mysql   # permitido\nsudo -u dba_auto sudo -n systemctl restart ssh     # negado: é esse o teste"
+            }
+          ]
+        },
+        {
+          "slug": "linux-texto",
+          "titulo": "Texto é a API do Linux: grep, awk, sed e amigos",
+          "nivel": "Básico → Intermediário",
+          "resumo": "Pipes, grep, cut/sort/uniq, awk para colunas e sed para edição em lote — o kit que transforma alert.log e saída de comando em relatório.",
+          "conceito": "No Linux, comandos conversam por TEXTO via stdin/stdout: o pipe (|) liga a saída de um à entrada do outro, formando a linha de montagem da automação. grep filtra LINHAS por padrão (com -E para regex estendida e -c para contar); cut recorta CAMPOS por delimitador; sort ordena e uniq -c conta repetições (sempre sort antes do uniq); awk é a planilha de uma linha — divide em colunas ($1, $2... $NF a última) e programa condição e ação ('$5 > 80'); sed edita TEXTO em lote (s/velho/novo/ substitui, -i edita o arquivo). find localiza ARQUIVOS por nome, idade e tamanho e -exec ou xargs aplicam comando em cada um. tar+gzip empacotam e comprimem o resultado para transporte.",
+          "comoFunciona": [
+            "grep -E 'ERROR|ORA-' alert.log filtra; grep -v exclui o ruído conhecido; -A3 mostra contexto após o match.",
+            "awk -F: '{print $1}' troca o delimitador; '$3 > 80 {print}' filtra linhas por condição numérica na coluna.",
+            "sed 's/localhost/db01/' troca na saída; com -i.bak troca no arquivo guardando backup — sem .bak não há desfazer.",
+            "sort | uniq -c | sort -rn ranqueia ocorrências (top erros do log em ordem).",
+            "find /var/log -name '*.log' -mtime +30 -exec gzip {} \\; comprime o velho; tar -czf pacote.tar.gz dir/ empacota o lab."
+          ],
+          "naPratica": [
+            "Montar o pipeline do simples ao composto: primeiro cada comando sozinho, depois ligados — debugar pipe pronto é difícil, construir por etapa é fácil.",
+            "Preferir awk a cut quando a coluna é posicional instável (espaços variáveis); preferir cut quando o delimitador é rígido (:, ;).",
+            "sed -i sempre com sufixo de backup na primeira vez; depois de validado, aí sim sem backup em loop.",
+            "Contar antes de agir: grep -c diz o tamanho do problema antes do purge ou do alerta.",
+            "Exercício: top 10 erros do alert.log da semana com uma linha só (grep + sort + uniq + sort + head)."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "grep não acha o que está visível no arquivo.",
+              "causa": "Case diferente (ERROR vs error), caracteres especiais interpretados como regex, ou arquivo com \\r (Windows).",
+              "acao": "Começar com grep -i -F (literal, sem regex); se suspeitar de \\r, file + sed -n l para enxergar os invisíveis."
+            },
+            {
+              "sintoma": "awk imprime a coluna errada.",
+              "causa": "Separador default (espaços) colapsando diferente do esperado, ou cabeçalho contado como dado.",
+              "acao": "Inspecionar com head -3 | cat -A para ver separadores reais; pular cabeçalho com NR>1 e fixar -F."
+            },
+            {
+              "sintoma": "uniq -c conta 1 para tudo, mesmo com repetidos.",
+              "causa": "uniq só agrupa ADJACENTES — sem sort antes, repetidos separados contam isolados.",
+              "acao": "Regra fixa: sort antes de uniq, sempre; conferir com sort | uniq -c | sort -rn."
+            }
+          ],
+          "tecnologias": [
+            "grep",
+            "awk",
+            "sed",
+            "find / xargs",
+            "tar / gzip"
+          ],
+          "comandos": [
+            {
+              "desc": "Top erros do alert.log em uma linha",
+              "lang": "bash",
+              "code": "grep -E 'ORA-|ERROR' /var/log/oracle/alert.log \\\n  | awk '{print $1, $2, $5}' \\\n  | sort | uniq -c | sort -rn | head -10\n# coluna 1 = ocorrências: o ranking do problema antes de qualquer ação\n\n# arquivos velhos comprimidos, depois empacotar o lab:\nfind /var/log/mysql -name '*.log' -mtime +30 -exec gzip {} \\;\ntar -czf /var/backups/logs-$(date +%F).tar.gz /var/log/mysql/\nls -lh /var/backups/logs-*.tar.gz"
+            },
+            {
+              "desc": "sed com rede de segurança + awk condicional",
+              "lang": "bash",
+              "code": "# troca host no .cnf GUARDANDO backup (desfazer existe):\nsed -i.bak 's/^bind-address.*/bind-address = 0.0.0.0/' /etc/mysql/conf.d/lab.cnf\ndiff /etc/mysql/conf.d/lab.cnf.bak /etc/mysql/conf.d/lab.cnf\n\n# filesystems acima de 80%: só esses disparam alerta\n# ($5 = uso com %, $6 = ponto de montagem)\ndf -h | awk 'NR>1 {gsub(/%/\"\", $5); if ($5 > 80) print $6\": \"$5\"%\"}'"
+            }
+          ]
+        },
+        {
+          "slug": "linux-processos-servicos",
+          "titulo": "Processos, systemd, cron, logs e acesso remoto",
+          "nivel": "Intermediário",
+          "resumo": "ps e sinais, services que voltam sozinhos, journalctl, cron/systemd timers e SSH com chave + rsync — o servidor operável antes do banco.",
+          "conceito": "Processo é programa em execução com PID; ps mostra, kill manda SINAL (TERM pede para sair com dignidade, KILL mata sem conversa — nesta ordem, sempre). O systemd é o gerente: UNIT files declaram como o serviço sobe, com o quê e quando reinicia (Restart=on-failure troca plantão humano por declaração). Logs centralizam no journalctl (por unidade e por período) e nos arquivos de /var/log. O cron agenda no tempo (minuto hora dia-mês mês dia-semana) e timers do systemd fazem o mesmo com dependência e log nativo. SSH com CHAVE (nunca senha em automação) abre o shell remoto; scp/rsync movem arquivos — rsync -a --delete espelha diretórios e retoma onde parou, o transporte oficial dos seus dumps offsite. curl/wget falam HTTP: baixar artefato, testar endpoint, consumir API.",
+          "comoFunciona": [
+            "ps aux --sort=-%mem acha o devorador de RAM; kill PID (TERM) espera; kill -9 só se o TERM falhar após segundos.",
+            "systemctl enable --now liga e persiste entre reboots; is-enabled/is-active respondem o estado para o monitor.",
+            "journalctl -u mysql --since '1 hour ago' lê o log do serviço com recorte de tempo — sem caçar arquivo.",
+            "crontab -e agenda; a linha registra saída e erro em log; timers adicionam OnCalendar + WantedBy com journal nativo.",
+            "ssh-keygen + authorized_keys liberam sem senha; ssh executa comando remoto direto; rsync -avz --delete espelha backup para o cofre."
+          ],
+          "naPratica": [
+            "Ordem de desligamento educada: TERM, aguardar, KILL só no teimoso — KILL em mysqld sujo pode custar recovery longo.",
+            "Todo serviço de banco com Restart=on-failure e RestartSec — queda 3h da manhã não espera humano.",
+            "Cron com PATH explícito, caminhos absolutos e log com data; testar a linha com env -i simulando o ambiente vazio.",
+            "Chave SSH por propósito (backup, deploy) com forced command quando der — chave multiuso é senha com outro nome.",
+            "Exercício: timer que roda o healthcheck a cada 5 min e prova no journal que executou 3 vezes seguidas."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Serviço 'ativo' mas o banco não responde.",
+              "causa": "Processo vivo, porta fechada ou travada em startup: ativo no systemd não prova escuta.",
+              "acao": "Somar três evidências: systemctl status + ss -ltn na porta + mysqladmin ping. Qualquer uma falhando aponta a camada."
+            },
+            {
+              "sintoma": "Cron não executa e não há erro em lugar nenhum.",
+              "causa": "Sintaxe do crontab, ambiente mínimo, ou % não escapado na linha (cron trata % como newline).",
+              "acao": "Checar /var/log/cron (ou journal do cron), validar campos em 5 posições e redirecionar saída+erro para log desde o dia um."
+            },
+            {
+              "sintoma": "SSH pede senha mesmo com chave instalada.",
+              "causa": "Permissão aberta demais: ~/.ssh precisa ser 700 e authorized_keys 600, ou o sshd recusa por segurança.",
+              "acao": "Ajustar permissões dos dois lados e ler o log do servidor (auth.log) — ele diz exatamente o motivo da recusa."
+            }
+          ],
+          "tecnologias": [
+            "systemd",
+            "journalctl",
+            "cron",
+            "SSH / rsync",
+            "curl"
+          ],
+          "comandos": [
+            {
+              "desc": "Serviço, log recortado e cheat do cron",
+              "lang": "bash",
+              "code": "systemctl enable --now mysql\nsystemctl is-active mysql && mysqladmin ping\njournalctl -u mysql --since '30 min ago' --no-pager | tail -20\n\nps aux --sort=-%mem | head -5   # quem come RAM agora\n\n# crontab: min hora dom mes dow  (ex.: 2h da manhã todo dia)\n# 0 2 * * * /opt/dba/backup-mysql.sh >> /var/log/dba-backup.log 2>&1"
+            },
+            {
+              "desc": "Chave SSH + rsync offsite do backup",
+              "lang": "bash",
+              "code": "ssh-keygen -t ed25519 -f ~/.ssh/id_backup -N '' -C 'backup-db01'\nssh-copy-id -i ~/.ssh/id_backup.pub backup@cofre\nssh -i ~/.ssh/id_backup backup@cofre 'mkdir -p /cofre/db01'\n\nrsync -avz --delete -e 'ssh -i ~/.ssh/id_backup' \\\n  /var/backups/mysql/ backup@cofre:/cofre/db01/\n# -a preserva, -z comprime, --delete espelha (cuidado: espelho apaga)\n\ncurl -sf http://localhost:9104/metrics | head -5  # exporter responde?"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "10",
+      "titulo": "Bash do zero ao intermediário — sintaxe completa",
+      "resumo": "Shebang, variáveis, read, argumentos, exit codes, if/case, loops, arrays e strings — cada recurso com exemplo simples, intermediário e real, explicado linha a linha.",
+      "nivel": "Básico → Intermediário",
+      "topicos": [
+        {
+          "slug": "bash-sintaxe-completa",
+          "titulo": "Estruturas e o primeiro script dissecado",
+          "nivel": "Básico",
+          "resumo": "echo, read, $1/$@, if/elif/case, for/while/until e o exemplo obrigatório do ping com cada linha explicada.",
+          "conceito": "Script Bash é texto com permissão de execução começando pelo shebang; o corpo combina COMANDOS com ESTRUTURAS. echo imprime, read lê do teclado (ou de pipe) para variável. Argumentos chegam posicionais: $0 é o nome do script, $1 o primeiro, $@ todos, $# quantos. if testa exit code de comando ou [[ ]] para texto/número; elif encadeia, else fecha; case compara UMA variável contra VÁRIOS padrões com glob (*.log) — a seleção múltipla legível. for percorre lista, while repete sob condição, until repete ATÉ a condição (o while invertido, ideal para 'tente até conseguir'). Arrays guardam listas indexadas (HOSTS=(db01 db02)) com ${#HOSTS[@]} contando; strings se manipulam com ${VAR:-default}, ${#VAR} tamanho e ${VAR/velho/novo} substituição.",
+          "comoFunciona": [
+            "read -p 'Host: ' HOST interage; read -rs esconde senha digitada.",
+            "[[ $x -gt 10 ]] numérico, [[ $s == *.log ]] padrão; case $ESTADO em yes|no|*) com *) como padrão obrigatório.",
+            "for H in \"${HOSTS[@]}\" preserva item com espaço; for ((i=0;i<N;i++)) estilo C para contador.",
+            "until mysqladmin ping; do sleep 5; done espera o banco sem while-negado ilegível.",
+            "Função retorna exit code (return) ou texto (echo); local isola variável interna.",
+            "getopts lê flags (-h host -p porta) e deixa o script com cara de comando profissional."
+          ],
+          "naPratica": [
+            "Cabeçalho padrão em todo script: descrição, uso, autor, data, versão — script sem cabeçalho é anônimo e indebugável.",
+            "Validar argumentos no início com usage() e exit 2; script que roda sem argumento obrigatório é roleta.",
+            "case para menus e estados finitos; if para condições booleanas — cada um no seu quadrante.",
+            "Arrays para inventário curto; arquivo externo quando a lista muda sem mudar código.",
+            "Exercício: reescrever o exemplo do ping aceitando host e tentativas como argumentos com defaults."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "read pula a leitura dentro de loop com pipe.",
+              "causa": "O while consome o mesmo stdin do pipe; o read interno lê o resto do pipe em vez do teclado.",
+              "acao": "Redirecionar o read do terminal (read -p ... </dev/tty) ou alimentar o loop por arquivo, não por pipe."
+            },
+            {
+              "sintoma": "case nunca casa o padrão esperado.",
+              "causa": "Espaço ou case-sensitive: 'Yes' não casa 'yes'; valor com \\r vindo de arquivo Windows.",
+              "acao": "Normalizar antes (minúsculas, trim) e terminar a lista com *) capturando o inesperado com mensagem."
+            },
+            {
+              "sintoma": "until executa zero vezes ou vira infinito.",
+              "causa": "Condição inicial já verdadeira (zero voltas é correto!) ou comando de teste que nunca muda de exit code.",
+              "acao": "Testar o comando do until isolado e adicionar contador máximo + sleep como freio padrão."
+            }
+          ],
+          "tecnologias": [
+            "Bash",
+            "read / getopts",
+            "if / case",
+            "Arrays",
+            "until"
+          ],
+          "comandos": [
+            {
+              "desc": "Exemplo obrigatório: ping com cada linha explicada",
+              "lang": "bash",
+              "code": "#!/bin/bash\n# SCRIPT: rede-ok.sh — verifica rede antes de qualquer automação remota\n\nHOSTNAME=$(hostname)              # $(): saída do comando vira texto\necho \"Servidor: $HOSTNAME\"         # \"\": expande a variável com segurança\n\nif ping -c 1 8.8.8.8 >/dev/null 2>&1; then\n  # ping -c 1: um pacote só (sem -c, ping não termina)\n  # >/dev/null 2>&1: descarta saída E erro — aqui só o exit code importa\n  # if testa o exit code: 0 (respondeu) entra no then\n    echo \"Rede OK\"\nelse                                # exit != 0: sem rota, DNS ou host fora\n    echo \"Falha de rede\"\n    exit 1                          # avisa o chamador com código != 0\nfi"
+            },
+            {
+              "desc": "Argumentos, arrays e case no mesmo script",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\n# uso: checar.sh [-h host] [-t tentativas]\nHOST='db01'; TENT=3\nwhile getopts 'h:t:' op; do         # getopts: flags profissionais\n  case \"$op\" in\n    h) HOST=\"$OPTARG\" ;;           # -h valor vai para OPTARG\n    t) TENT=\"$OPTARG\" ;;\n    *) echo \"uso: $0 [-h host] [-t tentativas]\"; exit 2 ;;\n  esac\ndone\n\nHOSTS=(\"$HOST\" 'db02' 'db03')     # array: inventário curto inline\necho \"checando ${#HOSTS[@]} hosts\"  # ${#...[@]} = tamanho do array\nfor H in \"${HOSTS[@]}\"; do         # \"...[@]\" preserva item com espaço\n  echo \"== $H ==\"\ndone"
+            }
+          ]
+        },
+        {
+          "slug": "bash-texto-poder",
+          "titulo": "Regex, awk programável, sed e substituições",
+          "nivel": "Intermediário",
+          "resumo": "grep -E, classes e quantificadores, awk com BEGIN/condição/ação, sed multilinha e expansões de string que dispensam subshell.",
+          "conceito": "REGEX descreve formato em vez de texto fixo: [0-9]+ casa números, ^ORA- ancora no início, (ERROR|FAIL) alterna, grep -E ativa a sintaxe estendida. O awk é programa completo em uma linha com estrutura BEGIN{preparo} condição{ação} END{resumo} — soma coluna, conta por chave em array associativo e imprime relatório. O sed vai além da troca simples: -E para regex, endereços de linha (10,20s/.../), d para deletar e r/w para ler/escrever trechos. Expansão de parâmetro resolve no próprio shell sem chamar nada externo: ${VAR:-default}, ${VAR#prefixo} remove início, ${VAR%sufixo} remove fim, ${VAR//velho/novo} troca tudo — cada subshell $(...) evitado é um fork a menos no loop do fleet.",
+          "comoFunciona": [
+            "grep -Eo '[0-9]+\\.[0-9]+s' extrai só o trecho (slow log: tempos de query).",
+            "awk '/ERROR/ {c[$5]++} END {for (k in c) print c[k], k}' conta por coluna — histograma do log.",
+            "sed -E -i.bak 's/^(max_connections *= *).*/\\1 500/' ajusta parâmetro preservando o resto da linha.",
+            "FNAME=${ARQ##*/} tira diretório, EXT=${ARQ##*.} tira extensão — basename/dirname sem processo filho.",
+            "[[ $IP =~ ^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$ ]] valida formato dentro do próprio [[ ]]."
+          ],
+          "naPratica": [
+            "Validar formato na entrada (IP, data YYYY-MM-DD) com =~ antes de usar — dado malformado vira comando malformado.",
+            "awk para relatório, grep para filtro: cada ferramenta no papel forte, sem forçar.",
+            "sed -i sempre com backup na primeira aplicação em massa; diff do .bak antes de declarar vitória.",
+            "Expansão em vez de basename/cut dentro de loop quente — performance de graça.",
+            "Exercício: do slow log, extrair top 5 queries por tempo total com awk somando por fingerprint."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Regex funciona no testador online e falha no grep.",
+              "causa": "Dialeto: BRE (grep puro) exige \\+ \\( \\) onde ERE (grep -E) usa + ( ) direto.",
+              "acao": "Padronizar grep -E em scripts novos e testar o padrão contra 3 linhas reais antes de aplicar no arquivo inteiro."
+            },
+            {
+              "sintoma": "sed trocou onde não devia (inclusive em comentário).",
+              "causa": "Padrão genérico sem âncora: s/porta/3307/ pega qualquer ocorrência da palavra.",
+              "acao": "Ancorar (^chave *=) e restringir ao contexto; conferir com diff e, em config, preferir template versionado."
+            },
+            {
+              "sintoma": "awk soma errado (concatena em vez de somar).",
+              "causa": "Campo com unidade grudada ('10s', '5M') — awk viu texto, não número.",
+              "acao": "Limpar na leitura (gsub(/[^0-9.]/,\"\",$1)) ou normalizar a fonte para número puro."
+            }
+          ],
+          "tecnologias": [
+            "Regex ERE",
+            "awk",
+            "sed",
+            "Expansão ${}",
+            "=~"
+          ],
+          "comandos": [
+            {
+              "desc": "Histograma de erros + soma de tempos do slow log",
+              "lang": "bash",
+              "code": "# top códigos ORA- no alert.log (conta por código, rankeia):\ngrep -Eo 'ORA-[0-9]+' alert.log | sort | uniq -c | sort -rn | head\n\n# slow log: tempo total por usuário (coluna 3 = Query_time, 6 = User)\nawk '/^# Query_time/ {t=$3} /^# User/ {u=$3; soma[u]+=t}\n     END {for (u in soma) printf \"%.1fs %s\\n\", soma[u], u}' slow.log \\\n  | sort -rn | head -5"
+            },
+            {
+              "desc": "Validação e manipulação sem subshell",
+              "lang": "bash",
+              "code": "IP='192.168.56.11'\n[[ \"$IP\" =~ ^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$ ]] \\\n  && echo 'IP válido' || echo 'IP inválido'\n\nARQ='/var/backups/mysql/labdb-2026-09-13.sql.gz'\nBASE=${ARQ##*/}          # labdb-2026-09-13.sql.gz (tira diretório)\nDATA=${BASE#labdb-}       # 2026-09-13.sql.gz (tira prefixo)\nDATA=${DATA%%.*}          # 2026-09-13 (tira do 1º ponto em diante)\necho \"$DATA\""
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "11",
+      "titulo": "Bash avançado — padrão de produção",
+      "resumo": "Debugging com -x, biblioteca reutilizável, configuração externa, lock contra dupla execução, paralelismo e execução remota no fleet via SSH.",
+      "nivel": "Avançado",
+      "topicos": [
+        {
+          "slug": "bash-debug-biblioteca",
+          "titulo": "Debug, biblioteca, config externa e lock",
+          "nivel": "Avançado",
+          "resumo": "bash -x que mostra a verdade, funções compartilhadas via source, config fora do código e flock impedindo dois backups ao mesmo tempo.",
+          "conceito": "Script profissional separa três coisas: CÓDIGO (lógica), CONFIGURAÇÃO (hosts, limites, caminhos) e BIBLIOTECA (funções reutilizáveis de log e erro). A config mora num arquivo .env ou .conf com KEY=valor carregado por source — trocar de ambiente é trocar de arquivo, nunca editar código. A biblioteca (lib.sh) centraliza log(), die() e precisa_de_comando(); cada script faz source \"$(dirname \"$0\")/lib.sh\" e herda o padrão. Debug tem camadas: bash -n valida sintaxe sem executar, bash -x imprime cada comando expandido antes de rodar (com PS4='+ ${LINENO}: ' mostrando a linha), e set -x pontual isola o trecho suspeito. LOCK impede sobreposição: se o backup das 2h atrasa e o das 3h começa, dois mysqldumps concorrem por I/O — flock -n no lockfile faz o segundo sair com mensagem em vez de concorrer.",
+          "comoFunciona": [
+            "lib.sh define log INFO/WARN/ERROR com timestamp, die() que loga e sai com código, e checagem de dependências no início.",
+            "O script carrega config: [[ -f dba.conf ]] && source dba.conf — com defaults no código para cada variável ausente.",
+            "bash -n script.sh no CI barra erro de sintaxe; bash -x script.sh em incidente mostra valores reais expandidos.",
+            "exec 200>lockfile + flock -n 200 || die 'já em execução' trava na abertura do script — o lock morre com o processo, sem stale.",
+            "Paralelismo honesto: xargs -P4 roda 4 hosts juntos; wait sincroniza jobs com & — com limite, nunca & sem controle."
+          ],
+          "naPratica": [
+            "Cabeçalho obrigatório: descrição, uso com exemplo, autor, data, versão e exit codes — quem recebe o alerta entende sem abrir o código.",
+            "Uma lib.sh por repositório de automação; scripts novos começam copiando o esqueleto, não do zero.",
+            "Config por ambiente (lab.conf/prod.conf) escolhida por argumento --env; default sempre o mais seguro (lab).",
+            "Lock em todo job agendado que dure mais que o intervalo; mensagem de lock no log para distinguir 'não rodou' de 'falhou'.",
+            "Exercício: transformar o backup-mysql.sh do módulo 06 para usar lib.sh + dba.conf + flock, provando segunda execução recusada."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "source da lib não acha o arquivo quando roda pelo cron.",
+              "causa": "Caminho relativo: o cron executa de outro diretório e ./lib.sh aponta para o nada.",
+              "acao": "Resolver a partir do script: BASE=\"$(cd \"$(dirname \"$0\")\" && pwd)\" e source \"$BASE/lib.sh\" — âncora no script, nunca no cwd."
+            },
+            {
+              "sintoma": "bash -x vaza senha no log.",
+              "causa": "O trace expande tudo, inclusive -p'<senha>' e variáveis de credencial.",
+              "acao": "Nunca credencial inline (usar .my.cnf 600); em debug, redirecionar o trace para arquivo restrito ou mascarar com BASH_XTRACEFD filtrado."
+            },
+            {
+              "sintoma": "Lock 'eterno': script nunca mais roda após kill -9.",
+              "causa": "Lock em arquivo comum sem flock (lock morre com o processo só no flock; arquivo-flag manual fica órfão).",
+              "acao": "Usar flock sobre fd (morre com o processo até em -9) em vez de flag manual; se herdou flag manual, adicionar checagem de PID vivo."
+            }
+          ],
+          "tecnologias": [
+            "bash -x / PS4",
+            "source / lib",
+            "flock",
+            "xargs -P",
+            "getopts"
+          ],
+          "comandos": [
+            {
+              "desc": "lib.sh + esqueleto profissional",
+              "lang": "bash",
+              "code": "# lib.sh — source em todo script do repositório\nlog()  { local n=$1; shift; printf '%s %-5s %s\\n' \"$(date '+%F %T')\" \"$n\" \"$*\"; }\ninfo() { log INFO \"$@\"; } warn() { log WARN \"$@\" >&2; }\ndie()  { log ERROR \"$@\" >&2; exit \"${CODE:-1}\"; }\nprecisa_de() { command -v \"$1\" >/dev/null || die \"dependência ausente: $1\"; }\n\n# esqueleto:\n#!/usr/bin/env bash\n# backup.sh — dump com rotação | uso: backup.sh --env lab|prod\nset -euo pipefail\nBASE=\"$(cd \"$(dirname \"$0\")\" && pwd)\"\nsource \"$BASE/lib.sh\"\nsource \"$BASE/${ENV:-lab}.conf\"\nprecisa_de mysqldump\n\nexec 200>\"$BASE/backup.lock\"\nflock -n 200 || die 'backup já em execução (lock ativo)'\ninfo \"início env=${ENV:-lab}\""
+            },
+            {
+              "desc": "Paralelismo controlado no fleet",
+              "lang": "bash",
+              "code": "# 4 hosts por vez, falha de um não para os outros:\ncat hosts.txt | xargs -P4 -I{} bash -c '\n  ./healthcheck-replica.sh \"$1\" 60 >> health.log 2>&1 || echo \"$1 FALHOU\" >> falhas.log\n' _ {}\n\n# alternativa com jobs + limite manual:\nMAX=4; n=0\nwhile read -r h; do\n  (./coleta.sh \"$h\") &\n  ((++n % MAX == 0)) && wait   # a cada 4, espera a leva\n done < hosts.txt\nwait   # espera o resto"
+            }
+          ]
+        },
+        {
+          "slug": "bash-ssh-fleet",
+          "titulo": "SSH em lote: um comando, N servidores, um relatório",
+          "nivel": "Avançado",
+          "resumo": "Chave dedicada, multiplexação, loop com timeout e o projeto 'diagnóstico em 20 servidores com um relatório só'.",
+          "conceito": "Automação remota é SSH não interativo: ssh -i chave -o BatchMode=yes -o ConnectTimeout=5 executa UM comando e volta com o exit code dele — BatchMode impede prompt de senha travando o loop, ConnectTimeout impede host morto sequestrando a rodada. Multiplexação (ControlMaster) reusa UMA conexão por host para N comandos, eliminando o handshake a cada chamada — no fleet, a diferença é minutos. O padrão do relatório fleet é: loop sobre inventário, cada iteração coleta (uptime, espaço, status do MySQL) com timeout, grava linha padronizada e segue mesmo com falha individual; no fim, consolida. Forced command na chave restringe o que aquela chave pode rodar no destino — a chave de coleta não ganha shell, ganha um script.",
+          "comoFunciona": [
+            "Chave por propósito (id_coleta) distribuída via ssh-copy-id; ~/.ssh/config fixa IdentityFile, User e multiplex por host.",
+            "ssh -o BatchMode=yes -o ConnectTimeout=5 host 'comando' — falha rápido e sem prompt em host inacessível.",
+            "Heredoc citado (<<'EOF') envia script multilinha sem expandir variáveis locais no meio do caminho.",
+            "Loop com timeout por host (timeout 30 ssh ...) + log por host + resumo final com contagem OK/FALHA.",
+            "scp/rsync trazem evidências (logs, dumps de diagnóstico) com nome por host para não sobrescrever."
+          ],
+          "naPratica": [
+            "Inventário com usuário e porta por host; pular defence-in-depth: bastion ATRAVÉS de ProxyJump no .ssh/config, nunca chave privada espalhada.",
+            "Toda rodada gera relatório datado + lista de inalcançáveis — '3 hosts sem resposta' é resultado, não erro a esconder.",
+            "Idempotência remota também vale: script remoto verifica antes de agir (só reinicia se parado).",
+            "Testar em 2 hosts piloto antes dos 20; escalar só com a taxa de sucesso do piloto acima de 95%.",
+            "Exercício: diagnóstico fleet (uptime, df /, mysqladmin ping) em todos os hosts do lab com relatório consolidado."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Loop trava minutos no terceiro host e nunca termina.",
+              "causa": "Sem BatchMode/ConnectTimeout: o SSH espera senha ou handshake TCP até o timeout do SO.",
+              "acao": "As três opções sempre: BatchMode=yes, ConnectTimeout=5, mais timeout 30 por iteração como cinto e suspensório."
+            },
+            {
+              "sintoma": "Variável local expande vazia dentro do comando remoto.",
+              "causa": "Heredoc não citado ou aspas duplas externas expandindo no cliente o que devia expandir no servidor.",
+              "acao": "Heredoc com 'EOF' citado para script remoto literal; passar parâmetro como argumento posicional do bash remoto, não interpolado."
+            },
+            {
+              "sintoma": "Comando funciona em 19 hosts e falha em 1 com erro estranho.",
+              "causa": "Deriva de ambiente: shell diferente, comando ausente ou sudo distinto naquele host.",
+              "acao": "Isolar: rodar só nele com -v; padronizar via provision (mesma imagem, mesmos pacotes) em vez de tratar exceção no loop."
+            }
+          ],
+          "tecnologias": [
+            "SSH BatchMode",
+            "ControlMaster",
+            "ProxyJump",
+            "rsync",
+            "timeout"
+          ],
+          "comandos": [
+            {
+              "desc": "Diagnóstico fleet com relatório consolidado",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\n# diag-fleet.sh — uptime, disco e MySQL de N hosts, um relatório\nset -euo pipefail\nSAIDA=\"diag-$(date +%F_%H%M).log\"\nOK=0; FALHA=0\nwhile read -r h; do\n  if OUT=$(timeout 30 ssh -i ~/.ssh/id_coleta \\\n      -o BatchMode=yes -o ConnectTimeout=5 \"$h\" \\\n      'echo \"up=$(uptime -p)\"; echo \"root=$(df -h / | awk \"NR==2{print \\$5}\")\"; mysqladmin ping 2>&1'); then\n    echo \"[$h] OK $OUT\" | tr '\\n' ' '; echo; OK=$((OK+1))\n  else\n    echo \"[$h] FALHA (rc=$?)\"; FALHA=$((FALHA+1))\n  fi\ndone < hosts.txt | tee \"$SAIDA\"\necho \"resumo: $OK ok, $FALHA falha — detalhe em $SAIDA\""
+            },
+            {
+              "desc": "~/.ssh/config do operador DBA",
+              "lang": "text",
+              "code": "# multiplex: uma conexão por host, reutilizada\nHost db*\n  User dba_auto\n  IdentityFile ~/.ssh/id_coleta\n  BatchMode yes\n  ConnectTimeout 5\n  ControlMaster auto\n  ControlPath ~/.ssh/cm-%h-%p-%r\n  ControlPersist 10m\n\n# bastion sem espalhar chave privada:\nHost prod-*\n  ProxyJump bastion.empresa.com"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "12",
+      "titulo": "Bash aplicado a DBA — Oracle, MySQL e PostgreSQL",
+      "resumo": "Scripts reais por motor: sqlplus e alert.log no Oracle, mysqladmin e binlog no MySQL, psql e pg_isready no Postgres — mais backup, compressão e limpeza de logs.",
+      "nivel": "Intermediário → Avançado",
+      "topicos": [
+        {
+          "slug": "bash-oracle-mysql",
+          "titulo": "Oracle e MySQL sob script: healthcheck por motor",
+          "nivel": "Intermediário",
+          "resumo": "Listener, instância, ASM e Data Guard no Oracle; ping, threads, espaço e binlog no MySQL — um healthcheck por motor com os mesmos exit codes.",
+          "conceito": "Cada motor expõe saúde por uma porta diferente: no Oracle, o sqlplus com / as sysdba lê V$INSTANCE (STATUS, DATABASE_STATUS) e V$DATAGUARD_STATS mede o lag em segundos; lsnrctl status prova o listener e asmcmd lsdg prova os diskgroups; o alert.log concentra os ORA-. No MySQL, mysqladmin ping prova vida, SHOW REPLICA STATUS prova as threads e o lag, e SHOW BINARY LOGS + retenção provam que a purga não vai comer a réplica. O healthcheck unificado respeita o contrato 0/1/2 e escreve a mesma linha de log (timestamp, motor, host, status, detalhe) — o monitor acima não precisa saber qual motor respondeu.",
+          "comoFunciona": [
+            "Oracle: ORACLE_SID + ORAENV definem o ambiente; sqlplus -S silencioso com WHENEVER SQLERROR devolve falha como exit code.",
+            "V$INSTANCE(STATUS='OPEN', DATABASE_STATUS='ACTIVE') = pronto; Data Guard com apply lag acima do limite = alerta.",
+            "MySQL: mysqladmin ping + SHOW REPLICA STATUS (threads Yes, lag <= limite) + checagem de espaço do datadir.",
+            "Purge de binlog: binlog_expire_logs_seconds faz o trabalho; o script apenas AUDITA o mais antigo vs necessidade das réplicas.",
+            "Alert.log/Oracle e error.log/MySQL varridos por ORA-/ERROR do dia com grep datado — o resumo diário que antecipa incidente."
+          ],
+          "naPratica": [
+            "Um script por motor, mesma interface (host, limite) e mesmo contrato de saída — o agendador trata todos igual.",
+            "Oracle: nunca senha no script, usar OS auth (/ as sysdba) com usuário do grupo dba; MySQL: login-path ou .my.cnf 600.",
+            "Rodar healthcheck antes E depois de qualquer mudança — o 'depois' prova que a mudança não quebrou nada.",
+            "Guardar baseline semanal (espaço, lag médio) para comparar: alerta bom compara com o normal, não com zero.",
+            "Exercício: healthcheck-oracle.sh que checa instância + listener + lag do Data Guard com exit 0/1/2."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "sqlplus conecta na mão e falha no script com ORA-12162.",
+              "causa": "ORACLE_SID/ORACLE_HOME ausentes no ambiente do cron — TNS não resolve sem elas.",
+              "acao": "Carregar oraenv no script (ORAENV_ASK=NO, . oraenv) e exportar ORACLE_SID explícito; testar com env -i."
+            },
+            {
+              "sintoma": "Healthcheck MySQL OK mas aplicação reclama de lentidão.",
+              "causa": "Saúde binária (up/down) não mede saturação: Threads_running alto, lock ou disco no limite passam no ping.",
+              "acao": "Estender o check com Threads_running, Slow_queries delta e espaço — saúde tem camadas, ping é só a primeira."
+            },
+            {
+              "sintoma": "ORA- no alert.log que o grep diário não pegou.",
+              "causa": "Log rotado (alert_<SID>.log com timestamp) ou grep sem -i perdendo 'ora-' minúsculo de algum componente.",
+              "acao": "Varrer alert*.log com grep -Ei e incluir o log do listener; testar o padrão contra um ORA- real conhecido."
+            }
+          ],
+          "tecnologias": [
+            "sqlplus",
+            "lsnrctl / asmcmd",
+            "mysqladmin",
+            "SHOW REPLICA STATUS",
+            "alert.log"
+          ],
+          "comandos": [
+            {
+              "desc": "Healthcheck Oracle: instância + listener + Data Guard",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\n# hc-oracle.sh SID LIMITE_LAG_S\nset -euo pipefail\nexport ORACLE_SID=${1:?sid}; LIM=${2:-300}\nexport ORAENV_ASK=NO; . /usr/local/bin/oraenv >/dev/null\n\nlsnrctl status > /dev/null || { echo 'PARADA listener fora'; exit 1; }\nST=$(sqlplus -S / as sysdba <<SQL\nWHENEVER SQLERROR EXIT 2\nSET PAGES 0 FEED OFF\nSELECT status||'/'||database_status FROM v\\$instance;\nSQL\n)\n[[ \"$ST\" == OPEN/ACTIVE ]] || { echo \"PARADA instancia=$ST\"; exit 1; }\nLAG=$(sqlplus -S / as sysdba <<SQL\nSET PAGES 0 FEED OFF\nSELECT NVL(MAX(TO_NUMBER(value)),0) FROM v\\$dataguard_stats WHERE name='apply lag';\nSQL\n)\n[[ \"$LAG\" -gt \"$LIM\" ]] && { echo \"ALERTA apply_lag=${LAG}s\"; exit 1; }\necho \"OK open/active lag=${LAG}s\""
+            },
+            {
+              "desc": "Healthcheck MySQL + resumo de erros do dia",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\n# hc-mysql.sh HOST LIMITE_S  (usa ~/.my.cnf do usuário dba_auto)\nset -euo pipefail\nH=${1:?host}; LIM=${2:-60}\nmysqladmin -h \"$H\" ping > /dev/null || { echo 'PARADA sem ping'; exit 1; }\nread -r IO SQL LAG < <(mysql -h \"$H\" -NBe 'SHOW REPLICA STATUS' \\\n  | awk '{print $11, $12, $32}')\n[[ \"$IO/$SQL\" == Yes/Yes ]] || { echo \"PARADA io=$IO sql=$SQL\"; exit 1; }\n[[ \"$LAG\" -gt \"$LIM\" ]] && { echo \"ALERTA lag=${LAG}s\"; exit 1; }\necho \"OK lag=${LAG}s\"\n\n# resumo diário de erros (error.log + alert Oracle):\ngrep -Ei 'error|ora-' /var/log/mysql/error.log | grep \"$(date +%F)\" | head -20"
+            }
+          ]
+        },
+        {
+          "slug": "bash-postgres-backup-rotina",
+          "titulo": "PostgreSQL no script + rotina de backup e limpeza",
+          "nivel": "Intermediário",
+          "resumo": "pg_isready, sessões e locks via psql; pg_dump com rotação, compressão e a faxina de logs que impede o disco de lotar.",
+          "conceito": "O PostgreSQL responde pg_isready (exit 0 = aceitando conexões) e o psql com -tAc devolve valor puro para script (sem cabeçalho, sem formatação). pg_stat_activity mostra sessões e state (active/idle in transaction — transação aberta parada segurando lock e bloat); pg_locks + pg_stat_activity revelam bloqueios com granted=false. Backup lógico com pg_dump --format=custom gera arquivo comprimido e restaurável por tabela (pg_restore -t); a rotação segue o mesmo find -mtime do MySQL. A faxina cobre dumps velhos, logs de aplicação e arquivos core — com lista do que seria apagado antes do -delete, porque purge sem preview é roleta.",
+          "comoFunciona": [
+            "pg_isready -h host prova escuta; SELECT pg_is_in_recovery() diz se é primário (false) ou réplica (true).",
+            "Contar idle in transaction acima de N dispara alerta — é o vazamento de transação que gera bloat e segura vacuum.",
+            "pg_dump -Fc -f base- trinca o backup; pg_restore --list confere o conteúdo sem restaurar.",
+            "find -mtime +RET -delete roda DEPOIS do backup validado, nunca antes — purge precede restore testado, não o contrário.",
+            "Limpeza de logs com logrotate (compress + rotate N) em vez de rm manual — rotação declarada, não faxina heroica."
+          ],
+          "naPratica": [
+            "PGPASSFILE (~/.pgpass 600) para senha; nunca PGPASSWORD exportado no crontab visível.",
+            "Restore testado num banco scratch após cada mudança de versão do pg_dump — dump novo nem sempre restaura no velho.",
+            "Alerta de idle-in-transaction com threshold por aplicação (batch legítimo vs vazamento).",
+            "logrotate para Postgres, MySQL e app juntos — uma política de retenção para todos os logs do servidor.",
+            "Exercício: adaptar o backup-mysql.sh para pg-dump.sh com o mesmo contrato (rotação, validação, log, lock)."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "psql pede senha no script mesmo com .pgpass.",
+              "causa": "Permissão do .pgpass diferente de 600 (o libpq ignora), ou host:porta:banco:user não bate exatamente a linha do arquivo.",
+              "acao": "chmod 600 e conferir os 5 campos na ordem; testar com PGPASSFILE explícito antes de culpar a senha."
+            },
+            {
+              "sintoma": "pg_dump OK mas pg_restore falha em versão antiga.",
+              "causa": "Dump custom de major nova com recursos que a velha não entende.",
+              "acao": "Regra: dumpar com o pg_dump da versão MAIS ANTIGA envolvida, ou --no-comments/opções compatíveis; testar restore cruzado."
+            },
+            {
+              "sintoma": "Disco lota mesmo com a faxina agendada.",
+              "causa": "Arquivo deletado mas ainda aberto por processo (espaço não libera) ou crescimento acima da janela entre faxinas.",
+              "acao": "lsof | grep deleted para achar o culpado (restart do serviço libera); encurtar intervalo ou alertar em 80%, não em 100%."
+            }
+          ],
+          "tecnologias": [
+            "psql / pg_isready",
+            "pg_stat_activity",
+            "pg_dump -Fc",
+            "logrotate",
+            ".pgpass"
+          ],
+          "comandos": [
+            {
+              "desc": "Healthcheck Postgres + caça a idle-in-transaction",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\n# hc-pg.sh HOST LIMITE_IDLE  (usa ~/.pgpass)\nset -euo pipefail\nH=${1:?host}; LIM=${2:-20}\npg_isready -h \"$H\" > /dev/null || { echo 'PARADA sem escuta'; exit 1; }\nREC=$(psql -h \"$H\" -U monitor -d postgres -tAc 'SELECT pg_is_in_recovery()')\nIDLE=$(psql -h \"$H\" -U monitor -d postgres -tAc \\\n  \"SELECT count(*) FROM pg_stat_activity WHERE state='idle in transaction'\")\n[[ \"$IDLE\" -gt \"$LIM\" ]] && { echo \"ALERTA idle_xact=$IDLE rec=$REC\"; exit 1; }\necho \"OK idle_xact=$IDLE recovery=$REC\"\n\n# quem segura lock agora (granted=f esperando):\npsql -h \"$H\" -c \"SELECT pid, usename, wait_event_type, query FROM pg_stat_activity WHERE wait_event_type='Lock';\""
+            },
+            {
+              "desc": "pg-dump com rotação + logrotate",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\n# pg-dump.sh — custom format, rotação 7 dias, valida antes de purgar\nset -euo pipefail\nDIR=/var/backups/pg; RET=7; HOJE=$(date +%F)\nmkdir -p \"$DIR\"\npg_dump -h dbpg -U backup -Fc -f \"$DIR/app-$HOJE.dump\" appdb\npg_restore --list \"$DIR/app-$HOJE.dump\" > /dev/null || exit 2  # dump ilegível = falha\nfind \"$DIR\" -name 'app-*.dump' -mtime +$RET -delete\necho \"$(date '+%F %T') pg OK app-$HOJE.dump\" >> \"$DIR/pg-backup.log\"\n\n# /etc/logrotate.d/dba — uma política para todos os logs:\n# /var/log/dba-*.log {\n#   daily\n#   rotate 14\n#   compress\n#   missingok\n#   dateext\n# }"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "13",
+      "titulo": "PowerShell do zero ao intermediário — objetos, não texto",
+      "resumo": "Cmdlets, pipeline de objetos, variáveis, hashtables, Get-Help/Member/Command e o processamento de CSV/JSON/Event Log que o DBA usa toda semana.",
+      "nivel": "Básico → Intermediário",
+      "topicos": [
+        {
+          "slug": "powershell-fundamentos",
+          "titulo": "Objetos no pipeline: a diferença que muda tudo",
+          "nivel": "Básico",
+          "resumo": "Verbo-Substantivo, Get-Help, pipeline que carrega propriedades (não texto) e Select/Where que filtram sem grep nem awk.",
+          "conceito": "No Bash, comandos trocam TEXTO; no PowerShell, trocam OBJETOS com propriedades e métodos: Get-Process devolve objetos Processo (com .Name, .CPU, .WorkingSet), e o pipeline passa o objeto inteiro — Select-Object escolhe propriedades sem parsear coluna, Where-Object filtra por expressão sem regex. Cmdlets seguem Verbo-Substantivo (Get-, Set-, Start-, Stop-, Test-) com substantivo no singular; aliases (dir, ps) existem para os dedos, mas script profissional usa o nome completo. Get-Help -Full documenta, Get-Command descobre, Get-Member revela as propriedades de qualquer objeto — os três comandos que respondem qualquer dúvida de sintaxe. Variáveis com $ ($Hosts = @('db01')), arrays com @(), hashtables com @{} para lookup por chave; comparação com -eq/-gt/-match e $null para ausência.",
+          "comoFunciona": [
+            "Get-Command *service* descobre; Get-Help Start-Service -Examples ensina; objeto | Get-Member mostra o que dá para filtrar.",
+            "Where-Object { $_.Status -eq 'Running' } filtra ($$_ é o objeto atual); -match usa regex, -like usa curinga.",
+            "foreach ($h in $Hosts) itera; for ($i=0; $i -lt $n; $i++) conta; switch ($estado) ramifica múltiplo como o case.",
+            "Função com param() tipado e [CmdletBinding()] ganha -Verbose e validação ([ValidateNotNullOrEmpty()]).",
+            "Execução: Set-ExecutionPolicy RemoteSigned uma vez por máquina; script roda com powershell -File ou pwsh multiplataforma."
+          ],
+          "naPratica": [
+            "Descoberta antes de decorar: Get-Command + Get-Member resolvem 80% sem Google.",
+            "Nome completo em script, alias só no terminal interativo — alias em produção quebra leitura e quebra entre versões.",
+            "Filtrar à esquerda (no cmdlet com -Filter) e formatar à direita (Format-Table só para tela, nunca para dado).",
+            "Comparar com -eq; um = sozinho é atribuição e o if sempre 'verdadeiro' — o mesmo clássico do Bash, outro uniforme.",
+            "Exercício: listar serviços do SQL Server parados com Get-Service MSSQL* | Where Status -ne Running."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Script não executa: 'execução de scripts desabilitada'.",
+              "causa": "ExecutionPolicy Restricted (default em cliente Windows).",
+              "acao": "Set-ExecutionPolicy RemoteSigned -Scope CurrentUser (não precisa de admin e não abre para script remoto sem assinatura)."
+            },
+            {
+              "sintoma": "Where-Object não filtra nada (ou filtra tudo).",
+              "causa": "Nome de propriedade errado (Status vs State) ou comparação com = em vez de -eq.",
+              "acao": "Canalizar um objeto para Get-Member e copiar o nome exato; revisar o operador."
+            },
+            {
+              "sintoma": "Saída 'cortada' com ... no console.",
+              "causa": "Format-Table truncando para largura da tela — é formatação, não perda de dado.",
+              "acao": "Para dado, Export-Csv/ConvertTo-Json; Format-* é só para olho humano, com -AutoSize quando precisar."
+            }
+          ],
+          "tecnologias": [
+            "PowerShell",
+            "Get-Help/Member/Command",
+            "Where/Select-Object",
+            "Hashtables",
+            "ExecutionPolicy"
+          ],
+          "comandos": [
+            {
+              "desc": "Descoberta + filtro de serviços SQL",
+              "lang": "powershell",
+              "code": "# descobrir: o que existe sobre serviços?\nGet-Command -Noun Service\nGet-Help Get-Service -Examples\n\n# inspecionar o objeto: quais propriedades filtro?\nGet-Service MSSQLSERVER | Get-Member -MemberType Property\n\n# serviços SQL parados (nome completo, filtro, saída limpa):\nGet-Service -DisplayName 'SQL Server*' |\n  Where-Object { $_.Status -ne 'Running' } |\n  Select-Object Name, Status, StartType\n\n# processos top CPU como objetos (sem parsear texto):\nGet-Process | Sort-Object CPU -Descending |\n  Select-Object -First 5 Name, CPU, WorkingSet"
+            },
+            {
+              "desc": "Função com param validado + switch",
+              "lang": "powershell",
+              "code": "function Test-DbaPort {\n  [CmdletBinding()]\n  param(\n    [Parameter(Mandatory)][string]$HostName,\n    [ValidateRange(1,65535)][int]$Port = 1433\n  )\n  $tcp = New-Object Net.Sockets.TcpClient\n  try {\n    $iar = $tcp.BeginConnect($HostName, $Port, $null, $null)\n    if (-not $iar.AsyncWaitHandle.WaitOne(3000)) { return \"$HostName`:$Port FECHADO\" }\n    return \"$HostName`:$Port ABERTO\"\n  } finally { $tcp.Close() }\n}\n\nTest-DbaPort -HostName 'dbsql01' -Port 1433"
+            }
+          ]
+        },
+        {
+          "slug": "powershell-dados-windows",
+          "titulo": "CSV, JSON, Event Log, serviços e tarefas agendadas",
+          "nivel": "Intermediário",
+          "resumo": "Import/Export-Csv, ConvertTo/From-Json, Get-WinEvent filtrando no servidor, CIM para disco/memória e Scheduled Tasks para o 'cron do Windows'.",
+          "conceito": "O DBA Windows vive de quatro fontes: ARQUIVOS (CSV de inventário com Import-Csv virando objetos, JSON de config com ConvertFrom-Json), EVENT LOG (Get-WinEvent com -FilterHashtable filtrando NO servidor por LogName/ID/StartTime — trazer o log inteiro e filtrar local é o erro clássico de performance), CIM/WMI (Get-CimInstance Win32_LogicalDisk/OperatingSystem para disco e memória sem parsear saída) e SERVIÇOS/TAREFAS (Get-Service + Start/Stop/Restart-Service; Scheduled Tasks com New-ScheduledTask para agendar o healthcheck). Objetos fluem entre todos: Import-Csv | Where { $_.Papel -eq 'replica' } | ForEach { Test-DbaPort $_.Host } — inventário, filtro e ação numa linha, cada etapa tipada.",
+          "comoFunciona": [
+            "Import-Csv hosts.csv gera objetos por linha (coluna vira propriedade); Export-Csv -NoTypeInformation grava relatório que o Excel abre.",
+            "Get-Content config.json -Raw | ConvertFrom-Json lê config; $obj | ConvertTo-Json -Depth 3 grava (Depth evita truncar aninhado).",
+            "Get-WinEvent -FilterHashtable @{LogName='Application'; ID=18456; StartTime=(Get-Date).AddDays(-1)} busca login falho do SQL no servidor.",
+            "Get-CimInstance Win32_LogicalDisk -Filter \"DriveType=3\" mede disco; Win32_OperatingSystem dá memória livre/total para percentual.",
+            "Register-ScheduledTask com Trigger diário + Action executando pwsh -File agenda sem interface gráfica."
+          ],
+          "naPratica": [
+            "Filtrar no servidor (FilterHashtable, -Filter do cmdlet) e formatar no cliente — regra de performance do pipeline.",
+            "CSV com cabeçalho em inglês estável (Host,Papel,Porta) versionado no git junto dos scripts.",
+            "JSON com -Depth suficiente e UTF8 sem BOM para interoperar com Python e APIs.",
+            "Tarefa agendada com conta de serviço (gMSA ideal), 'run whether logged on', e log próprio em arquivo.",
+            "Exercício: relatório CSV de disco de N hosts via CIM + loop, com coluna PercentLivre e flag ACIMA_80."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Get-WinEvent demora minutos e às vezes estoura memória.",
+              "causa": "Sem -FilterHashtable: trouxe o log inteiro para filtrar local com Where.",
+              "acao": "Mover todo filtro possível para a hashtable (LogName, ID, StartTime, Level); Where local só para o refinamento final."
+            },
+            {
+              "sintoma": "Import-Csv junta colunas ou gera propriedade com BOM.",
+              "causa": "Delimitador diferente (; em CSV brasileiro) ou BOM no início do arquivo.",
+              "acao": "Import-Csv -Delimiter ';' explícito; salvar fonte como UTF-8 e nomear colunas sem acento nem espaço."
+            },
+            {
+              "sintoma": "Tarefa agenda mas 'não roda' sem erro visível.",
+              "causa": "Conta sem 'log on as batch', trigger desabilitado ou Action com caminho relativo.",
+              "acao": "Get-ScheduledTaskInfo (LastRunTime/LastTaskResult) + histórico habilitado; Action com caminho absoluto e -NoProfile."
+            }
+          ],
+          "tecnologias": [
+            "Import/Export-Csv",
+            "ConvertTo/From-Json",
+            "Get-WinEvent",
+            "CIM",
+            "Scheduled Tasks"
+          ],
+          "comandos": [
+            {
+              "desc": "Relatório de disco do fleet em CSV",
+              "lang": "powershell",
+              "code": "# hosts.csv: Host,Papel  (db01,source / db02,replica ...)\n$rel = Import-Csv .\\hosts.csv | ForEach-Object {\n  $h = $_.Host\n  try {\n    Get-CimInstance Win32_LogicalDisk -ComputerName $h -Filter 'DriveType=3' |\n      ForEach-Object {\n        $livre = [math]::Round(100 * $_.FreeSpace / $_.Size, 1)\n        [pscustomobject]@{\n          Host = $h; Disco = $_.DeviceID\n          LivrePct = $livre\n          Status = if ($livre -lt 20) { 'ALERTA' } else { 'OK' }\n        }\n      }\n  } catch { [pscustomobject]@{ Host = $h; Disco = '-'; LivrePct = -1; Status = \"FALHA: $_\" } }\n}\n$rel | Export-Csv .\\disco-$(Get-Date -Format yyyy-MM-dd).csv -NoTypeInformation\n$rel | Format-Table -AutoSize"
+            },
+            {
+              "desc": "Logins falhos do SQL nas últimas 24h",
+              "lang": "powershell",
+              "code": "# 18456 = login failed no Application log do SQL Server\nGet-WinEvent -ComputerName 'dbsql01' -FilterHashtable @{\n  LogName   = 'Application'\n  ID        = 18456\n  StartTime = (Get-Date).AddDays(-1)\n} -ErrorAction SilentlyContinue |\n  Select-Object TimeCreated,\n    @{N='Login';E={$_.Properties[0].Value}},\n    @{N='Motivo';E={$_.Message -split \"`n\" | Select-Object -First 1}} |\n  Export-Csv .\\logins-falhos.csv -NoTypeInformation"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "14",
+      "titulo": "PowerShell avançado e para DBA SQL Server",
+      "resumo": "Remoting com Invoke-Command, try/catch, módulos, sqlcmd + SMO, e os checks de SQL Server: serviços, Agent, espaço, bloqueios e backup.",
+      "nivel": "Avançado",
+      "topicos": [
+        {
+          "slug": "powershell-remoting-modulos",
+          "titulo": "Remoting, erros e módulos reutilizáveis",
+          "nivel": "Avançado",
+          "resumo": "WinRM, Invoke-Command em 20 servidores de uma vez, try/catch/finally com $ErrorActionPreference='Stop' e módulo próprio instalável.",
+          "conceito": "REMOTING executa bloco remotamente: Invoke-Command -ComputerName lista -ScriptBlock { ... } -ArgumentList distribui, com -ThrottleLimit controlando paralelismo (padrão 32) e PSSession reutilizando conexão como o ControlMaster do SSH. Erro no PowerShell tem dois sabores: terminante (para tudo) e não-terminante (registra e segue) — $ErrorActionPreference='Stop' promove tudo a terminante dentro de try, e catch por tipo ([System.Net.Sockets.SocketException]) trata cada falha no lugar certo, com finally limpando sessão. MÓDULO (.psm1 + .psd1) empacota funções (Get-DbaDisk, Test-DbaPort) com Export-ModuleMember; instala em $env:PSModulePath e versiona — lib.sh do Bash, em dialeto Windows. Jobs (Start-Job) e ForEach-Object -Parallel (PS7+) paralelizam local.",
+          "comoFunciona": [
+            "Enable-PSRemoting + TrustedHosts liberam; Test-WSMan prova o WinRM antes do primeiro Invoke.",
+            "Invoke-Command -ComputerName (Get-Content hosts.txt) -ScriptBlock { Get-Service MSSQL* } devolve objetos com PSComputerName.",
+            "$using:var leva variável local para dentro do ScriptBlock remoto — sem $using, o remoto não enxerga.",
+            "try { ... } catch [tipo] { ... } finally { Remove-PSSession }; throw relança preservando stack.",
+            "Módulo DbaTools com funções Export-ModuleMember; Import-Module no perfil/scripts; Pester testa cada função."
+          ],
+          "naPratica": [
+            "$ErrorActionPreference='Stop' no topo de todo script de produção — erro silencioso em DBA é dado errado em relatório.",
+            "-ThrottleLimit proporcional ao fleet (10–20); remoto em massa sem limite derruba o chamador antes dos alvos.",
+            "Credencial via Get-Credential interativo ou cofre (SecretManagement); nunca senha em texto no .ps1 commitado.",
+            "Módulo versionado (Major.Minor) + changelog; breaking change sobe major e avisa.",
+            "Exercício: Invoke-Command coletando espaço livre de todos os hosts com $using:limite e relatório consolidado."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Acesso negado no Invoke-Command com usuário certo.",
+              "causa": "Double-hop (credencial não delegada para o terceiro salto), WinRM sem HTTPS em domínio restrito, ou TrustedHosts ausente em workgroup.",
+              "acao": "Testar Test-WSMan primeiro; em workgroup configurar TrustedHosts nos dois lados; para double-hop, CredSSP apenas consciente ou arquitetura sem terceiro salto."
+            },
+            {
+              "sintoma": "catch nunca pega o erro do cmdlet.",
+              "causa": "Erro não-terminante: sem -ErrorAction Stop o catch nem é consultado.",
+              "acao": "$ErrorActionPreference='Stop' global no script ou -ErrorAction Stop por cmdlet crítico; catch específico antes do genérico."
+            },
+            {
+              "sintoma": "$using: vazio dentro do ScriptBlock.",
+              "causa": "Versão antiga (PS2 sem $using) ou variável definida DEPOIS do Invoke na ordem do script.",
+              "acao": "Confirmar $PSVersionTable (5.1+ tem $using); preferir -ArgumentList com param() para compatibilidade máxima."
+            }
+          ],
+          "tecnologias": [
+            "Invoke-Command",
+            "WinRM",
+            "try/catch",
+            "Módulos .psm1",
+            "Pester"
+          ],
+          "comandos": [
+            {
+              "desc": "Espaço livre em N servidores com throttle",
+              "lang": "powershell",
+              "code": "$ErrorActionPreference = 'Stop'\n$hosts = Get-Content .\\hosts.txt\n$limite = 20\n\nInvoke-Command -ComputerName $hosts -ThrottleLimit 10 -ScriptBlock {\n  Get-CimInstance Win32_LogicalDisk -Filter 'DriveType=3' | ForEach-Object {\n    [pscustomobject]@{\n      Server  = $env:COMPUTERNAME\n      Disco   = $_.DeviceID\n      LivrePct = [math]::Round(100 * $_.FreeSpace / $_.Size, 1)\n    }\n  }\n} | Where-Object { $_.LivrePct -lt $using:limite } |\n  Export-Csv .\\alerta-disco.csv -NoTypeInformation"
+            },
+            {
+              "desc": "Módulo DbaTools mínimo + teste Pester",
+              "lang": "powershell",
+              "code": "# DbaTools.psm1\nfunction Get-DbaDiskAlert {\n  [CmdletBinding()]\n  param([string[]]$ComputerName, [int]$MinFreePct = 20)\n  Invoke-Command -ComputerName $ComputerName -ScriptBlock {\n    Get-CimInstance Win32_LogicalDisk -Filter 'DriveType=3'\n  } | Where-Object { (100 * $_.FreeSpace / $_.Size) -lt $using:MinFreePct }\n}\nExport-ModuleMember -Function Get-DbaDiskAlert\n\n# DbaTools.Tests.ps1 (Pester):\nDescribe 'Get-DbaDiskAlert' {\n  It 'retorna objeto com Server e Disco' {\n    Mock Invoke-Command { [pscustomobject]@{ PSComputerName='t'; DeviceID='C:'; FreeSpace=1; Size=100 } }\n    (Get-DbaDiskAlert -ComputerName 't').DeviceID | Should -Be 'C:'\n  }\n}"
+            }
+          ]
+        },
+        {
+          "slug": "powershell-sqlserver",
+          "titulo": "SQL Server sob script: serviços, Agent, espaço e bloqueios",
+          "nivel": "Avançado",
+          "resumo": "sqlcmd e Invoke-Sqlcmd, sessões e bloqueios via DMV, arquivos MDF/LDF, jobs do Agent e backup verificado — o kit SQL Server do operador.",
+          "conceito": "O SQL Server se opera por três portas: SERVIÇOS Windows (MSSQLSERVER, SQLSERVERAGENT — parados = banco fora), T-SQL via sqlcmd/Invoke-Sqlcmd (DMVs sys.dm_exec_requests/sessions para sessões, bloqueio quando blocking_session_id <> 0, sys.master_files + FILEPROPERTY para espaço e crescimento) e AGENT (jobs com msdb.dbo.sysjobs/sysjobhistory para última execução e falha). Backup com BACKUP DATABASE ... WITH CHECKSUM + RESTORE VERIFYONLY prova leitura; o tamanho e a idade do .bak decidem o alerta. Event Viewer (Application, fonte MSSQLSERVER) completa com erros do motor fora do T-SQL. Tudo com autenticação Windows integrada (-E) sempre que possível — sem senha em script.",
+          "comoFunciona": [
+            "Get-Service MSSQL*, SQLSERVERAGENT valida serviços; StartMode automático esperado; restart planejado com dependência (Agent após Engine).",
+            "Invoke-Sqlcmd -Query com -TrustServerCertificate em lab; query parametrizada via -Variable para host/banco dinâmico.",
+            "DMV de bloqueio: requests com blocking_session_id unidos a sessions (login, programa, wait_time) — o 'quem trava quem'.",
+            "sys.master_files cruza size/max_size/growth: arquivo perto do teto ou com growth em KB (legado) = alerta de espaço.",
+            "msdb lista jobs habilitados com última run falhada; BACKUP + VERIFYONLY valida o .bak recém-gerado."
+          ],
+          "naPratica": [
+            "Windows Auth (-E) como default; SQL Auth só com credencial de cofre e usuário de monitoramento mínimo.",
+            "Um script por verificação (servicos, bloqueios, espaco, jobs, backup) com exit 0/1/2 — o agendador unifica.",
+            "Bloqueio: alertar por duração (wait > 60s), não por existência — lock rápido é operação normal.",
+            "Backup: checar idade do último FULL + VERIFYONLY do arquivo; .bak sem verify é promessa.",
+            "Exercício: script bloqueios.ps1 que lista bloqueador/bloqueado/wait e sai 1 se algum wait passar de 60s."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Invoke-Sqlcmd falha com erro de certificado/TLS.",
+              "causa": "SQL 2022+ criptografa por padrão; certificado autoassinado sem trust.",
+              "acao": "Em lab: -TrustServerCertificate; em produção: certificado válido + -Encrypt Mandatory sem trust solto."
+            },
+            {
+              "sintoma": "Query de bloqueio vazia mas aplicação trava.",
+              "causa": "Snapshot rápido demais: o bloqueio nasceu e morreu entre coletas, ou é espera não-lock (PAGEIOLATCH = disco).",
+              "acao": "Coletar wait_type junto (LCK_* = lock, PAGEIOLATCH = I/O, CXPACKET = paralelismo) e amostrar em loop curto antes de concluir."
+            },
+            {
+              "sintoma": "Job do Agent 'falhou' mas o script rodou bem manual.",
+              "causa": "Contexto do Agent: dono do job, proxy ausente para subsistema (CmdExec/PowerShell) ou caminho relativo.",
+              "acao": "Ler sysjobhistory.step_name + message (o erro real está lá); rodar o step como o proxy/dono para reproduzir."
+            }
+          ],
+          "tecnologias": [
+            "sqlcmd",
+            "DMVs",
+            "SQL Agent",
+            "BACKUP/VERIFYONLY",
+            "Event Viewer"
+          ],
+          "comandos": [
+            {
+              "desc": "Bloqueios: quem trava quem, há quanto tempo",
+              "lang": "powershell",
+              "code": "$q = @\"\nSELECT r.session_id AS bloqueado, r.blocking_session_id AS bloqueador,\n  DATEDIFF(SECOND, r.start_time, GETDATE()) AS espera_s,\n  s.login_name, s.program_name, r.wait_type,\n  SUBSTRING(t.text, 1, 120) AS trecho\nFROM sys.dm_exec_requests r\nJOIN sys.dm_exec_sessions s ON s.session_id = r.session_id\nCROSS APPLY sys.dm_exec_sql_text(r.sql_handle) t\nWHERE r.blocking_session_id <> 0;\n\"@\n$locks = Invoke-Sqlcmd -ServerInstance 'dbsql01' -Database master -Query $q -TrustServerCertificate\n$locks | Format-Table -AutoSize\nif (($locks | Where-Object espera_s -gt 60)) { 'ALERTA: bloqueio > 60s'; exit 1 }\n'OK: sem bloqueio longo'; exit 0"
+            },
+            {
+              "desc": "Espaço MDF/LDF + último backup verificado",
+              "lang": "powershell",
+              "code": "# arquivos perto do teto ou com crescimento legado em KB:\nInvoke-Sqlcmd -ServerInstance 'dbsql01' -Database master -TrustServerCertificate -Query @\"\nSELECT DB_NAME(database_id) banco, name arquivo,\n  size/128.0 MB_usado, max_size/128.0 MB_teto,\n  CASE WHEN is_percent_growth=1 THEN CONCAT(growth, 'pct') ELSE CONCAT(growth*8,'KB') END cresc\nFROM sys.master_files WHERE max_size > 0 AND size*1.0/max_size > 0.8;\n\"@ | Format-Table -AutoSize\n\n# backup FULL + verificação do arquivo:\n$sql = \"BACKUP DATABASE app TO DISK='D:\\bak\\app-full.bak' WITH CHECKSUM, INIT;\"\nInvoke-Sqlcmd -ServerInstance 'dbsql01' -Database master -Query $sql -QueryTimeout 600 -TrustServerCertificate\nInvoke-Sqlcmd -ServerInstance 'dbsql01' -Database master -TrustServerCertificate -Query @\"\nRESTORE VERIFYONLY FROM DISK='D:\\bak\\app-full.bak';\n\"@\n'backup + verify OK'"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "15",
+      "titulo": "Python intermediário e avançado — código de engenharia",
+      "resumo": "Comprehensions, decoradores, OOP com dataclasses, concorrência (threads/asyncio), testes com pytest e o profiling que separa palpite de gargalo.",
+      "nivel": "Intermediário → Avançado",
+      "topicos": [
+        {
+          "slug": "python-intermediario",
+          "titulo": "Comprehensions, decoradores, dataclasses e logging profissional",
+          "nivel": "Intermediário",
+          "resumo": "Escrever menos e dizer mais: transformar loops em expressões, medir tempo com decorador, modelar métrica com dataclass e logar com contexto.",
+          "conceito": "Comprehension condensa loop+condição em expressão ([r for r in rows if r['lag'] > 60]) — legível até uma condição; passou disso, volte ao for. Decorador (@retry, @timed) envolve função adicionando comportamento (tentativa, medição) sem tocar no corpo: é função que recebe função e devolve função. Dataclass (@dataclass class Metrica) gera __init__/__repr__ para classes de dados — métrica, host e resultado viram tipos com nome em vez de dict solto. typing (def f(host: str) -> dict) documenta contrato e permite checagem estática com mypy. Logging profissional usa handlers (arquivo + console), níveis por módulo e extra com host — o log de fleet diz QUAL host em cada linha sem concatenar na mensagem.",
+          "comoFunciona": [
+            "List/dict/set comprehension com no máximo um if; aninhada só quando a leitura sobrevive em voz alta.",
+            "Decorador com functools.wraps preserva nome e docstring da função decorada — sem wraps, traceback mente.",
+            "@dataclass(frozen=True) para valor imutável (métrica coletada); mutable para acumulador (relatório).",
+            "logging com dois handlers (INFO no console, DEBUG em arquivo) + Formatter com %(name)s identifica o módulo.",
+            "mypy no CI pega erro de tipo antes do cron; requirements com faixa (mysql-connector-python>=8.3,<9) equilibra fixo e fresco."
+          ],
+          "naPratica": [
+            "Decorador @retry(tentativas=3, pausa=5) em toda chamada de rede/banco — transient failure não é incidente.",
+            "Dataclass para tudo que atravessa função (Host, Metrica, Resultado) — dict só para JSON de borda.",
+            "Um logger por módulo (getLogger(__name__)), nível via env (LOG_LEVEL) — debug sem editar código.",
+            "Type hints em função pública; mypy --strict no CI dos scripts críticos (backup, coleta).",
+            "Exercício: decorador @timed que loga duração e reescreve o coletor do módulo 07 usando-o."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Comprehension devolve lista vazia sem erro.",
+              "causa": "Condição impossível (comparando str com int) ou variável do if sombreando a do for.",
+              "acao": "Expandir para for equivalente com print da condição — a forma longa mostra o que a curta esconde."
+            },
+            {
+              "sintoma": "Decorador quebra assinatura (help mostra wrapper).",
+              "causa": "Faltou @functools.wraps na função interna do decorador.",
+              "acao": "Adicionar wraps sempre; testar help() e traceback após decorar."
+            },
+            {
+              "sintoma": "Log duplicado (cada linha 2x).",
+              "causa": "Handler adicionado duas vezes (import repetido) ou propagate + handler no root e no módulo.",
+              "acao": "Configurar logging uma vez no main; módulos só getLogger sem addHandler."
+            }
+          ],
+          "tecnologias": [
+            "Comprehensions",
+            "Decoradores",
+            "Dataclasses",
+            "typing / mypy",
+            "logging handlers"
+          ],
+          "comandos": [
+            {
+              "desc": "Retry + dataclass no coletor",
+              "lang": "python",
+              "code": "import functools, logging, time\nfrom dataclasses import dataclass\n\nlog = logging.getLogger(__name__)\n\n@dataclass(frozen=True)\nclass Metrica:\n    host: str\n    lag: int | None\n    status: str          # OK | ALERTA | PARADA\n\ndef retry(tentativas=3, pausa=5):\n    def deco(fn):\n        @functools.wraps(fn)\n        def inv(*a, **k):\n            for t in range(1, tentativas + 1):\n                try:\n                    return fn(*a, **k)\n                except Exception as e:\n                    log.warning(\"%s tentativa %d/%d: %s\", fn.__name__, t, tentativas, e)\n                    if t == tentativas:\n                        raise\n                    time.sleep(pausa)\n        return inv\n    return deco\n\n@retry(tentativas=3)\ndef ler_lag(host: str) -> Metrica:\n    lag = consultar(host)          # sua função do módulo 07\n    status = \"PARADA\" if lag is None else (\"ALERTA\" if lag > 60 else \"OK\")\n    return Metrica(host, lag, status)"
+            },
+            {
+              "desc": "Pipeline com comprehension legível",
+              "lang": "python",
+              "code": "meds = [ler_lag(h) for h in hosts]          # coleta\ncriticos = [m for m in meds if m.status != \"OK\"]  # filtra\nresumo = {m.host: m.status for m in meds}           # indexa por host\n\nprint(f\"{len(criticos)}/{len(meds)} fora do normal\")\nfor m in criticos:\n    print(f\"  {m.host}: {m.status} lag={m.lag}\")"
+            }
+          ]
+        },
+        {
+          "slug": "python-concorrencia-testes",
+          "titulo": "Concorrência, testes e performance",
+          "nivel": "Avançado",
+          "resumo": "Threads para I/O (fleet), asyncio quando escala, pytest com mock para não depender de banco em teste e profiling antes de otimizar.",
+          "conceito": "Coleta fleet é I/O-bound (espera rede): threads (concurrent.futures.ThreadPoolExecutor) paralelizam sem complicação — 20 hosts em ~tempo de 1 com max_workers=10. CPU-bound (parse pesado) pede multiprocessing (GIL limita thread em CPU). asyncio é o nível seguinte: um loop, milhares de conexões cooperativas — overkill para 20 hosts, necessário para milhares. pytest testa sem banco: mock (unittest.mock) finge o cursor e fixa retorno, e o teste prova a LÓGICA (classificação, formatação) isolada do MySQL. Profiling (cProfile/time.perf_counter) mede ANTES de otimizar: 90% do 'lento' está em 10% do código, e adivinhar erra o endereço.",
+          "comoFunciona": [
+            "ThreadPoolExecutor(max_workers=10).map(ler_lag, hosts) coleta paralelo; as_completed + timeout por futuro evitam um host travar a rodada.",
+            "asyncio com aiomysql quando passar de centenas de alvos; abaixo disso, thread é mais simples e suficiente.",
+            "pytest: test_classificar.py com @pytest.mark.parametrize cobrindo OK/ALERTA/PARADA/limite exato.",
+            "Mock do cursor: MagicMock com fetchall.return_value fixo; o teste roda em milissegundos, sem docker.",
+            "cProfile na coleta real uma vez por trimestre; otimiza-se o topo do relatório, nunca o palpite."
+          ],
+          "naPratica": [
+            "max_workers = min(32, len(hosts)) com timeout por host — paralelismo com freio nos dois eixos.",
+            "Teste para regra de negócio (classificar, formatar, decidir); não testar driver (responsabilidade do fornecedor).",
+            "CI roda pytest a cada commit; coleta real só em ambiente com banco (mark integration).",
+            "Medir baseline (tempo serial) antes de paralelizar — sem número anterior, 'mais rápido' é marketing.",
+            "Exercício: paralelizar o coletor do módulo 07 com ThreadPoolExecutor e provar o ganho com time."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Paralelo mais lento que serial.",
+              "causa": "Workers demais (troca de contexto) ou GIL em tarefa CPU-bound — thread não acelera CPU.",
+              "acao": "Medir com workers 2/5/10/20 e escolher o joelho da curva; CPU-bound migra para multiprocessing."
+            },
+            {
+              "sintoma": "Teste passa isolado e falha na suite.",
+              "causa": "Estado compartilhado entre testes (mock sem reset, arquivo temporário fixo, ordem dependente).",
+              "acao": "Fixtures com tmp_path, mock por teste (não global) e ordem aleatória para expor dependência."
+            },
+            {
+              "sintoma": "Future travado pendura a rodada inteira.",
+              "causa": "Sem timeout no as_completed/future.result — um host mudo segura todos.",
+              "acao": "Timeout por futuro + tratamento TimeoutError como FALHA do host, seguindo a rodada."
+            }
+          ],
+          "tecnologias": [
+            "ThreadPoolExecutor",
+            "asyncio",
+            "pytest / mock",
+            "cProfile",
+            "GIL"
+          ],
+          "comandos": [
+            {
+              "desc": "Coleta paralela com timeout por host",
+              "lang": "python",
+              "code": "from concurrent.futures import ThreadPoolExecutor, as_completed\n\ndef rodada(hosts, workers=10, timeout=15):\n    resultados = {}\n    with ThreadPoolExecutor(max_workers=workers) as ex:\n        futs = {ex.submit(ler_lag, h): h for h in hosts}\n        for f in as_completed(futs, timeout=timeout * len(hosts)):\n            h = futs[f]\n            try:\n                resultados[h] = f.result(timeout=timeout)\n            except Exception as e:\n                resultados[h] = Metrica(h, None, f\"ERRO: {e}\")\n    return resultados\n\n# prova do ganho:\n# time python coleta_serial.py   # ~ N x 2s\n# time python coleta_paralela.py # ~ teto de 15s"
+            },
+            {
+              "desc": "Teste parametrizado da regra de negócio",
+              "lang": "python",
+              "code": "# test_classificar.py\nimport pytest\nfrom coleta import classificar\n\n@pytest.mark.parametrize(\"lag,esperado\", [\n    (5, \"OK\"),\n    (60, \"OK\"),        # limite exato ainda é OK (decisão documentada)\n    (61, \"ALERTA\"),\n    (None, \"PARADA\"),\n])\ndef test_classificar(lag, esperado):\n    assert classificar(lag) == esperado\n# pytest -q  → 4 passed em milissegundos, sem banco"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "16",
+      "titulo": "Python para DBA multi-motor — Oracle, MySQL, Postgres e SQL Server",
+      "resumo": "Um driver por motor (oracledb, mysql-connector, psycopg, pyodbc), a mesma arquitetura de coleta e os checks que importam: GTID, Data Guard, locks e jobs.",
+      "nivel": "Avançado",
+      "topicos": [
+        {
+          "slug": "python-drivers-coleta",
+          "titulo": "Quatro motores, um padrão: drivers e coleta unificada",
+          "nivel": "Avançado",
+          "resumo": "oracledb thin, psycopg 3, pyodbc e a camada fina que uniformiza connect/query/collect para o relatório não saber qual motor respondeu.",
+          "conceito": "Cada motor tem seu driver Python: oracledb (thin, sem Oracle Client, conecta por dsn host:porta/serviço), mysql-connector-python, psycopg 3 (autocommit explícito, placeholders %s) e pyodbc (via driver ODBC 18 + TrustServerCertificate em lab). A ARQUITETURA que escala é a camada fina: uma função por motor com a mesma assinatura coletar(host) -> dict normalizado {motor, papel, lag_s, sessoes, espaco_pct, status} — o relatório, o JSON e o alerta consomem dict, nunca cursor. Placeholder muda por driver (oracledb usa :nome, os demais %s): a camada fina esconde a diferença. Pool entra quando a coleta vira serviço; em cron, conexão curta por rodada continua certa.",
+          "comoFunciona": [
+            "Oracle: oracledb.connect(user, password, dsn='host:1521/ORCLPDB1'); V$INSTANCE + V$DATAGUARD_STATS para status e lag.",
+            "Postgres: psycopg.connect com autocommit=True para leitura; pg_is_in_recovery + pg_stat_activity.",
+            "SQL Server: pyodbc com DRIVER ODBC 18 + TrustServerCertificate=yes em lab; DMVs de bloqueio.",
+            "Cada coletar() normaliza para as mesmas chaves; None onde o conceito não existe (GTID só MySQL).",
+            "Timeout por driver + try por host: motor fora do ar vira status FALHA, não exceção fatal."
+          ],
+          "naPratica": [
+            "Um módulo por motor (coleta_oracle.py, coleta_pg.py...) + coletor.py que agrega — adicionar motor não mexe nos existentes.",
+            "DSNs e credenciais por env/arquivo 600; connection string completa nunca no código commitado.",
+            "Leitura com usuário mínimo por motor (SELECT em V$, pg_monitor, VIEW SERVER STATE).",
+            "Normalizar unidades na borda (lag sempre em segundos, espaço sempre em %) — relatório não converte.",
+            "Exercício: implementar coletar_pg() no padrão e ver o relatório fleet misturar MySQL + Postgres."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "oracledb conecta no SQL Developer e falha no Python com ORA-12545.",
+              "causa": "DSN montado errado (SID onde devia service name, ou porta/host trocado na string).",
+              "acao": "Usar o formato explícito host:porta/servico e testar com sqlplus antes de culpar o driver."
+            },
+            {
+              "sintoma": "psycopg trava em INSERT sem erro.",
+              "causa": "Transação aberta sem commit e autocommit desligado (default): o INSERT espera você confirmar.",
+              "acao": "autocommit=True para coletas/leituras; commit() explícito após escrita."
+            },
+            {
+              "sintoma": "pyodbc: 'Data source name not found'.",
+              "causa": "Nome do driver ODBC diferente do instalado (17 vs 18) ou driver ausente no host Linux.",
+              "acao": "Listar com odbcinst -q -d e copiar o nome exato; instalar msodbcsql18 no coletor."
+            }
+          ],
+          "tecnologias": [
+            "oracledb",
+            "psycopg 3",
+            "pyodbc",
+            "Camada fina",
+            "Dict normalizado"
+          ],
+          "comandos": [
+            {
+              "desc": "Coletores Oracle e Postgres no mesmo padrão",
+              "lang": "python",
+              "code": "import oracledb, psycopg\n\ndef coletar_oracle(host, user, pw):\n    # thin: sem Oracle Client; :1 placeholder do oracledb\n    cnx = oracledb.connect(user=user, password=pw, dsn=f\"{host}:1521/ORCLPDB1\")\n    cur = cnx.cursor()\n    cur.execute(\"SELECT status, database_status FROM v$instance\")\n    st, dbst = cur.fetchone()\n    cur.execute(\"SELECT NVL(MAX(TO_NUMBER(value)),0) FROM v$dataguard_stats \"\n                \"WHERE name='apply lag'\")\n    lag = int(cur.fetchone()[0])\n    cnx.close()\n    return {\"motor\": \"oracle\", \"status\": \"OK\" if st == \"OPEN\" else \"PARADA\",\n            \"lag_s\": lag, \"detalhe\": dbst}\n\ndef coletar_pg(host, user, pw):\n    cnx = psycopg.connect(f\"host={host} dbname=postgres user={user} \"\n                          f\"password={pw} connect_timeout=5\", autocommit=True)\n    cur = cnx.cursor()\n    cur.execute(\"SELECT pg_is_in_recovery()\")\n    rec = cur.fetchone()[0]\n    cur.execute(\"SELECT count(*) FROM pg_stat_activity \"\n                \"WHERE state='idle in transaction'\")\n    idle = cur.fetchone()[0]\n    cnx.close()\n    return {\"motor\": \"pg\", \"status\": \"OK\", \"lag_s\": None,\n            \"idle_xact\": idle, \"papel\": \"replica\" if rec else \"primary\"}"
+            },
+            {
+              "desc": "Agregador fleet multi-motor",
+              "lang": "python",
+              "code": "import json\nCOLETORES = {\"oracle\": coletar_oracle, \"mysql\": coletar_mysql,\n              \"pg\": coletar_pg, \"mssql\": coletar_mssql}\n# hosts.json: [{\"motor\":\"mysql\",\"host\":\"db02\"}, {\"motor\":\"pg\",\"host\":\"dbpg\"}]\nrelatorio = []\nfor item in json.load(open(\"hosts.json\")):\n    fn = COLETORES[item[\"motor\"]]\n    try:\n        relatorio.append({\"host\": item[\"host\"], **fn(item[\"host\"], \"coleta\", \"<pw>\")})\n    except Exception as e:\n        relatorio.append({\"host\": item[\"host\"], \"motor\": item[\"motor\"],\n                          \"status\": f\"FALHA: {e}\"})\nprint(json.dumps(relatorio, indent=2, default=str))"
+            }
+          ]
+        },
+        {
+          "slug": "python-checks-avancados",
+          "titulo": "Checks que importam: GTID, InnoDB, backup e tablespace",
+          "nivel": "Avançado",
+          "resumo": "GTID_SUBTRACT como RPO honesto, hit rate do buffer pool, idade do último backup e tablespace Oracle — os números que viram SLO.",
+          "conceito": "Monitorar bem é escolher a MÉTRICA HONESTA: no MySQL com GTID, GTID_SUBTRACT(source_executed, replica_executed) devolve o conjunto de transações pendentes — RPO em transações, não em segundos mentirosos; Seconds_Behind_Source zera com I/O parada (o falso negativo clássico). InnoDB se mede por Innodb_buffer_pool_read_requests vs _reads (hit rate = 1 - reads/requests) e por history list length (transações antigas segurando purge/MVCC). Backup se mede por IDADE do último válido + VERIFY: full de 30 dias com retenção de 7 é buraco, não cobertura. Oracle tablespace se mede por bytes livres vs maxbytes (autoextend): cheio com autoextend travado em maxsize PARA a escrita — o alerta certo é dias-até-cheio por tendência, não o percentual estático.",
+          "comoFunciona": [
+            "Capturar @@gtid_executed do source e da réplica e aplicar GTID_SUBTRACT no source — vazio = zero perda potencial.",
+            "Hit rate < 99% sustentado + history list crescendo = buffer curto ou transação esquecida aberta.",
+            "Último backup: msdb (SQL Server), catálogo RMAN / backup piece (Oracle), arquivo + verify (MySQL/PG) — idade e validade, os dois.",
+            "Tablespace: dba_data_files vs dba_free_space por tablespace; projetar dias até 90% pela taxa dos últimos 7 dias.",
+            "Cada check devolve (status, valor, unidade) — o SLO nasce quando valor tem dono e limite acordado."
+          ],
+          "naPratica": [
+            "RPO em transações (GTID) ao lado de RPO em segundos — os dois no relatório, cada um contando sua verdade.",
+            "Baseline de 7 dias antes de fixar limite: hit rate 'normal' varia por carga; limite sem baseline é chute.",
+            "Backup: alertar em idade > retenção E em verify falho — os dois caminhos levam a 1.",
+            "Tablespace: alerta em dias-até-cheio (< 14 dias), não em 85% — 85% parado é diferente de 85% crescendo.",
+            "Exercício: check_gtid.py que compara source × réplica e imprime transações pendentes ou 'SINCRONIZADO'."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "GTID_SUBTRACT retorna NULL em vez de conjunto.",
+              "causa": "Um dos lados com gtid_executed vazio/NULL (GTID desligado ou instância recém-criada sem transação).",
+              "acao": "Validar gtid_mode=ON nos dois e tratar vazio como 'sem histórico' (reprovisionar a base da comparação)."
+            },
+            {
+              "sintoma": "Hit rate oscila sem mudança de carga.",
+              "causa": "Backup lógico/varredura pontual poluindo o pool, ou amostra em janela curta demais.",
+              "acao": "Comparar janelas (1h vs 24h) e correlacionar com jobs agendados; hit rate se lê em tendência, não em ponto."
+            },
+            {
+              "sintoma": "Projeção de dias-até-cheio diz 200 dias e o disco lota na semana.",
+              "causa": "Crescimento não linear (carga pontual, novo projeto) — regressão em histórico curto mente.",
+              "acao": "Projetar com mediana de 7 dias + margem, e alertar também em taxa anômala do dia (3x a mediana)."
+            }
+          ],
+          "tecnologias": [
+            "GTID_SUBTRACT",
+            "Buffer pool",
+            "RMAN / msdb",
+            "dba_data_files",
+            "SLO"
+          ],
+          "comandos": [
+            {
+              "desc": "RPO honesto via GTID em Python",
+              "lang": "python",
+              "code": "def rpo_gtid(src, rep):\n    # src/rep: dicts com host,user,pw — compara executados\n    import mysql.connector\n    def executed(c):\n        cnx = mysql.connector.connect(host=c[\"host\"], user=c[\"user\"],\n                                        password=c[\"pw\"], connection_timeout=5)\n        cur = cnx.cursor()\n        cur.execute(\"SELECT @@GLOBAL.gtid_executed\")\n        g = cur.fetchone()[0] or \"\"\n        cnx.close()\n        return g\n    g_src, g_rep = executed(src), executed(rep)\n    if not g_src or not g_rep:\n        return {\"status\": \"DESCONHECIDO\", \"pendentes\": None}\n    cnx = mysql.connector.connect(host=src[\"host\"], user=src[\"user\"],\n                                    password=src[\"pw\"])\n    cur = cnx.cursor()\n    cur.execute(\"SELECT GTID_SUBTRACT(%s, %s)\", (g_src, g_rep))\n    pend = cur.fetchone()[0] or \"\"\n    cnx.close()\n    return {\"status\": \"OK\" if not pend else \"ATRASADO\", \"pendentes\": pend}"
+            },
+            {
+              "desc": "Hit rate InnoDB + espaço Oracle",
+              "lang": "sql",
+              "code": "-- hit rate do buffer pool (alvo >= 99% sustentado):\nSELECT 100.0 * (1 - SUM(IF(VARIABLE_NAME='Innodb_buffer_pool_reads', VARIABLE_VALUE, 0))\n  / NULLIF(SUM(IF(VARIABLE_NAME='Innodb_buffer_pool_read_requests', VARIABLE_VALUE, 0)),0)\n) AS hit_pct\nFROM performance_schema.global_status\nWHERE VARIABLE_NAME IN ('Innodb_buffer_pool_reads','Innodb_buffer_pool_read_requests');\n\n-- Oracle: % do teto (maxbytes) por tablespace:\nSELECT tablespace_name,\n  ROUND(100*SUM(bytes)/SUM(DECODE(maxbytes,0,bytes,maxbytes)),1) pct_max,\n  ROUND(SUM(DECODE(maxbytes,0,bytes,maxbytes)-bytes)/1024/1024) livre_mb\nFROM dba_data_files GROUP BY tablespace_name ORDER BY 2 DESC;"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "17",
+      "titulo": "Dados, APIs e operação — o entorno da automação",
+      "resumo": "TXT/CSV/JSON/XML/YAML com conversões reais, REST nas três linguagens, SSH via Paramiko e a operação: monitoramento com threshold, segurança de segredos, git e agendamento.",
+      "nivel": "Intermediário → Avançado",
+      "topicos": [
+        {
+          "slug": "dados-arquivos-conversao",
+          "titulo": "TXT, CSV, JSON, XML e YAML na prática",
+          "nivel": "Intermediário",
+          "resumo": "Ler, validar, converter e transformar: CSV→JSON, JSON→CSV e log→relatório, com encoding UTF-8 e schema explícito.",
+          "conceito": "Automação passa o bastão por ARQUIVOS: CSV é a planilha universal (cabeçalho + linhas, delimitador explícito), JSON é o contrato das APIs e configs (objetos, arrays, tipos), XML sobrevive em legados e respostas SOAP, YAML configura Ansible e Compose (indentação como sintaxe, como Python). CONVERSÃO é rotina: inventário CSV vira JSON para API, coleta JSON vira CSV para a gerência, log vira relatório filtrado. Encoding UTF-8 nos dois lados evita mojibake; VALIDAÇÃO (colunas esperadas? JSON parseia? campo obrigatório existe?) separa dado ruim na entrada em vez de relatório errado na saída.",
+          "comoFunciona": [
+            "Python csv.DictReader/DictWriter com delimiter explícito; cabeçalho validado contra lista esperada antes de processar.",
+            "json.load/dump com ensure_ascii=False preservando acento; yaml.safe_load para config (nunca load puro).",
+            "xml.etree para extrair de legado; jq no Bash para filtrar JSON sem Python (jq '.[] | select(.status!=\"OK\")').",
+            "Conversão CSV→JSON linha a objeto; JSON→CSV achatando chaves (host, metrica, valor) para planilha.",
+            "Log→relatório: grep de janela + awk de extração + sort/uniq de ranking — o pipeline do módulo 09 com destino."
+          ],
+          "naPratica": [
+            "Cabeçalho de CSV em inglês, sem espaço nem acento, versionado junto do script que o consome.",
+            "Validar schema na entrada (colunas, tipos, obrigatórios) e falhar cedo com mensagem que diz a linha e o campo.",
+            "UTF-8 explícito em toda leitura/escrita, nas três linguagens — encoding default varia por plataforma.",
+            "Arquivos de troca com timestamp no nome + escrita atômica (temporário + rename) do módulo 07.",
+            "Exercício: converter o relatório fleet JSON em CSV com colunas host,motor,status,lag_s pronto para o Excel."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "CSV lido com coluna única gigante.",
+              "causa": "Delimitador errado (; brasileiro vs ,) ou quebra de linha dentro de campo entre aspas.",
+              "acao": "Inspecionar head + cat -A, fixar delimiter e quoting na leitura; normalizar a fonte uma vez."
+            },
+            {
+              "sintoma": "jq: parse error em JSON 'válido'.",
+              "causa": "BOM no início, vírgula final ou JSONL (um objeto por linha) tratado como documento único.",
+              "acao": "jq -s para JSONL/slop; remover BOM na escrita (utf-8 sem BOM); validar com python -m json.tool."
+            },
+            {
+              "sintoma": "YAML do Ansible falha com erro de indentação misterioso.",
+              "causa": "Tab em vez de espaço, ou : sem espaço após a chave (vira string, não mapa).",
+              "acao": "Espaços sempre, yamllint no CI e python -c yaml.safe_load como checagem rápida."
+            }
+          ],
+          "tecnologias": [
+            "CSV / JSON",
+            "YAML",
+            "jq",
+            "UTF-8",
+            "xml.etree"
+          ],
+          "comandos": [
+            {
+              "desc": "Conversões fleet: JSON→CSV e filtro com jq",
+              "lang": "bash",
+              "code": "# relatório fleet JSON → CSV para a gerência (Python):\npython3 -c \"\nimport csv, json\nrows = json.load(open('fleet-2026-09-13.json'))\nwith open('fleet-2026-09-13.csv','w',encoding='utf-8',newline='') as f:\n    w = csv.DictWriter(f, fieldnames=['host','motor','status','lag_s'])\n    w.writeheader()\n    for r in rows:\n        w.writerow({k: r.get(k,'') for k in w.fieldnames})\n\"\n\n# sem Python: só os fora do normal, direto no terminal:\njq -r '.[] | select(.status != \"OK\") | [.host, .motor, .status] | @tsv' \\\n  fleet-2026-09-13.json | column -t"
+            },
+            {
+              "desc": "Validar schema do inventário antes de usar",
+              "lang": "python",
+              "code": "import csv, sys\nESPERADAS = {'host', 'motor', 'papel'}\nwith open('hosts.csv', encoding='utf-8') as f:\n    rd = csv.DictReader(f, delimiter=',')\n    faltam = ESPERADAS - set(rd.fieldnames or [])\n    if faltam:\n        sys.exit(f\"CSV inválido: colunas ausentes {sorted(faltam)}\")\n    hosts = list(rd)\nprint(f\"inventário OK: {len(hosts)} hosts\")\n# falhar aqui (barato) em vez de no host 47 (caro)"
+            }
+          ]
+        },
+        {
+          "slug": "apis-rest-tres-linguagens",
+          "titulo": "APIs REST e SSH programático nas três linguagens",
+          "nivel": "Intermediário → Avançado",
+          "resumo": "GET/POST, headers, tokens e status codes com curl, Invoke-RestMethod e requests — mais execução remota via Paramiko com o mesmo padrão do SSH em lote.",
+          "conceito": "REST fala HTTP com verbos: GET lê (status, métricas), POST cria (abrir chamado, disparar webhook), PUT/PATCH atualizam, DELETE remove — cada resposta traz STATUS CODE (2xx sucesso, 4xx culpa do cliente, 5xx culpa do servidor) que o script DEVE testar. Autenticação via header (Authorization: Bearer token) com token em cofre/env, nunca no código. As três ferramentas: curl (-sSf falha em erro HTTP, -H header, -d payload), Invoke-RestMethod (desserializa JSON direto em objeto) e requests/httpx (Session com timeout + raise_for_status). Paramiko leva o SSH para dentro do Python: mesma chave, mesmo BatchMode mental (timeout, sem prompt), com exec_command por host e leitura separada de stdout/stderr/exit — o diag-fleet do módulo 11, agora orquestrado em Python com o relatório em dict.",
+          "comoFunciona": [
+            "curl -sSf -H \"Authorization: Bearer $TOKEN\" URL falha alto em 4xx/5xx (-f) em vez de gravar erro como se fosse dado.",
+            "Invoke-RestMethod -Headers @{Authorization=\"Bearer $t\"} devolve objeto; .propriedade navega sem parse.",
+            "requests.Session() + timeout=(5,15) + r.raise_for_status() + r.json() é o quarteto de toda chamada.",
+            "Paginação: while next_url segue Link/next até esgotar — coletar só a página 1 é relatório pela metade.",
+            "Paramiko: SSHClient + AutoAddPolicy em lab (known_hosts estrito em prod), exec_command com timeout, exit_status decide."
+          ],
+          "naPratica": [
+            "Token em env/cofre com rotação; logar status code e latência, nunca o corpo com segredo.",
+            "Retry só em 5xx/timeout com backoff — 4xx não melhora repetindo (o pedido está errado).",
+            "Idempotência na chamada (criar chamado só se não existe) para retry não duplicar ação.",
+            "Mesmo contrato do fleet: timeout por host, erro individual não cancela a rodada, relatório consolidado.",
+            "Exercício: webhook de alerta (POST) disparado pelo classificador, com teste em endpoint fake primeiro."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "401/403 com token 'certo'.",
+              "causa": "Bearer sem espaço, token expirado/escopo errado, ou env com \\n/aspas grudadas.",
+              "acao": "Reproduzir com curl -v conferindo o header enviado; checar expiração e escopo no provedor do token."
+            },
+            {
+              "sintoma": "requests trava e nunca volta.",
+              "causa": "Sem timeout: espera o timeout do SO em host mudo.",
+              "acao": "timeout=(connect, read) em TODA chamada, sem exceção — mesma regra do driver de banco."
+            },
+            {
+              "sintoma": "Paramiko recusa host conhecido ('Server not found in known_hosts').",
+              "causa": "Política estrita sem a entrada, ou host reinstallado com chave nova (possível MITM ou rebuild legítimo).",
+              "acao": "Em lab: MissingHostKeyPolicy consciente uma vez; em prod: distribuir known_hosts e investigar troca de chave antes de aceitar."
+            }
+          ],
+          "tecnologias": [
+            "curl",
+            "Invoke-RestMethod",
+            "requests",
+            "Paramiko",
+            "Bearer tokens"
+          ],
+          "comandos": [
+            {
+              "desc": "Alerta via webhook nas três linguagens",
+              "lang": "bash",
+              "code": "# Bash: POST com falha alta (-f) e timeout\ncurl -sSf --max-time 10 -X POST \"$WEBHOOK_URL\" \\\n  -H 'Content-Type: application/json' \\\n  -d \"{\\\"host\\\":\\\"$HOST\\\",\\\"status\\\":\\\"$STATUS\\\",\\\"lag\\\":$LAG}\"\n\n# PowerShell: objeto vira JSON sozinho\n$body = @{ host = $H; status = $Status; lag = $Lag } | ConvertTo-Json\nInvoke-RestMethod -Uri $env:WEBHOOK_URL -Method Post -Body $body `\n  -ContentType 'application/json' -TimeoutSec 10"
+            },
+            {
+              "desc": "Python: requests + Paramiko no padrão fleet",
+              "lang": "python",
+              "code": "import os, requests\n# POST com timeout, raise e sem segredo no log:\nr = requests.post(os.environ[\"WEBHOOK_URL\"],\n                  json={\"host\": h, \"status\": st, \"lag\": lag},\n                  timeout=(5, 15))\nr.raise_for_status()\nprint(\"webhook\", r.status_code)\n\n# SSH programático (mesma chave do módulo 11):\nimport paramiko\nssh = paramiko.SSHClient()\nssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())  # lab; prod: known_hosts\nssh.connect(h, username=\"dba_auto\", key_filename=os.path.expanduser(\"~/.ssh/id_coleta\"),\n            timeout=5, banner_timeout=5)\n_, out, err = ssh.exec_command(\"mysqladmin ping\", timeout=30)\nrc = out.channel.recv_exit_status()\nprint(h, \"OK\" if rc == 0 else f\"FALHA rc={rc}: {err.read().decode().strip()}\")\nssh.close()"
+            }
+          ]
+        },
+        {
+          "slug": "monitorar-proteger-versionar-agendar",
+          "titulo": "Operação: thresholds, segredos, git e agendamento",
+          "nivel": "Intermediário",
+          "resumo": "Monitor com warning/critical, segredos fora do código, repositório de automação com git e cron/systemd/schtasks — a automação morando em produção.",
+          "conceito": "MONITORAR é comparar métrica com THRESHOLD em dois níveis (warning antecipa, critical acorda) com HYSTERESIS implícita (só alerta na transição, não a cada coleta) — monitor que dispara toda rodada vira ruído ignorado. SEGURANÇA de script tem cinco regras: segredo em cofre/env/arquivo 600 (nunca no código), menor privilégio por usuário de coleta, SQL parametrizado, comando remoto sem interpolação de input e permissão 750/640 nos artefatos. GIT versiona a automação como código: main protegida, feature branch por script, commit pequeno com mensagem que diz o porquê, .gitignore excluindo segredos/dumps/logs e tag por release do toolkit. AGENDAMENTO fecha o ciclo: cron (Linux), systemd timer (dependência + journal) e Task Scheduler/schtasks (Windows) — cada job com lock, log datado e exit semântico.",
+          "comoFunciona": [
+            "Check devolve 0/1/2 (ok/warn/crit) + linha 'METRICA valor=unidade limite=' — formato que Nagios/Zabbix/Prometheus-bridge entendem.",
+            "Estado anterior em arquivo (ok/warn) decide se ALERTA (transição) ou REPETE suprimido — sem flap a cada 5 min.",
+            "git init + .gitignore (senhas, *.dump, *.log, .venv) + commit por mudança + push; vault para o que é segredo mas versionável.",
+            "cron para simples, timer para dependente (After=mysql.service), schtasks /Create para Windows com /RU conta de serviço.",
+            "Revisão trimestral: thresholds contra baseline, segredos rotacionados, jobs órfãos removidos."
+          ],
+          "naPratica": [
+            "Threshold nasce de baseline de 7 dias, não de chute; revisitar a cada mudança de carga.",
+            "Todo alerta carrega runbook (o que fazer) — alerta sem ação documentada é só ansiedade.",
+            "Nenhum segredo em git log, nem 'removido depois' — histórico guarda para sempre; vazou, rotaciona.",
+            "Job agendado sem dono e sem log é candidato a remoção na revisão — automação órfã é risco.",
+            "Exercício: monitor de disco com warn 80/crit 90 + supressão de repetido + POST no webhook só na transição."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Tempestade de alertas no mesmo incidente.",
+              "causa": "Sem supressão de repetição nem dependência (disco cheio alerta em 10 checks juntos).",
+              "acao": "Estado anterior + alerta só na transição; agrupar por causa (um incidente, uma thread de alerta)."
+            },
+            {
+              "sintoma": "Segredo vazou no repositório.",
+              "causa": "Commit com senha, ou .gitignore adicionado depois do primeiro commit (o git já rastreia).",
+              "acao": "Rotacionar IMEDIATAMENTE (remover do código não remove do histórico), depois git rm --cached + BFG/filter-repo se necessário."
+            },
+            {
+              "sintoma": "Job 'funciona' mas o log mostra execução dupla sobreposta.",
+              "causa": "Sem lock e duração maior que o intervalo — duas instâncias concorrendo.",
+              "acao": "flock (Linux) / mutex de arquivo com PID (Windows) + alerta quando a execução anterior ainda roda."
+            }
+          ],
+          "tecnologias": [
+            "Thresholds",
+            "Vault / env",
+            "git",
+            "systemd timers",
+            "schtasks"
+          ],
+          "comandos": [
+            {
+              "desc": "Monitor com transição + .gitignore do toolkit",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\n# mon-disco.sh HOST WARN CRIT — alerta só na transição\nset -euo pipefail\nH=$1; W=${2:-80}; C=${3:-90}; EST=\"/var/tmp/mon-disco-$H.estado\"\nUSO=$(ssh -o BatchMode=yes \"$H\" \"df -h / | awk 'NR==2{print \\$5}'\" | tr -d '%')\nANT=$(cat \"$EST\" 2>/dev/null || echo OK)\nATUAL=OK; RC=0\n[[ \"$USO\" -ge \"$C\" ]] && { ATUAL=CRIT; RC=2; }\n[[ \"$USO\" -ge \"$W\" && \"$USO\" -lt \"$C\" ]] && { ATUAL=WARN; RC=1; }\necho \"$ATUAL\" > \"$EST\"\n[[ \"$ATUAL\" != \"$ANT\" ]] && curl -sSf -X POST \"$WEBHOOK_URL\" \\\n  -H 'Content-Type: application/json' \\\n  -d \"{\\\"host\\\":\\\"$H\\\",\\\"disco\\\":$USO,\\\"estado\\\":\\\"$ATUAL\\\"}\"\necho \"$H disco=${USO}% $ATUAL\"; exit $RC"
+            },
+            {
+              "desc": "Agendar nos três mundos + ignorar segredos",
+              "lang": "bash",
+              "code": "# cron (Linux simples):\n# */5 * * * * /opt/dba/mon-disco.sh db01 80 90 >> /var/log/dba-mon.log 2>&1\n\n# systemd timer (com dependência do mysql):\n# dba-mon.timer → OnCalendar=*:0/5 ; .service → After=mysql.service\n# systemctl enable --now dba-mon.timer\n\n# Windows (admin):\n# schtasks /Create /TN DBA-MonDisco /TR \"pwsh -NoProfile -File C:\\dba\\mon-disco.ps1\" /SC MINUTE /MO 5 /RU SISTEMA\n\n# .gitignore do repositório de automação:\n# *.dump\n# *.log\n# .venv/\n# *senha* *secret* *.pem\n# vault.yml vars/*prod*"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "18",
+      "titulo": "Integração, CLI profissional e projetos finais",
+      "resumo": "Bash, PowerShell e Python chamando uns aos outros, a ferramenta CLI SUPER-DBA, 15 projetos reais guiados e o projeto final com prova de certificação.",
+      "nivel": "Avançado",
+      "topicos": [
+        {
+          "slug": "integracao-hibrida",
+          "titulo": "Arquitetura híbrida: cada linguagem chamando a outra",
+          "nivel": "Avançado",
+          "resumo": "Bash chama Python, Python chama Bash e PowerShell, e o contrato (JSON via stdout + exit code) que mantém a torre em pé.",
+          "conceito": "Nenhuma linguagem vence sozinha: Bash orquestra processos e SSH, Python decide e transforma dado, PowerShell domina o Windows. A INTEGRAÇÃO usa o contrato universal — stdout em JSON + exit code semântico: o chamador não importa, o formato importa. Bash chama Python (coleta=$(python3 coletar.py --host db01)), Python chama Bash (subprocess.run([...], capture_output, check, timeout)) e PowerShell (subprocess chamando pwsh -NoProfile -File no Windows, ou WinRM remoto do Linux). Regras de fronteira: argumento via argv/param (nunca interpolação de shell), timeout dos dois lados, stderr separado para diagnóstico e validação do JSON na volta — payload que não parseia é falha explícita, não dado vazio.",
+          "comoFunciona": [
+            "Bash→Python: python3 script.py args com saída JSON capturada em $() e validada com jq antes de usar.",
+            "Python→Bash: subprocess.run(lista, capture_output=True, text=True, timeout=60, check=False) + análise de returncode.",
+            "Python→PowerShell: pwsh -NoProfile -Command com JSON na volta, ou Invoke via WinRM/pywinrm remoto.",
+            "PowerShell→Python: python script.py chamado do .ps1 capturando $LASTEXITCODE + ConvertFrom-Json na saída.",
+            "Orquestrador fino (Makefile ou Python) encadeia: coleta (Bash) → decide (Python) → age no Windows (PowerShell) → reporta (API)."
+          ],
+          "naPratica": [
+            "Contrato escrito no README de cada script: argumentos, formato de saída, exit codes — fronteira documentada não quebra em silêncio.",
+            "Lista de argumentos (sem shell=True) em subprocess — shell=True com input variável é command injection.",
+            "Timeout em toda chamada cruzada; falha de um estágio registra e decide (aborta ou degrada) explicitamente.",
+            "Versões fixadas nas três pontas (bash 5, pwsh 7, python 3.11+) no README do toolkit.",
+            "Exercício: orquestrador Python que chama o healthcheck Bash, decide e abre chamado via webhook."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "JSON da volta 'quebra' no parse do chamador.",
+              "causa": "Log misturado na stdout (print de debug junto do payload) ou warning do interpretador no meio.",
+              "acao": "Regra de fronteira: stdout SÓ payload, log SEMPRE em stderr; validar com parse e falhar explícito."
+            },
+            {
+              "sintoma": "Chamada cruzada pendura o orquestrador.",
+              "causa": "Sem timeout no subprocess ou no SSH interno — espera infinita em filho mudo.",
+              "acao": "timeout em todas as camadas (subprocess + comando interno) e TimeoutExpired tratado como falha do estágio."
+            },
+            {
+              "sintoma": "Funciona no Linux e falha no Windows (ou inverso).",
+              "causa": "Quebra de linha (\\n vs \\r\\n), path com barra invertida, ou encoding do console Windows (cp1252).",
+              "acao": "Paths com pathlib, newline='' em CSV, UTF-8 explícito e teste nas duas plataformas no CI."
+            }
+          ],
+          "tecnologias": [
+            "subprocess",
+            "JSON contrato",
+            "pwsh",
+            "pywinrm",
+            "Makefile"
+          ],
+          "comandos": [
+            {
+              "desc": "Orquestrador Python chamando Bash e decidindo",
+              "lang": "python",
+              "code": "import json, subprocess, sys\n\ndef run(cmd, timeout=60):\n    # lista (sem shell=True) + timeout + stdout/stderr separados\n    p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)\n    return p.returncode, p.stdout, p.stderr\n\nrc, out, err = run([\"./healthcheck-replica.sh\", \"db02\", \"60\"])\nprint(err, end=\"\", file=sys.stderr)   # log do filho vai para stderr\nif rc == 2:\n    sys.exit(\"coleta falhou, ver stderr\")\n# contrato: última linha da stdout é o status; payload JSON quando houver:\n# rc==0 ok | rc==1 alerta (abre chamado) | rc==2 erro (página plantão)"
+            },
+            {
+              "desc": "Bash consumindo JSON do Python com jq",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\nset -euo pipefail\n# Python decide, Bash age: fronteira em JSON validado\nPAYLOAD=$(python3 classificar_fleet.py hosts.json)\necho \"$PAYLOAD\" | jq empty   # valida: JSON quebrado aborta aqui (set -e)\n\necho \"$PAYLOAD\" | jq -r '.[] | select(.status != \"OK\") | .host' \\\n  | while read -r h; do\n    echo \"abrindo chamado para $h...\"\n    curl -sSf -X POST \"$TICKET_URL\" \\\n      -H 'Content-Type: application/json' \\\n      -d \"{\\\"host\\\":\\\"$h\\\",\\\"origem\\\":\\\"fleet-check\\\"}\"\n  done"
+            }
+          ]
+        },
+        {
+          "slug": "cli-super-dba",
+          "titulo": "Ferramenta CLI profissional: o SUPER-DBA",
+          "nivel": "Avançado",
+          "resumo": "argparse com subcomandos, o padrão super-dba <recurso> <ação> e a versão Bash/PowerShell com o mesmo contrato de saída.",
+          "conceito": "CLI profissional tem GRAMÁTICA: programa + recurso + ação + flags (super-dba replication status --host db02) — subcomandos (argparse add_subparsers, switch -Command no PS, case $1 no Bash) em vez de 15 scripts soltos. Cada ação segue o ciclo parse → valida → executa → imprime (tabela para humano com --format table, JSON com --format json para pipeline) e sai com código semântico. --help e --version são obrigatórios e gerados, não escritos à mão; erros de uso imprimem uso + exit 2. Config por arquivo (~/.super-dba.yaml: inventário, limites) com override por flag — a ferramenta funciona sem argumento no ambiente padrão e aceita tudo por flag no CI.",
+          "comoFunciona": [
+            "argparse: parser principal + subparsers por recurso (status, backup, replication, report) com set_defaults(func=...).",
+            "Cada ação é função que devolve dict; a impressão central escolhe table (humano) ou json (máquina).",
+            "Bash: case $CMD em status|backup|replication com usage() e getopts por subcomando.",
+            "PowerShell: função Verbo-DbaSustantivo por ação + módulo; parâmetros com ValidateSet para recurso.",
+            "Instalação: pipx/pip install do repo, symlink em /usr/local/bin, teste de fumaça super-dba status no CI."
+          ],
+          "naPratica": [
+            "Um recurso novo = uma função + registro no parser + teste — nunca if gigante no main.",
+            "Saída estável para máquina (--format json com chaves fixas); tabela bonita é para olho, não para pipe.",
+            "Config com defaults sãos + --config alternativo; credencial nunca em flag (env/cofre).",
+            "Versionar (MAJOR.MINOR) e --version consultável pelo monitor para auditar o fleet.",
+            "Exercício: adicionar super-dba backup verify que roda VERIFYONLY e imprime idade do último FULL."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Subcomando cai no help em vez de executar.",
+              "causa": "set_defaults ausente ou nome do destino diferente do dispatch (func vs action).",
+              "acao": "Testar cada subcomando com --help e sem args; dispatch com required=True nos subparsers."
+            },
+            {
+              "sintoma": "Saída JSON quebra o consumidor quando há erro.",
+              "causa": "Traceback ou log indo para stdout junto do payload.",
+              "acao": "Payload só em stdout; erro e log em stderr; em exceção, JSON de erro padronizado + exit != 0."
+            },
+            {
+              "sintoma": "Flag funciona no Linux e não no PowerShell/Bash.",
+              "causa": "Gramática divergente entre implementações (‐‐host vs -HostName vs -h).",
+              "acao": "Tabela de equivalência no README e teste de contrato (mesmos args, mesma saída) por implementação."
+            }
+          ],
+          "tecnologias": [
+            "argparse",
+            "Subcomandos",
+            "--format",
+            "pywinrm",
+            "pipx"
+          ],
+          "comandos": [
+            {
+              "desc": "Esqueleto super-dba em Python",
+              "lang": "python",
+              "code": "# super-dba — uso: super-dba replication status --host db02 [--format json]\nimport argparse, json\n\ndef cmd_repl_status(a):\n    r = checar_replica(a.host, a.limite)   # sua função dos módulos 07/16\n    return {\"host\": a.host, **r}\n\np = argparse.ArgumentParser(prog=\"super-dba\", description=\"Toolkit DBA BRABO\")\np.add_argument(\"--version\", action=\"version\", version=\"super-dba 1.0\")\np.add_argument(\"--format\", choices=[\"table\", \"json\"], default=\"table\")\nsub = p.add_subparsers(dest=\"recurso\", required=True)\n\npr = sub.add_parser(\"replication\", help=\"replicação\"); sp = pr.add_subparsers(dest=\"acao\", required=True)\nst = sp.add_parser(\"status\"); st.add_argument(\"--host\", required=True)\nst.add_argument(\"--limite\", type=int, default=60); st.set_defaults(func=cmd_repl_status)\n\na = p.parse_args()\nres = a.func(a)\nprint(json.dumps(res, indent=2, default=str) if a.format == \"json\"\n      else f\"{res['host']}: {res['status']}\")"
+            },
+            {
+              "desc": "Mesma gramática em Bash e PowerShell",
+              "lang": "bash",
+              "code": "# Bash: super-dba replication status --host db02\ncase \"${1:?uso: $0 <recurso> <ação>}\" in\n  replication)\n    case \"${2:?ação}\" in\n      status)\n        HOST='db02'; LIM=60\n        while [[ $# -gt 0 ]]; do case \"$1\" in\n          --host) HOST=\"$2\"; shift 2;; --limite) LIM=\"$2\"; shift 2;; *) shift;;\n        esac; done\n        ./healthcheck-replica.sh \"$HOST\" \"$LIM\" ;;\n    esac ;; \n  *) echo \"recurso? replication|status\"; exit 2 ;;\nesac\n\n# PowerShell: mesma ideia, nomes da casa\n# Get-DbaReplicationStatus -HostName db02 -Limite 60 [-Format json]"
+            }
+          ]
+        },
+        {
+          "slug": "projetos-finais-certificacao",
+          "titulo": "15 projetos guiados, projeto final e prova",
+          "nivel": "Avançado",
+          "resumo": "Do health check ao SUPER DBA AUTOMATION PLATFORM (CLI + SQLite + plugins + paralelo), com roteiro de entrega e a prova final teórica e prática.",
+          "conceito": "Projeto é automação com DONO, PRAZO e CRITÉRIO DE ACEITE: cada um dos 15 declara objetivo, ambiente, entrega (script + README + log de execução real) e o teste que prova (restore do backup, alerta provocado de verdade, relatório aberto no Excel). A progressão é intencional: 01–08 exercitam UMA linguagem e UM recurso (filesystem, processo, log, backup, relatório); 09–12 cruzam UM motor com monitoramento; 13–15 integram (remoto em massa, dashboard, toolkit). O PROJETO FINAL (SUPER DBA AUTOMATION PLATFORM) junta tudo: CLI com plugins por motor, config YAML, logging, SQLite guardando histórico, execução paralela e remota, relatórios JSON/CSV e testes — avaliado pela MATRIZ (funciona? idempotente? seguro? documentado? testado?). A PROVA tem teoria (interpretar script e apontar o bug), prática (escrever check com threshold) e troubleshooting (log real com defeito para diagnosticar).",
+          "comoFunciona": [
+            "Projetos 01–08: um script + README (objetivo, como executar, resultado esperado, erro comum) + evidência de execução.",
+            "Projetos 09–12: monitor por motor com threshold, alerta real provocado em lab e relatório anexado.",
+            "Projeto 13: diag-fleet em todos os hosts do lab com relatório consolidado e lista de inalcançáveis.",
+            "Projeto 14: dashboard — coleta periódica em SQLite + página/export que mostra tendência (não só ponto).",
+            "Projeto 15/final: platform com estrutura dbautomation/ (oracle/mysql/postgresql/sqlserver/monitoring/backup/reports/common), plugins, testes pytest e release taggeada."
+          ],
+          "naPratica": [
+            "Um repositório por aluno com a estrutura do prompt (dbautomation/...) desde o projeto 01 — organização se treina, não se improvisa.",
+            "Cada projeto com teste de aceite executável (./teste-aceite.sh) que dá verde ou vermelho sem interpretação.",
+            "Revisão por par no projeto 13+: outro aluno roda seu README do zero — se travar, a doc está incompleta.",
+            "Release do final com tag v1.0 + changelog + demo gravada de 5 min (status, backup, alerta provocado).",
+            "Regra anti-cóia: explicar o próprio código em voz alta na avaliação — quem escreveu, explica."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Projeto 'pronto' que só roda na máquina do autor.",
+              "causa": "Dependência implícita (pacote global, caminho absoluto pessoal, credencial no código).",
+              "acao": "Teste de aceite em VM limpa a partir do git clone + requirements + README — o que faltar vira item do README."
+            },
+            {
+              "sintoma": "Dashboard mostra dado, mas ninguém confia nele.",
+              "causa": "Sem metadados: falta timestamp da coleta, origem e idade do dado na tela.",
+              "acao": "Toda métrica exibe coletado_em + fonte + idade; dado sem proveniência é rumor com gráfico."
+            },
+            {
+              "sintoma": "Prova prática estoura o tempo.",
+              "causa": "Alunos sem repertório de esqueleto: começam do zero em vez de adaptar o padrão.",
+              "acao": "Treinar com os esqueletos do curso (healthcheck, coleta, monitor) até saírem de memória — prova mede fluência, não genialidade."
+            }
+          ],
+          "tecnologias": [
+            "SQLite",
+            "pytest",
+            "argparse/Typer",
+            "git tags",
+            "Dashboard"
+          ],
+          "comandos": [
+            {
+              "desc": "Estrutura do projeto final + histórico em SQLite",
+              "lang": "bash",
+              "code": "super-dba-platform/\n├── super_dba/            # CLI + common (log, config, contratos)\n│   ├── cli.py            # argparse: status/backup/replication/report\n│   ├── common/           # logging, inventario, webhook\n│   └── plugins/          # um módulo por motor: oracle.py mysql.py pg.py mssql.py\n├── tests/                # pytest: regras de negócio + contrato da CLI\n├── config.yaml           # inventário, limites, webhook\n├── requirements.txt\n└── README.md             # instalação, uso, teste de aceite, demo"
+            },
+            {
+              "desc": "SQLite como memória da plataforma",
+              "lang": "python",
+              "code": "import sqlite3, datetime\ncnx = sqlite3.connect('platform.db')\ncnx.execute(\"\"\"CREATE TABLE IF NOT EXISTS coletas\n  (ts TEXT, host TEXT, motor TEXT, status TEXT, lag_s INTEGER)\"\"\")\n# cada rodada insere; o dashboard lê tendência, não ponto:\ncnx.execute(\"INSERT INTO coletas VALUES (?,?,?,?,?)\",\n            (datetime.datetime.now(datetime.timezone.utc).isoformat(),\n             \"db02\", \"mysql\", \"OK\", 5))\ncnx.commit()\n# piores lags da semana por host (o gráfico que importa):\nfor row in cnx.execute(\n    \"SELECT host, MAX(lag_s) FROM coletas WHERE ts > date('now','-7 days') GROUP BY host\"):\n    print(row)\ncnx.close()"
+            },
+            {
+              "desc": "Roteiro da prova final (resumo executivo)",
+              "lang": "text",
+              "code": "PARTE 1 — teoria (30%): 10 questões: E/P/S, SE vs CASO, PARA vs ENQUANTO,\n  idempotência, curto-circuito, O(n), placeholder vs concatenação, exit codes.\nPARTE 2 — leitura (30%): 3 scripts com bug (comparação invertida, sem timeout,\n  senha hardcoded): apontar linha, causa e correção.\nPARTE 3 — prática (40%): escrever check com threshold + teste + README em 90 min.\nNOTA MÍNIMA 70 + projeto final entregue e demonstrado = certificado."
+            }
+          ]
+        }
+      ],
+      "detalhado": true
     }
   ]
 }
