@@ -246,10 +246,10 @@ function telaInicial() {
   const trilhas = app.indice.trilhas.filter(t => app.trilhas.includes(t.slug));
   const nTop = trilhas.reduce((a, t) => a + t.modulos.reduce((x, m) => x + m.topicos.length, 0), 0);
   el.innerHTML = `<div class="minicio">`
-    + `<p class="eyebrow">${esc(T('mentor.inicio_olho', 'Material de apoio'))}</p>`
-    + `<h1>${esc(T('mentor.inicio_h', 'Área do mentor – DBA BRABO'))}</h1>`
-    + `<p class="minicio__eco">${esc(T('mentor.inicio_eco', 'DBA BRABO – Ecossistema de formação técnica'))}</p>`
-    + `<p class="lead">${esc(T('mentor.inicio_p', 'Referência técnica das formações: passo a passo de execução, validação e diagnóstico. Escolha uma trilha na lateral ou busque um tópico.'))}</p>`
+    + `<p class="eyebrow">${esc(T('mentor.inicio_olho', 'Ecossistema de formação técnica'))}</p>`
+    + `<h1>DBA <span class="accent">BRABO</span></h1>`
+    + `<p class="minicio__claim">${esc(T('mentor.inicio_claim', 'Não basta saber usar banco de dados. É preciso saber administrá-lo.'))}</p>`
+    + `<p class="minicio__desc">${esc(T('mentor.inicio_p', 'Mentoria individual em Oracle, MySQL, SQL Server, PostgreSQL e MongoDB — da arquitetura interna à alta disponibilidade, com lab prático no seu ambiente e troubleshooting de cenário real.'))}</p>`
     + `<p class="minicio__conta">${esc(T('mentor.inicio_conta', 'Você está em:'))} <b>${esc(app.usuario || '')}</b> · ${trilhas.length} ${esc(T('mentor.inicio_trilhas', 'trilhas'))} · ${nTop} ${esc(T('mentor.inicio_topicos', 'tópicos'))}</p>`
     + `</div>`;
 }

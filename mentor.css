@@ -330,13 +330,24 @@
 .mtopo__home:hover b { color: var(--brand); }
 
 .minicio { max-width: 980px; }
-.minicio h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); margin: var(--s-2) 0 var(--s-3); letter-spacing: -0.01em; }
-.minicio__eco {
+/* Hero espelhado do portal: mesmo eyebrow, mesmo DBA + BRABO em gradiente,
+   mesma citacao com barra lateral. Receita copiada, nada do portal tocado. */
+.minicio h1 {
   font-family: var(--font-display); font-weight: 800;
-  font-size: clamp(1.35rem, 3.2vw, 2rem); line-height: 1.2; letter-spacing: -0.01em;
-  color: var(--fg-0); margin: 0 0 var(--s-4); max-width: 22ch;
-  padding-left: var(--s-4); border-left: 4px solid var(--brand);
+  font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.02; letter-spacing: -0.02em;
+  margin: var(--s-2) 0 var(--s-5);
 }
-.minicio .lead { max-width: 68ch; }
+.minicio h1 .accent {
+  background: linear-gradient(100deg, var(--brand) 0%, var(--brand-soft) 45%, var(--brand-2) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.minicio__claim {
+  font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 500;
+  color: var(--fg-1); line-height: var(--lh-snug, 1.35);
+  border-left: 3px solid var(--brand);
+  padding-left: var(--s-4); margin-bottom: var(--s-5);
+  max-width: 46ch;
+}
+.minicio__desc { color: var(--fg-1); font-size: var(--fs-md); max-width: 54ch; margin-bottom: var(--s-6); }
 .minicio__conta { margin-top: var(--s-4); color: var(--fg-2); font-size: var(--fs-sm); }
 .minicio__conta b { color: var(--fg-0); }
