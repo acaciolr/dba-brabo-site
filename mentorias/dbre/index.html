@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="../../style.css">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Course","name":"Database Reliability Engineering — DBA BRABO","description":"O ponto em que o DBA para de aplicar mudança à mão. Infra como código, pipeline, observabilidade e teste de caos aplicados a banco de dados.","url":"https://dbabrabo.com.br/mentorias/dbre/","inLanguage":"pt-BR","image":"https://dbabrabo.com.br/assets/banners/dbre.webp","educationalLevel":"Avançado","teaches":["Infraestrutura como Código","Automação & Configuração","Orquestração & Containers","CI/CD & GitOps","Observabilidade","Confiabilidade & Chaos Engineering"],"about":["Terraform","CloudFormation","Bicep","Ansible","Bash","Python","Kubernetes","Docker","Helm","GitHub Actions","GitLab CI","ArgoCD"],"provider":{"@type":"EducationalOrganization","name":"DBA BRABO","url":"https://dbabrabo.com.br/"},"instructor":{"@type":"Person","name":"Acácio Lima Rocha","jobTitle":"Senior Database Administrator"},"hasCourseInstance":{"@type":"CourseInstance","courseMode":"online"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Course","name":"Database Reliability Engineering — DBA BRABO","description":"O ponto em que o DBA para de aplicar mudança à mão. Infra como código, pipeline, observabilidade e teste de caos aplicados a banco de dados.","url":"https://dbabrabo.com.br/mentorias/dbre/","inLanguage":"pt-BR","image":"https://dbabrabo.com.br/assets/banners/dbre.webp","educationalLevel":"Avançado","teaches":["Infraestrutura como Código","Automação & Configuração","Orquestração & Containers","CI/CD & GitOps","Observabilidade","Confiabilidade & Chaos Engineering"],"about":["Terraform","CloudFormation","Bicep","Ansible","SaltStack","Bash","Python","Kubernetes","Docker","Vagrant","Helm","GitHub Actions"],"provider":{"@type":"EducationalOrganization","name":"DBA BRABO","url":"https://dbabrabo.com.br/"},"instructor":{"@type":"Person","name":"Acácio Lima Rocha","jobTitle":"Senior Database Administrator"},"hasCourseInstance":{"@type":"CourseInstance","courseMode":"online"}}</script>
 </head>
 <body>
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -80,8 +80,8 @@
           <span class="badge badge--accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20h-20"/></svg> Avançado</span>
           <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> 6 pilares</span>
-          
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> 4 módulos</span>
+          <span class="badge">9 tópicos</span>
           
           <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15 9.5A3 3 0 0 0 12 8c-1.7 0-3 .9-3 2s1.3 2 3 2 3 .9 3 2-1.3 2-3 2a3 3 0 0 1-3-1.5"/><path d="M12 6v12"/></svg> Sob consulta</span>
@@ -148,6 +148,1092 @@
 </section>
 
 
+<section>
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Conteúdo programático</p>
+      <h2>Módulos e tópicos</h2>
+      <p>Clique para abrir. Os módulos marcados como <strong>detalhado</strong> trazem, por tópico, conceito, funcionamento, o que é implementado no lab, troubleshooting e comandos.</p>
+    </div>
+    
+  <div class="acc" id="mod-01">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">01</span>
+      <span class="acc__label">Docker — MySQL em containers
+        <span class="acc__hint" style="display:block;margin-top:2px">O lab mais rápido: um MySQL 8.0 em segundos, depois um par source–réplica com Compose, e a operação do dia a dia sem perder dado quando o container morre.</span></span>
+      <span class="badge">3 tópicos</span>
+      <span class="badge badge--accent">detalhado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      
+  <div class="acc acc--sub" id="t-docker-mysql-single">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">01</span>
+      <span class="acc__label">MySQL 8.0 em um container
+        <span class="acc__hint" style="display:block;margin-top:2px">Um container, um volume, uma senha. O lab mínimo que já ensina a diferença entre dado no container e dado no volume.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>A imagem oficial mysql:8.0 empacota o servidor e um script de inicialização: na primeira subida com o diretório de dados vazio, ela cria o data directory, define a senha do root a partir de MYSQL_ROOT_PASSWORD, cria o banco de MYSQL_DATABASE e o usuário de MYSQL_USER/MYSQL_PASSWORD. O dado só sobrevive ao container se o /var/lib/mysql estiver montado num volume Docker ou bind mount — sem volume, docker rm apaga o banco junto. A porta 3306 do container é publicada no host com -p, e o healthcheck interno diz quando o MySQL aceita conexão de verdade, não apenas quando o processo subiu.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>Você cria um volume nomeado (docker volume create) e sobe o container com -v apontando para /var/lib/mysql e -e MYSQL_ROOT_PASSWORD definida — sem essa variável o container recusa subir.</li><li>Na primeira inicialização o entrypoint inicializa o data directory, aplica as variáveis de ambiente e deixa o MySQL escutando em 3306 dentro da rede do container.</li><li>A flag -p 3306:3306 publica a porta no host; sem ela, só containers da mesma rede alcançam o banco.</li><li>O healthcheck (mysqladmin ping) marca o container como healthy quando aceita conexão — é o sinal correto para liberar a aplicação, não o estado running.</li><li>Parar e remover o container não toca no volume: subir um novo container com o mesmo volume devolve o banco intacto.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Fixar a tag da imagem (mysql:8.0.36, não mysql:latest) para o lab ser reproduzível entre máquinas.</li><li>Criar o volume antes do container e dar nome explícito (mysql-lab-data) em vez de volume anônimo.</li><li>Guardar a senha fora da linha de comando — arquivo .env lido pelo Compose ou variável de ambiente da sessão, nunca no histórico do terminal em máquina compartilhada.</li><li>Criar schema e tabela de teste logo após subir, reiniciar o container e conferir que o dado continua lá — é o teste de persistência.</li><li>Mapear apenas a porta necessária e documentar usuário, senha e porta no README do lab.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">O container sobe e sai em segundos, em loop de restart.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Quase sempre MYSQL_ROOT_PASSWORD ausente, ou um my.cnf montado com sintaxe inválida.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Ler docker logs mysql-lab antes de qualquer coisa — a mensagem de erro do entrypoint diz exatamente o que faltou. Corrigir a variável ou o arquivo e recriar o container.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Permission denied no /var/lib/mysql ao usar bind mount.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">O diretório do host pertence a outro UID; o mysqld dentro do container roda como usuário mysql (UID 999).</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Preferir volume nomeado, que o Docker cria com o dono certo. Se precisar de bind mount, ajustar o dono do diretório no host para 999:999.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Aplicação não conecta: connection refused na porta 3306.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Porta não publicada, ou tentativa de conexão antes do healthy.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Conferir docker ps (a coluna PORTS mostra o mapeamento) e docker inspect --format do health. Só apontar a aplicação depois de healthy.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">O banco &#39;sumiu&#39; após docker rm.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">O container usava o filesystem interno ou um volume anônimo que foi removido junto.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Recriar do jeito certo com volume nomeado e restaurar do backup. Volume anônimo não é estratégia de persistência — é acidente esperando acontecer.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Subir o MySQL com volume nomeado</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>docker volume create mysql-lab-data
+
+docker run -d --name mysql-lab \
+  -e MYSQL_ROOT_PASSWORD=&#39;&lt;senha-forte&gt;&#39; \
+  -e MYSQL_DATABASE=labdb \
+  -e MYSQL_USER=lab \
+  -e MYSQL_PASSWORD=&#39;&lt;senha-lab&gt;&#39; \
+  -v mysql-lab-data:/var/lib/mysql \
+  -p 3306:3306 \
+  mysql:8.0.36
+
+docker ps
+# conferir: STATUS deve chegar a &quot;healthy&quot; em ~20s</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Conectar e provar que o dado persiste</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code># dentro do host, com o cliente mysql instalado:
+mysql -h 127.0.0.1 -u lab -p labdb
+
+-- dentro do mysql:
+CREATE TABLE teste (id INT PRIMARY KEY AUTO_INCREMENT, nome VARCHAR(50));
+INSERT INTO teste (nome) VALUES (&#39;dbabrabo&#39;);
+SELECT * FROM teste;
+
+# fora do mysql: reinicia o container e reconecta
+# docker restart mysql-lab
+# o SELECT acima deve retornar a mesma linha</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Inspecionar saúde e logs</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>docker logs mysql-lab --tail 30
+
+docker inspect mysql-lab \
+  --format &#39;{{json .State.Health.Status}}&#39;
+
+# esperado: &quot;healthy&quot;
+# se &quot;unhealthy&quot; ou sem campo Health, ler os logs acima</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">Docker</span><span class="badge badge--accent">MySQL 8.0</span><span class="badge badge--accent">Volume</span><span class="badge badge--accent">Healthcheck</span><span class="badge badge--accent">mysqladmin</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-docker-compose-mysql">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">02</span>
+      <span class="acc__label">Lab source–réplica com Docker Compose
+        <span class="acc__hint" style="display:block;margin-top:2px">Dois containers MySQL na mesma rede, com server_id e GTID, replicando de verdade — o lab que sustenta todos os exercícios de replicação.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>O Compose descreve os dois nós num único arquivo YAML: o serviço db01 como source e o db02 como réplica, ambos na mesma rede bridge criada pelo Compose, onde cada serviço resolve pelo próprio nome via DNS interno. Cada um ganha server_id próprio e GTID habilitado por arquivo de configuração montado, porque replicação exige identidade única e posicionamento global. O source cria o usuário de replicação; a réplica aponta com CHANGE REPLICATION SOURCE TO usando SOURCE_HOST=&#39;db01&#39; — o nome do serviço, não um IP — e SOURCE_AUTO_POSITION=1, dispensando arquivo e posição.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>O compose.yaml define db01 e db02 com a mesma imagem fixada, volumes separados, e monta um my-source.cnf e um my-replica.cnf com server_id distintos e gtid_mode=ON.</li><li>docker compose up -d sobe a rede, os volumes e os dois containers; o DNS interno resolve db01 e db02 sem IP fixo.</li><li>No source você cria o usuário repl com REPLICATION SLAVE restrito à rede do Compose.</li><li>Na réplica, um único CHANGE REPLICATION SOURCE TO com SOURCE_AUTO_POSITION=1 seguido de START REPLICA inicia o fluxo pelo GTID.</li><li>SHOW REPLICA STATUS na réplica e a comparação de gtid_executed entre os nós provam que a replicação anda; derrubar e recriar um container com o mesmo volume prova a persistência.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Usar imagens e senhas idênticas nos dois serviços, mudando só server_id, volumes e portas publicadas (3306 para o source, 3307 para a réplica).</li><li>Manter os .cnf em arquivos versionados na pasta do lab — nada de docker exec para editar configuração.</li><li>Subir com docker compose up -d e só configurar a replicação depois de ambos healthy.</li><li>Escrever uma linha no source e ler na réplica como teste de fumaça de todo exercício.</li><li>Derrubar tudo com docker compose down (sem -v) para provar que o lab volta com os dados; usar down -v só quando quiser recomeçar do zero.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Réplica com Last_IO_Error: connection refused a db01.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Nome de host errado no CHANGE, ou tentativa antes do source estar healthy.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Testar do container da réplica: docker exec -it mysql-replica mysqladmin -h db01 -u repl -p ping. Se falhar, conferir nomes de serviço no compose.yaml e aguardar o healthy do source.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">ERROR 1236: source purged binary logs containing GTIDs.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">A réplica pediu GTIDs que o source já purgou — retenção curta ou réplica recriada do zero apontando para um source antigo.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Reconstruir a réplica a partir dos dados atuais do source (dump com --set-gtid-purged ou clone) em vez de tentar &#39;pular&#39; — o intervalo purgado não volta.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Os dois nós têm o mesmo server_id ou o mesmo UUID.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Cópia do volume ou do auto.cnf de um nó para o outro.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Nunca clonar volume entre nós sem apagar auto.cnf. Recriar o volume da réplica e reprovisionar a partir do source.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">compose.yaml do lab source–réplica</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">yaml</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>services:
+  db01:
+    image: mysql:8.0.36
+    container_name: mysql-source
+    hostname: db01
+    environment:
+      MYSQL_ROOT_PASSWORD: &quot;&lt;senha-root&gt;&quot;
+      MYSQL_USER: repl
+      MYSQL_PASSWORD: &quot;&lt;senha-repl&gt;&quot;
+    volumes:
+      - mysql-source-data:/var/lib/mysql
+      - ./my-source.cnf:/etc/mysql/conf.d/lab.cnf:ro
+    ports:
+      - &quot;3306:3306&quot;
+    networks: [lab]
+
+  db02:
+    image: mysql:8.0.36
+    container_name: mysql-replica
+    hostname: db02
+    environment:
+      MYSQL_ROOT_PASSWORD: &quot;&lt;senha-root&gt;&quot;
+    volumes:
+      - mysql-replica-data:/var/lib/mysql
+      - ./my-replica.cnf:/etc/mysql/conf.d/lab.cnf:ro
+    ports:
+      - &quot;3307:3306&quot;
+    networks: [lab]
+
+volumes:
+  mysql-source-data:
+  mysql-replica-data:
+
+networks:
+  lab:</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Arquivos de configuração (um por nó)</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">ini</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code># my-source.cnf  (my-replica.cnf é igual, trocando server_id para 2)
+[mysqld]
+server_id = 1
+log_bin = mysql-bin
+binlog_format = ROW
+gtid_mode = ON
+enforce_gtid_consistency = ON
+log_replica_updates = ON
+binlog_expire_logs_seconds = 604800</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Subir e ligar a replicação por GTID</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>docker compose up -d
+docker compose ps   # aguardar ambos &quot;healthy&quot;
+
+# no source (db01): criar o usuário de replicação
+ docker exec -it mysql-source mysql -uroot -p -e &quot;\
+CREATE USER IF NOT EXISTS &#39;repl&#39;@&#39;%&#39; IDENTIFIED BY &#39;&lt;senha-repl&gt;&#39;; \
+GRANT REPLICATION SLAVE ON *.* TO &#39;repl&#39;@&#39;%&#39;; FLUSH PRIVILEGES;&quot;
+
+# na réplica (db02): apontar e iniciar
+ docker exec -it mysql-replica mysql -uroot -p -e &quot;\
+CHANGE REPLICATION SOURCE TO \
+  SOURCE_HOST=&#39;db01&#39;, SOURCE_USER=&#39;repl&#39;, \
+  SOURCE_PASSWORD=&#39;&lt;senha-repl&gt;&#39;, SOURCE_AUTO_POSITION=1; \
+START REPLICA;&quot;
+
+# validar na réplica:
+ docker exec -it mysql-replica mysql -uroot -p -e &quot;SHOW REPLICA STATUS\\G&quot; \
+  | grep -E &#39;Replica_IO_Running|Replica_SQL_Running|Seconds_Behind|Last_Error&#39;</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">Docker Compose</span><span class="badge badge--accent">MySQL 8.0</span><span class="badge badge--accent">GTID</span><span class="badge badge--accent">auto-position</span><span class="badge badge--accent">DNS interno do Compose</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-docker-mysql-operacao">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">03</span>
+      <span class="acc__label">Operação do dia a dia: backup, restore e upgrade
+        <span class="acc__hint" style="display:block;margin-top:2px">Dump consistente com GTID, restore num container limpo e upgrade de minor version trocando a tag — sem susto e sem perda.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Backup lógico com mysqldump continua sendo a ferramenta mais didática: com --single-transaction ele tira um snapshot consistente de tabelas InnoDB sem travar escrita, e com --set-gtid-purged=ON registra no dump o conjunto de GTIDs correspondente, o que permite reconstruir uma réplica apontando para o ponto certo. O restore é um container novo com volume vazio recebendo o dump pela porta publicada. O upgrade de minor (8.0.x para 8.0.y) na imagem oficial é trocar a tag e recriar o container sobre o mesmo volume — o servidor detecta o data directory existente e executa o upgrade automático na subida.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>O mysqldump roda do host contra a porta publicada, com --single-transaction e --routines --events para levar rotinas e agendadores junto.</li><li>O arquivo gerado contém o SET de GTID_PURGED no cabeçalho; guardá-lo junto do dump documenta de qual ponto aquele backup partiu.</li><li>O restore sobe um container limpo (volume novo) e injeta o dump com mysql &lt; backup.sql — se o dump tem GTID, a instância restaurada já nasce com o gtid_executed correspondente.</li><li>O upgrade de minor é docker compose pull + recriar o serviço com a nova tag mantendo o volume; o log da subida mostra o upgrade do dicionário de dados.</li><li>Major upgrade (8.0 para 9.x) não entra nesse fluxo: exige dump + restore ou utilitário de upgrade com checagem prévia — tratar como migração, não como troca de tag.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Agendar o dump por cron no host com data no nome do arquivo e retenção explícita (ex.: 7 dias).</li><li>Testar o restore num container separado antes de declarar que &#39;tem backup&#39; — backup não testado é promessa.</li><li>Versionar o compose.yaml e os .cnf no git para o lab inteiro ser reconstruível.</li><li>Fazer upgrade primeiro na réplica, observar, e só depois no source — a mesma disciplina de produção, em miniatura.</li><li>Medir o tempo do restore: é o RTO do lab, e o número que decide entre dump e backup físico quando o banco crescer.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Restore falha com erro de GTID_PURGED já executado.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Tentativa de importar um dump com GTID num servidor que já tem aquele conjunto ou um conjunto divergente.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Restaurar sempre em volume vazio. Se precisar importar num servidor existente, regenerar o dump com --set-gtid-purged=OFF e assumir a reconciliação manual.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Dump trava ou demora horas.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Tabela MyISAM no meio (quebra o --single-transaction) ou banco grande demais para dump lógico.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Mapear engines com SELECT TABLE_SCHEMA, ENGINE, COUNT(*) ... GROUP BY; para MyISAM, aceitar o lock ou migrar para InnoDB. Para banco grande, o aprendizado aqui é o limite do dump — e a deixa para estudar XtraBackup.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Após trocar a tag, o container não sobe.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Pulo de major version ou variável removida na nova imagem.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Ler o docker logs — o servidor diz qual parâmetro rejeitou. Voltar a tag anterior (o volume continua intacto) e planejar o upgrade como migração.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Backup consistente e restore em container limpo</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code># backup do source (porta 3306 do host)
+mysqldump -h 127.0.0.1 -uroot -p \
+  --single-transaction --routines --events \
+  --set-gtid-purged=ON --databases labdb \
+  &gt; labdb-$(date +%F).sql
+
+ls -lh labdb-*.sql
+head -30 labdb-$(date +%F).sql | grep -i gtid
+
+# restore de teste num container isolado
+docker run -d --name mysql-restore-test \
+  -e MYSQL_ROOT_PASSWORD=&#39;&lt;senha&gt;&#39; \
+  -v mysql-restore-data:/var/lib/mysql \
+  -p 3308:3306 mysql:8.0.36
+sleep 20
+mysql -h 127.0.0.1 -P 3308 -uroot -p &lt; labdb-$(date +%F).sql
+mysql -h 127.0.0.1 -P 3308 -uroot -p -e &quot;SELECT COUNT(*) FROM labdb.teste;&quot;
+# conferiu? derruba o teste: docker rm -f mysql-restore-test</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Upgrade de minor trocando a tag</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code># 1. backup antes de tudo (comando acima)
+# 2. trocar a tag no compose.yaml: mysql:8.0.36 -&gt; mysql:8.0.37
+# 3. recriar mantendo os volumes:
+docker compose pull db02
+docker compose up -d db02
+docker logs mysql-replica --tail 20
+# procurar: &quot;Upgrade is complete&quot; / versão nova no log
+mysql -h 127.0.0.1 -P 3307 -uroot -p -e &quot;SELECT VERSION();&quot;
+# repetir em db01 só depois de validar a réplica</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">mysqldump</span><span class="badge badge--accent">GTID_PURGED</span><span class="badge badge--accent">Docker volumes</span><span class="badge badge--accent">Compose</span><span class="badge badge--accent">Upgrade minor</span></div></div>
+    </div></div></div>
+  </div>
+    </div></div></div>
+  </div>
+  <div class="acc" id="mod-02">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">02</span>
+      <span class="acc__label">Vagrant — VMs reproduzíveis com MySQL
+        <span class="acc__hint" style="display:block;margin-top:2px">Quando o container esconde demais: VMs VirtualBox com provisionamento versionado, uma com MySQL sozinho e um par em replicação GTID na mesma rede privada.</span></span>
+      <span class="badge">2 tópicos</span>
+      <span class="badge badge--accent">detalhado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      
+  <div class="acc acc--sub" id="t-vagrant-mysql-single">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">01</span>
+      <span class="acc__label">Uma VM com MySQL provisionada do zero
+        <span class="acc__hint" style="display:block;margin-top:2px">Vagrantfile + script shell que instala o MySQL 8.0 no Ubuntu de forma repetível: vagrant up e o banco está lá, vagrant destroy e não sobra nada.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>O Vagrant descreve a VM num Vagrantfile versionado: box base (ubuntu/jammy64), hostname, rede privada com IP fixo e provisionadores shell que rodam apt install e configuram o MySQL a cada vagrant up. Diferente do container, aqui existe um sistema operacional completo com systemd — o MySQL roda como serviço, com data directory em /var/lib/mysql dentro do disco da VM. Destruir e recriar a VM a partir do mesmo Vagrantfile prova que a instalação é código, não memória de quem digitou os comandos uma vez.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>O Vagrantfile fixa a box e o IP privado (ex.: 192.168.56.11), evitando DHCP aleatório que quebraria a replicação no tópico seguinte.</li><li>O provisionador shell atualiza o apt, instala mysql-server 8.0, ajusta bind-address e cria banco e usuário de lab via mysql já como root local.</li><li>vagrant up cria a VM no VirtualBox, executa o provisionamento e deixa o MySQL escutando na rede privada.</li><li>vagrant ssh abre o terminal da VM; do host, mysql -h 192.168.56.11 conecta pela rede privada.</li><li>vagrant halt desliga, vagrant up religa com os dados, vagrant destroy apaga tudo — o Vagrantfile continua sendo a única fonte da verdade.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Fixar a versão da box (config.vm.box_version) para o lab não mudar sozinho num update.</li><li>Deixar o script de provision idempotente: CREATE USER IF NOT EXISTS, CREATE DATABASE IF NOT EXISTS — rodar vagrant provision duas vezes não pode quebrar.</li><li>Reservar memória e CPU explícitos no provider (2 GB / 2 vCPU é o mínimo confortável para MySQL 8.0).</li><li>Nunca editar configuração dentro da VM sem levar de volta para o script — o que não está no provision não existe.</li><li>Commits pequenos no Vagrantfile + provision.sh: cada mudança, um vagrant provision para validar.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">vagrant up falha baixando a box ou criando a VM.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">VirtualBox desatualizado em relação ao Vagrant, ou rede do host bloqueando o download.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Conferir vagrant --version e a versão do VirtualBox (a compatibilidade é estrita), e testar o download da box com vagrant box add --insecure separado do up.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Host não alcança o MySQL no IP privado.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">bind-address ainda 127.0.0.1, ou firewall/skip-networking.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Dentro da VM: SELECT @@bind_address; e ss -ltn | grep 3306. Ajustar bind-address para 0.0.0.0 no provision e criar o usuário com host % ou o IP do host.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Provision falha na segunda execução.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Script não idempotente: CREATE USER sem IF NOT EXISTS aborta e o Vagrant marca o provision como falho.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Reescrever com cláusulas IF NOT EXISTS e testar com vagrant provision repetido antes de declarar pronto.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Vagrantfile mínimo do lab</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">ruby</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>Vagrant.configure(&quot;2&quot;) do |config|
+  config.vm.box = &quot;ubuntu/jammy64&quot;
+  config.vm.hostname = &quot;db01&quot;
+  config.vm.network &quot;private_network&quot;, ip: &quot;192.168.56.11&quot;
+
+  config.vm.provider &quot;virtualbox&quot; do |vb|
+    vb.memory = 2048
+    vb.cpus = 2
+  end
+
+  config.vm.provision &quot;shell&quot;, path: &quot;provision.sh&quot;
+end</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">provision.sh — instala e prepara o MySQL</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>#!/usr/bin/env bash
+set -euo pipefail
+export DEBIAN_FRONTEND=noninteractive
+
+apt-get update -y
+apt-get install -y mysql-server-8.0
+
+# escuta na rede privada do lab
+sed -i &#39;s/^bind-address.*/bind-address = 0.0.0.0/&#39; /etc/mysql/mysql.conf.d/mysqld.cnf
+systemctl enable --now mysql
+
+mysql &lt;&lt;&#39;SQL&#39;
+CREATE DATABASE IF NOT EXISTS labdb;
+CREATE USER IF NOT EXISTS &#39;lab&#39;@&#39;%&#39; IDENTIFIED BY &#39;&lt;senha-lab&gt;&#39;;
+GRANT ALL ON labdb.* TO &#39;lab&#39;@&#39;%&#39;;
+FLUSH PRIVILEGES;
+SQL
+
+mysql -e &quot;SELECT VERSION();&quot;</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Ciclo de vida da VM</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>vagrant up        # cria + provisiona (demora na 1ª vez: baixa a box)
+vagrant status
+vagrant ssh -c &quot;systemctl status mysql --no-pager&quot;
+
+# do host, pela rede privada:
+mysql -h 192.168.56.11 -u lab -p -e &quot;SELECT VERSION();&quot;
+
+vagrant halt      # desliga mantendo o disco
+vagrant up        # religa: o dado continua
+vagrant destroy -f  # apaga tudo; o Vagrantfile recria igual</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">Vagrant</span><span class="badge badge--accent">VirtualBox</span><span class="badge badge--accent">Ubuntu 22.04</span><span class="badge badge--accent">MySQL 8.0</span><span class="badge badge--accent">Shell provision</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-vagrant-mysql-replica">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">02</span>
+      <span class="acc__label">Duas VMs em replicação GTID
+        <span class="acc__hint" style="display:block;margin-top:2px">O mesmo Vagrantfile, agora com db01 e db02 em rede privada fixa, cada uma com server_id próprio, replicando por GTID como em produção.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Um Vagrantfile multi-machine define db01 (192.168.56.11) e db02 (192.168.56.12) com o mesmo box e provisionadores parametrizados por papel: o source recebe server_id=1 e cria o usuário repl; a réplica recebe server_id=2 com GTID e super_read_only. IPs fixos na mesma rede privada dispensam DNS e espelham o que acontece entre dois servidores físicos. A replicação é a mesma do Compose — CHANGE REPLICATION SOURCE TO com SOURCE_AUTO_POSITION=1 — mas agora atravessando VMs completas, com systemd, logs em /var/log/mysql e latência de rede real entre nós.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>O Vagrantfile declara config.vm.define para cada nó, cada um com IP privado próprio e o mesmo script de provision recebendo ROLE e SERVER_ID por variável de ambiente.</li><li>O provision instala o MySQL, grava /etc/mysql/conf.d/lab.cnf com server_id, binlog ROW e GTID, reinicia o serviço e, se ROLE=source, cria o usuário repl.</li><li>Com as duas VMs no ar, você executa na réplica o CHANGE apontando para 192.168.56.11 e START REPLICA.</li><li>SHOW REPLICA STATUS e a comparação de gtid_executed validam o fluxo; inserir no source e ler na réplica é o teste de fumaça.</li><li>vagrant halt db02 + vagrant up db02 simula a queda de uma réplica; a replicação retoma sozinha do ponto guardado.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Subir primeiro o source, validar o MySQL nele, e só depois subir a réplica — ordem importa no provision.</li><li>Manter um único provision.sh com if de papel em vez de dois scripts copiados — divergência entre scripts vira divergência entre nós.</li><li>Usar super_read_only=ON na réplica para impedir escrita acidental que gere GTID local.</li><li>Documentar os IPs e as credenciais no README do lab; IP fixo é contrato.</li><li>Ensaia halt/restart de cada nó com a replicação rodando antes de se declarar pronto.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Réplica não resolve ou não alcança o source.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">VMs em redes diferentes, ou provision rodou antes da rede subir.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">De dentro da réplica: ping -c2 192.168.56.11 e mysqladmin -h 192.168.56.11 -u repl -p ping. Se o ping falha, vagrant reload db02; se só o mysql falha, revisar usuário e bind-address no source.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">server_id igual nos dois nós e a replicação recusa iniciar.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Variável SERVER_ID não chegou ao provision de um dos nós.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Em cada VM: SELECT @@server_id; Se iguais, corrigir o Vagrantfile e vagrant provision. Não editar my.cnf à mão — corrigir a fonte.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Após vagrant destroy de um nó, o outro reclama de GTIDs desconhecidos.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">O nó destruído foi recriado vazio e o antigo UUID ainda aparece no conjunto do parceiro.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">É esperado ao recriar do zero: reprovisionar a réplica a partir do source atual (dump com GTID) em vez de tentar reaproveitar coordenadas antigas.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Vagrantfile com dois nós</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">ruby</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>Vagrant.configure(&quot;2&quot;) do |config|
+  config.vm.box = &quot;ubuntu/jammy64&quot;
+
+  config.vm.define &quot;db01&quot; do |db|
+    db.vm.hostname = &quot;db01&quot;
+    db.vm.network &quot;private_network&quot;, ip: &quot;192.168.56.11&quot;
+    db.vm.provider(&quot;virtualbox&quot;) { |vb| vb.memory = 2048; vb.cpus = 2 }
+    db.vm.provision &quot;shell&quot;, path: &quot;provision.sh&quot;,
+      env: { &quot;ROLE&quot; =&gt; &quot;source&quot;, &quot;SERVER_ID&quot; =&gt; &quot;1&quot; }
+  end
+
+  config.vm.define &quot;db02&quot; do |db|
+    db.vm.hostname = &quot;db02&quot;
+    db.vm.network &quot;private_network&quot;, ip: &quot;192.168.56.12&quot;
+    db.vm.provider(&quot;virtualbox&quot;) { |vb| vb.memory = 2048; vb.cpus = 2 }
+    db.vm.provision &quot;shell&quot;, path: &quot;provision.sh&quot;,
+      env: { &quot;ROLE&quot; =&gt; &quot;replica&quot;, &quot;SERVER_ID&quot; =&gt; &quot;2&quot; }
+  end
+end</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Trecho do provision.sh por papel</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code># ROLE e SERVER_ID vêm do Vagrantfile
+cat &gt; /etc/mysql/conf.d/lab.cnf &lt;&lt;EOF
+[mysqld]
+server_id = ${SERVER_ID}
+log_bin = mysql-bin
+binlog_format = ROW
+gtid_mode = ON
+enforce_gtid_consistency = ON
+log_replica_updates = ON
+binlog_expire_logs_seconds = 604800
+EOF
+
+if [ &quot;${ROLE}&quot; = &quot;replica&quot; ]; then
+  echo &quot;super_read_only = ON&quot; &gt;&gt; /etc/mysql/conf.d/lab.cnf
+fi
+systemctl restart mysql
+
+if [ &quot;${ROLE}&quot; = &quot;source&quot; ]; then
+mysql &lt;&lt;&#39;SQL&#39;
+CREATE USER IF NOT EXISTS &#39;repl&#39;@&#39;%&#39; IDENTIFIED BY &#39;&lt;senha-repl&gt;&#39;;
+GRANT REPLICATION SLAVE ON *.* TO &#39;repl&#39;@&#39;%&#39;;
+FLUSH PRIVILEGES;
+SQL
+fi</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Ligar a replicação entre as VMs</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>vagrant up db01   # primeiro o source
+vagrant up db02   # depois a réplica
+
+vagrant ssh db02 -c &quot;mysql -uroot -e \&quot;\
+CHANGE REPLICATION SOURCE TO \
+  SOURCE_HOST=&#39;192.168.56.11&#39;, SOURCE_USER=&#39;repl&#39;, \
+  SOURCE_PASSWORD=&#39;&lt;senha-repl&gt;&#39;, SOURCE_AUTO_POSITION=1; \
+START REPLICA;\&quot;&quot;
+
+vagrant ssh db02 -c &quot;mysql -uroot -e &#39;SHOW REPLICA STATUS\\G&#39;&quot; \
+  | grep -E &#39;Replica_IO_Running|Replica_SQL_Running|Seconds_Behind&#39;
+
+# teste de fumaça:
+vagrant ssh db01 -c &quot;mysql -uroot -e \&quot;CREATE DATABASE IF NOT EXISTS labdb; CREATE TABLE IF NOT EXISTS labdb.teste (id INT PRIMARY KEY); INSERT INTO labdb.teste VALUES (1) ON DUPLICATE KEY UPDATE id=id;\&quot;&quot;
+vagrant ssh db02 -c &quot;mysql -uroot -e &#39;SELECT * FROM labdb.teste;&#39;&quot;</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">Vagrant multi-machine</span><span class="badge badge--accent">MySQL GTID</span><span class="badge badge--accent">server_id</span><span class="badge badge--accent">super_read_only</span><span class="badge badge--accent">Rede privada VirtualBox</span></div></div>
+    </div></div></div>
+  </div>
+    </div></div></div>
+  </div>
+  <div class="acc" id="mod-03">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">03</span>
+      <span class="acc__label">Terraform — Infra declarativa para labs MySQL
+        <span class="acc__hint" style="display:block;margin-top:2px">Do container local ao RDS na AWS: o mesmo fluxo init/plan/apply, estado versionado no gitignore, e destroy no fim para não pagar conta à toa.</span></span>
+      <span class="badge">2 tópicos</span>
+      <span class="badge badge--accent">detalhado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      
+  <div class="acc acc--sub" id="t-terraform-docker-mysql">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">01</span>
+      <span class="acc__label">MySQL local com o provider Docker
+        <span class="acc__hint" style="display:block;margin-top:2px">O primeiro contato com Terraform sem nuvem nem custo: main.tf que declara imagem, rede e container MySQL, com senha em variável sensível.</span></span>
+      <span class="badge">Intermediário</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Terraform descreve infraestrutura desejada em HCL e converge a realidade para ela: terraform plan mostra a diferença entre o estado atual (terraform.tfstate) e o declarado, e terraform apply executa. Com o provider kreuzwerker/docker, os recursos são imagem e container na daemon local — o mesmo MySQL 8.0 dos labs anteriores, mas agora criado por código versionado em vez de comandos ad hoc. Variáveis tipadas com sensitive=true tiram a senha do código, e outputs expõem porta e nome do volume sem que ninguém precise inspecionar estado.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>O bloco terraform declara o provider e a versão; o resource docker_image fixa a imagem e o docker_container declara nome, portas, env e volumes.</li><li>terraform init baixa o provider; plan mostra create de imagem + container; apply executa e grava o tfstate.</li><li>Mudar a senha ou a porta no .tfvars e rodar plan mostra exatamente o que será recriado antes de tocar em qualquer coisa.</li><li>terraform output exibe como conectar; terraform destroy derruba container, rede e imagem conforme o estado.</li><li>O .gitignore exclui tfstate, .terraform/ e *.tfvars com segredo — o repositório guarda o desejo, nunca o segredo nem o estado.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Fixar versão do provider (=) e tag da imagem para o lab não mudar sozinho.</li><li>Separar variáveis em variables.tf + terraform.tfvars.example (com valores fake) e nunca commitar o tfvars real.</li><li>Rodar plan antes de todo apply e ler a saída — plan que ninguém lê é enfeite.</li><li>Um recurso por responsabilidade: imagem, volume/rede e container separados facilitam destroy parcial.</li><li>Guardar o mysql-lab/ inteiro no git: main.tf, variables.tf, outputs.tf e o README com os 4 comandos.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">terraform apply falha falando do socket Docker.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Daemon parada, ou provider apontando para socket errado (comum em Docker Desktop vs. engine Linux).</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Conferir docker ps antes do Terraform. Se o Docker responde e o provider não, explicitar host = &quot;unix:///var/run/docker.sock&quot; no bloco do provider.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Container recriado a cada apply sem mudança aparente.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Atributo volátil no recurso (ex.: env com timestamp) forçando replacement, ou imagem latest puxando digest novo.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Ler o plan com atenção: ele nomeia o atributo culpado com forces replacement. Fixar a tag com digest e remover o atributo volátil.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Senha vazou no log do apply ou no tfstate.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Variável sem sensitive=true, ou output sem sensitive expondo a senha.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Marcar variable e output como sensitive, e tratar o tfstate como segredo: nunca commitar, e em time usar backend remoto com criptografia.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">main.tf do lab local</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">hcl</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>terraform {
+  required_providers {
+    docker = {
+      source  = &quot;kreuzwerker/docker&quot;
+      version = &quot;= 3.0.2&quot;
+    }
+  }
+}
+
+provider &quot;docker&quot; {}
+
+resource &quot;docker_image&quot; &quot;mysql&quot; {
+  name = &quot;mysql:8.0.36&quot;
+}
+
+resource &quot;docker_volume&quot; &quot;data&quot; {
+  name = &quot;tf-mysql-data&quot;
+}
+
+resource &quot;docker_container&quot; &quot;mysql&quot; {
+  name  = &quot;tf-mysql&quot;
+  image = docker_image.mysql.image_id
+
+  env = [
+    &quot;MYSQL_ROOT_PASSWORD=${var.root_password}&quot;,
+    &quot;MYSQL_DATABASE=labdb&quot;
+  ]
+
+  ports {
+    internal = 3306
+    external = 3306
+  }
+
+  volumes {
+    volume_name    = docker_volume.data.name
+    container_path = &quot;/var/lib/mysql&quot;
+  }
+}
+
+variable &quot;root_password&quot; {
+  type      = string
+  sensitive = true
+}
+
+output &quot;como_conectar&quot; {
+  value = &quot;mysql -h 127.0.0.1 -uroot -p labdb&quot;
+}</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Fluxo init → plan → apply → destroy</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>terraform init
+terraform plan -var=&quot;root_password=&lt;senha-forte&gt;&quot; -out lab.plan
+# ler o plan: deve mostrar 3 creates (imagem, volume, container)
+terraform apply lab.plan
+
+terraform output como_conectar
+mysql -h 127.0.0.1 -uroot -p -e &quot;SELECT VERSION();&quot;
+
+# fim do lab: derruba tudo que o estado registrou
+terraform destroy -var=&quot;root_password=&lt;senha-forte&gt;&quot;</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">Terraform</span><span class="badge badge--accent">Provider Docker</span><span class="badge badge--accent">HCL</span><span class="badge badge--accent">tfstate</span><span class="badge badge--accent">MySQL 8.0</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-terraform-cloud-mysql">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">02</span>
+      <span class="acc__label">RDS MySQL na AWS com Terraform
+        <span class="acc__hint" style="display:block;margin-top:2px">O mesmo fluxo, agora contra a AWS: security group, subnet group e instância db.t3.micro, com endpoint em output e destroy obrigatório no fim.</span></span>
+      <span class="badge">Intermediário → Avançado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Contra a nuvem, o Terraform gerencia recursos reais e cobráveis: aws_db_instance cria uma instância RDS MySQL numa VPC, com classe, storage, engine e janela de backup declarados. O security group limita 3306 ao seu IP, o db_subnet_group espalha a instância pelas subnets, e manage_master_user_password ou uma variável sensível evita senha em texto claro no código. Skip_final_snapshot e delete_automated_backups liberam o destroy limpo do lab — em produção ambos seriam o oposto. O endpoint sai em output: é ele que a aplicação usa, nunca um IP anotado à mão.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>O provider aws assume credenciais via variáveis de ambiente ou perfil; o código declara SG, subnet group e a instância com engine mysql 8.0 e classe barata de lab.</li><li>terraform plan mostra a instância + SG + subnet group a criar, com os atributos sensíveis ocultados.</li><li>terraform apply leva ~5–10 minutos: o RDS provisiona storage, aplica o parameter group e expõe o endpoint.</li><li>O output imprime o endpoint; mysql -h &lt;endpoint&gt; conecta do IP liberado no SG.</li><li>terraform destroy remove instância, snapshots automáticos e SG — rodar e conferir no console que não restou nada é parte do exercício.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Usar db.t3.micro + 20 GB gp3 para o lab: o menor custo que ainda roda MySQL 8.0 com dignidade.</li><li>Liberar 3306 só para o seu IP (/32), nunca 0.0.0.0/0 — SG aberto em lab vira incidente de verdade.</li><li>Definir backup_retention_period=7 e janela de manutenção explícita para exercitar PITR no lab de backup.</li><li>Nunca commitar tfvars com senha nem access key; usar .gitignore + variáveis de ambiente.</li><li>Orçar antes: conferir o preço da classe na região e destruir no mesmo dia — lab esquecido ligado é a conta mais comum da AWS.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Apply falha com erro de subnet group ou AZ.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Subnets em uma única AZ, ou VPC default apagada na região.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">O db_subnet_group exige subnets em pelo menos 2 AZs. Listar as subnets da VPC e corrigir o data source antes de reaplicar.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Timeout conectando no endpoint após apply com sucesso.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Security group sem o seu IP, ou publicamente_accessível=false numa VPC sem rota.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Conferir o SG no console (a regra de entrada tem o seu IP público atual?) e o atributo publicly_accessible. IP doméstico muda — regra antiga com IP antigo é a causa número um.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Destroy trava pedindo snapshot final.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">skip_final_snapshot=false sem nome de snapshot informado.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">No lab, manter skip_final_snapshot=true. Em produção, o comportamento correto é o inverso — exigir snapshot nomeado antes de destruir.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">rds.tf — instância de lab</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">hcl</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>provider &quot;aws&quot; {
+  region = &quot;us-east-1&quot;
+}
+
+data &quot;aws_vpc&quot; &quot;default&quot; {
+  default = true
+}
+
+data &quot;aws_subnets&quot; &quot;default&quot; {
+  filter {
+    name   = &quot;vpc-id&quot;
+    values = [data.aws_vpc.default.id]
+  }
+}
+
+resource &quot;aws_security_group&quot; &quot;mysql_lab&quot; {
+  name        = &quot;mysql-lab-sg&quot;
+  description = &quot;Lab DBA BRABO - so meu IP&quot;
+  vpc_id      = data.aws_vpc.default.id
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = &quot;tcp&quot;
+    cidr_blocks = [&quot;${var.meu_ip}/32&quot;]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = &quot;-1&quot;
+    cidr_blocks = [&quot;0.0.0.0/0&quot;]
+  }
+}
+
+resource &quot;aws_db_subnet_group&quot; &quot;lab&quot; {
+  name       = &quot;mysql-lab-subnets&quot;
+  subnet_ids = slice(data.aws_subnets.default.ids, 0, 2)
+}
+
+resource &quot;aws_db_instance&quot; &quot;lab&quot; {
+  identifier             = &quot;dbabrabo-lab&quot;
+  engine                 = &quot;mysql&quot;
+  engine_version         = &quot;8.0.36&quot;
+  instance_class         = &quot;db.t3.micro&quot;
+  allocated_storage      = 20
+  storage_type           = &quot;gp3&quot;
+  db_name                = &quot;labdb&quot;
+  username               = &quot;admin&quot;
+  manage_master_user_password = true
+  db_subnet_group_name   = aws_db_subnet_group.lab.name
+  vpc_security_group_ids = [aws_security_group.mysql_lab.id]
+  publicly_accessible    = true
+  backup_retention_period = 7
+  skip_final_snapshot    = true
+  delete_automated_backups = true
+}
+
+variable &quot;meu_ip&quot; {
+  type = string  # seu IP público, sem /32
+}
+
+output &quot;endpoint&quot; {
+  value = aws_db_instance.lab.endpoint
+}</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Subir, usar e destruir sem deixar conta</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>export AWS_PROFILE=lab   # ou AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY
+terraform init
+terraform plan -var=&quot;meu_ip=$(curl -s ifconfig.me)&quot; -out lab.plan
+terraform apply lab.plan   # ~5-10 min
+
+terraform output -raw endpoint
+# conecta do seu IP liberado:
+mysql -h $(terraform output -raw endpoint | cut -d: -f1) \
+  -u admin -p -e &quot;SELECT VERSION();&quot;
+
+# FIM DO LAB — não pule esta parte:
+terraform destroy -var=&quot;meu_ip=$(curl -s ifconfig.me)&quot;
+# conferir no console AWS: RDS &gt; Databases vazia</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">Terraform</span><span class="badge badge--accent">AWS RDS</span><span class="badge badge--accent">Security Group</span><span class="badge badge--accent">db_subnet_group</span><span class="badge badge--accent">MySQL 8.0</span></div></div>
+    </div></div></div>
+  </div>
+    </div></div></div>
+  </div>
+  <div class="acc" id="mod-04">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">04</span>
+      <span class="acc__label">SaltStack — Configuração idempotente do MySQL
+        <span class="acc__hint" style="display:block;margin-top:2px">Master e minions, states versionados e pillar por papel: o MySQL instalado e replicado por código, com salt &#39;*&#39; state.apply como único gesto.</span></span>
+      <span class="badge">2 tópicos</span>
+      <span class="badge badge--accent">detalhado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      
+  <div class="acc acc--sub" id="t-salt-mysql-single">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">01</span>
+      <span class="acc__label">Master + minion instalando MySQL por state
+        <span class="acc__hint" style="display:block;margin-top:2px">Um master, um minion Ubuntu, chave aceita e um state que instala o MySQL 8.0, entrega o my.cnf e garante o serviço ligado — rode duas vezes, mude nada.</span></span>
+      <span class="badge">Avançado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>SaltStack separa transporte e desejo: o master (portas 4505/4506) publica jobs e recebe retornos; o minion executa. A confiança começa com a troca de chaves — o minion gera um par e o master aceita com salt-key -A, identificando cada máquina pelo id. O estado desejado vive em states SLS (YAML com Jinja): pkg.installed garante o pacote, file.managed garante o conteúdo do my.cnf, service.running garante o serviço ligado e observando os arquivos. O top.sls mapeia minion a state. Rodar state.highstate duas vezes e ver zero mudança na segunda é a prova de idempotência.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>Você instala salt-master numa VM (ou no host) e salt-minion na VM alvo, apontando o minion para o master por master: &lt;ip-ou-nome&gt; em /etc/salt/minion.</li><li>O minion se apresenta; no master, salt-key -L mostra a chave pendente e salt-key -A -y &lt;id&gt; confere confiança.</li><li>Em /srv/salt/mysql/init.sls você declara pacote, /etc/mysql/conf.d/lab.cnf e serviço com watch — qualquer mudança no .cnf reinicia o MySQL sozinho.</li><li>O /srv/salt/top.sls associa base -&gt; minion -&gt; mysql; salt &#39;db*&#39; state.apply (ou highstate) converge.</li><li>salt &#39;db*&#39; service.status mysql e um mysql -e &#39;SELECT VERSION()&#39; pelo minion provam o resultado; repetir o apply prova a idempotência.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Fixar o id do minion igual ao hostname (db01) para o targeting por nome funcionar sem glob complicado.</li><li>Versionar /srv/salt inteiro no git — states, pillar e top.sls são o runbook executável.</li><li>Testar o state com salt &#39;db*&#39; state.apply test=True primeiro: o dry-run mostra o que mudaria sem mudar nada.</li><li>Separar dados sensíveis em pillar (senhas), nunca no state — o state é público por natureza.</li><li>Abrir 4505/4506 só para os minions; master exposto para a internet com chave aceita sem conferência é invasão terceirizada.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Minion não aparece em salt-key -L.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Minion apontando para master errado, firewall bloqueando 4505/4506, ou clock skew quebrando o handshake.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">No minion: systemctl status salt-minion e salt-minion -l debug (mostra para onde ele tenta falar). No caminho: ping + nc -zv &lt;master&gt; 4505. Conferir data/hora nos dois lados.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">State aplica mas o MySQL não reinicia após mudar o .cnf.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Faltou o watch no service.running apontando para o file.managed.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Declarar watch: - file: /etc/mysql/conf.d/lab.cnf no serviço. Sem watch, o Salt garante o arquivo mas não o efeito.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">file.managed falha com permission denied.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Minion rodando como usuário sem escrita em /etc/mysql, ou pasta conf.d inexistente na distro.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Garantir o diretório com file.directory antes do file.managed, e rodar o minion como root (padrão) nos labs.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Instalar master e minion (Ubuntu 22.04)</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code># no master:
+curl -fsSL https://github.com/saltstack/salt-bootstrap/releases/latest/download/bootstrap-salt.sh -o /tmp/bootstrap.sh
+sh /tmp/bootstrap.sh -M -X stable   # -M instala o master
+systemctl enable --now salt-master
+salt --version
+
+# no minion (VM db01):
+sh /tmp/bootstrap.sh -X stable
+ echo &#39;master: &lt;IP-DO-MASTER&gt;&#39; &gt; /etc/salt/minion.d/master.conf
+ echo &#39;id: db01&#39; &gt; /etc/salt/minion.d/id.conf
+systemctl restart salt-minion
+
+# no master: aceitar a chave conferindo o fingerprint
+salt-key -L
+salt-key -A -y db01
+salt &#39;db01&#39; test.ping   # esperado: True</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">States do MySQL (/srv/salt/)</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">yaml</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code># /srv/salt/top.sls
+base:
+  &#39;db01&#39;:
+    - mysql
+
+# /srv/salt/mysql/init.sls
+mysql-server:
+  pkg.installed:
+    - name: mysql-server-8.0
+
+/etc/mysql/conf.d/lab.cnf:
+  file.managed:
+    - source: salt://mysql/files/lab.cnf
+    - user: root
+    - group: root
+    - mode: &#39;0644&#39;
+    - require:
+      - pkg: mysql-server
+
+mysql:
+  service.running:
+    - enable: True
+    - watch:
+      - file: /etc/mysql/conf.d/lab.cnf
+
+# /srv/salt/mysql/files/lab.cnf
+# [mysqld]
+# server_id = 1
+# bind-address = 0.0.0.0
+# log_bin = mysql-bin
+# binlog_format = ROW
+# gtid_mode = ON
+# enforce_gtid_consistency = ON</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Aplicar e provar idempotência</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code># dry-run primeiro:
+salt &#39;db01&#39; state.apply test=True
+
+# aplicar de verdade:
+salt &#39;db01&#39; state.apply
+
+# repetir: a 2ª execução deve reportar 0 mudanças
+salt &#39;db01&#39; state.apply | grep -E &#39;Succeeded|Failed|Changed&#39;
+
+# provar o MySQL no minion:
+salt &#39;db01&#39; cmd.run &quot;mysql -e &#39;SELECT VERSION();&#39;&quot;</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">SaltStack</span><span class="badge badge--accent">salt-master</span><span class="badge badge--accent">salt-minion</span><span class="badge badge--accent">States SLS</span><span class="badge badge--accent">top.sls</span></div></div>
+    </div></div></div>
+  </div>
+  <div class="acc acc--sub" id="t-salt-mysql-replica">
+    <button class="acc__head" type="button" aria-expanded="false">
+      <span class="acc__num">02</span>
+      <span class="acc__label">Source–réplica com pillar e states por papel
+        <span class="acc__hint" style="display:block;margin-top:2px">Dois minions, um pillar dizendo quem é source e quem é réplica, template Jinja gerando o my.cnf certo para cada um e o usuário repl criado por state.</span></span>
+      <span class="badge">Avançado</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="acc__chev"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="acc__panel"><div class="acc__inner"><div class="acc__content">
+      <div class="tblock"><p class="tblock__label">Conceito</p><p>Pillar é o dado por minion que o master entrega sob demanda: cada minion vê só o seu. Você define mysql:role e mysql:server_id por id (db01 source/1, db02 replica/2) e o state lê esses valores via Jinja para renderizar o lab.cnf com o server_id correto e, na réplica, super_read_only. O mesmo state cria o banco labdb e — só no source — o usuário repl via mysql_user.present. A ligação da replicação (CHANGE + START) roda como um state cmd.run com unless que verifica se a réplica já está rodando, para o highstate continuar idempotente. O resultado é fleet como código: adicionar um db03 é uma linha no pillar, não um procedimento novo.</p></div>
+      <div class="tblock"><p class="tblock__label">Como funciona</p><ul><li>O /srv/pillar/top.sls entrega mysql.sls a db01 e db02; o mysql.sls define role e server_id por minion.</li><li>O template lab.cnf usa {{ pillar[&#39;mysql&#39;][&#39;server_id&#39;] }} e um bloco condicional que adiciona super_read_only só quando role == &#39;replica&#39;.</li><li>O state mysql/replica.sls cria o usuário repl apenas no source (when por grain/pillar) e executa o CHANGE na réplica com unless checando Replica_SQL_Running.</li><li>salt &#39;db*&#39; state.highstate converge os dois; salt &#39;db02&#39; cmd.run com SHOW REPLICA STATUS valida.</li><li>Inserir no source e ler na réplica fecha o ciclo; salt &#39;db*&#39; mysql.query substitui o ssh para as verificações de rotina.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Na prática</p><ul><li>Manter pillar separado de states e fora do mesmo commit de senha real — usar pillar.example no git e o real só no master.</li><li>Todo cmd.run com comando de escrita precisa de unless ou onlyif — sem guarda, não é state, é script remoto.</li><li>Testar o template com salt &#39;db02&#39; slsutil.renderer antes do highstate para ver o .cnf renderizado sem aplicar.</li><li>Rodar highstate por papel (salt -G ou salt &#39;db01&#39;) antes do tudo-junto para isolar erro de targeting.</li><li>Documentar a promoção de réplica como operação manual fora do highstate — failover automático não se improvisa em state.</li></ul></div>
+      <div class="tblock"><p class="tblock__label">Troubleshooting</p>
+    <div class="tshoot">
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">Réplica renderizou com server_id do source.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">Pillar não chegou ao minion (top.sls do pillar sem match) e o template usou default.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">salt &#39;db02&#39; pillar.items mysql — se vazio, corrigir /srv/pillar/top.sls e salt &#39;db02&#39; saltutil.refresh_pillar antes de reaplicar.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">CHANGE roda a cada highstate e quebra a replicação.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">cmd.run sem unless: todo highstate reexecuta o CHANGE e reinicia as threads.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">Adicionar unless que só permite executar quando Replica_SQL_Running != Yes. State sem guarda para operação não-idempotente é bug, não automação.</span></div>
+      </div>
+      <div class="tshoot__item">
+        <div class="tshoot__row"><span class="tshoot__k">Sintoma</span><span class="tshoot__v">mysql_user.present falha com access denied.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Causa</span><span class="tshoot__v">O state conecta como usuário sem GRANT ou sem socket root disponível.</span></div>
+        <div class="tshoot__row"><span class="tshoot__k">Ação</span><span class="tshoot__v">No lab, executar a criação como root via socket (connection_user: root, connection_unix_socket). Em produção, usar credencial de pillar com o mínimo necessário.</span></div>
+      </div></div></div>
+      <div class="tblock"><p class="tblock__label">Comandos</p>
+    <div class="code">
+      <div class="code__head">
+        <span class="code__desc">Pillar por papel (/srv/pillar/)</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">yaml</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code># /srv/pillar/top.sls
+base:
+  &#39;db01&#39;:
+    - mysql
+  &#39;db02&#39;:
+    - mysql
+
+# /srv/pillar/mysql.sls (exemplo; no master real, senhas em pillar seguro)
+{% if grains[&#39;id&#39;] == &#39;db01&#39; %}
+mysql:
+  role: source
+  server_id: 1
+{% elif grains[&#39;id&#39;] == &#39;db02&#39; %}
+mysql:
+  role: replica
+  server_id: 2
+  source_host: 192.168.56.11
+{% endif %}</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Template e state da replicação</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">yaml</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code># /srv/salt/mysql/files/lab.cnf (Jinja)
+[mysqld]
+server_id = {{ pillar[&#39;mysql&#39;][&#39;server_id&#39;] }}
+bind-address = 0.0.0.0
+log_bin = mysql-bin
+binlog_format = ROW
+gtid_mode = ON
+enforce_gtid_consistency = ON
+log_replica_updates = ON
+{% if pillar[&#39;mysql&#39;][&#39;role&#39;] == &#39;replica&#39; %}
+super_read_only = ON
+{% endif %}
+
+# /srv/salt/mysql/replica.sls (apenas o essencial)
+repl-user:
+  mysql_user.present:
+    - name: repl
+    - host: &#39;%&#39;
+    - password: {{ pillar[&#39;repl_password&#39;] }}
+    - connection_user: root
+    - connection_unix_socket: /var/run/mysqld/mysqld.sock
+    - onlyif: test &quot;{{ pillar[&#39;mysql&#39;][&#39;role&#39;] }}&quot; = source
+
+ligar-replica:
+  cmd.run:
+    - name: &gt;
+        mysql -uroot -e &quot;CHANGE REPLICATION SOURCE TO
+        SOURCE_HOST=&#39;{{ pillar[&#39;mysql&#39;][&#39;source_host&#39;] }}&#39;,
+        SOURCE_USER=&#39;repl&#39;,
+        SOURCE_PASSWORD=&#39;{{ pillar[&#39;repl_password&#39;] }}&#39;,
+        SOURCE_AUTO_POSITION=1; START REPLICA;&quot;
+    - unless: mysql -uroot -NBe &quot;SHOW REPLICA STATUS&quot; | grep -q Yes
+    - onlyif: test &quot;{{ pillar[&#39;mysql&#39;][&#39;role&#39;] }}&quot; = replica</code></pre>
+    </div><div class="code">
+      <div class="code__head">
+        <span class="code__desc">Convergir a fleet e validar</span>
+        <span class="hstack" style="gap:var(--s-3)">
+          <span class="code__lang">bash</span>
+          <button class="code__copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copiar</button>
+        </span>
+      </div>
+      <pre><code>salt &#39;db*&#39; saltutil.refresh_pillar
+salt &#39;db*&#39; pillar.items mysql   # conferir: db01=source/1, db02=replica/2
+
+salt &#39;db*&#39; state.highstate
+salt &#39;db*&#39; state.highstate   # 2ª vez: 0 mudanças = idempotente
+
+# validar a replicação sem ssh:
+salt &#39;db02&#39; cmd.run &quot;mysql -uroot -NBe &#39;SHOW REPLICA STATUS\\G&#39; | grep -E &#39;Running|Behind&#39;&quot;
+salt &#39;db01&#39; mysql.query labdb &quot;CREATE TABLE IF NOT EXISTS teste (id INT PRIMARY KEY); INSERT INTO teste VALUES (1) ON DUPLICATE KEY UPDATE id=id;&quot;
+salt &#39;db02&#39; mysql.query labdb &quot;SELECT * FROM teste;&quot;</code></pre>
+    </div></div>
+      <div class="tblock"><p class="tblock__label">Tecnologias</p>
+           <div class="badges"><span class="badge badge--accent">SaltStack Pillar</span><span class="badge badge--accent">Jinja</span><span class="badge badge--accent">mysql_user</span><span class="badge badge--accent">GTID</span><span class="badge badge--accent">state.highstate</span></div></div>
+    </div></div></div>
+  </div>
+    </div></div></div>
+  </div>
+  </div>
+</section>
 
 <section>
   <div class="container">
@@ -155,7 +1241,7 @@
       <p class="eyebrow">Stack</p>
       <h2>Tecnologias abordadas</h2>
     </div>
-    <div class="badges"><span class="badge badge--accent">Terraform</span><span class="badge badge--accent">CloudFormation</span><span class="badge badge--accent">Bicep</span><span class="badge badge--accent">Ansible</span><span class="badge badge--accent">Bash</span><span class="badge badge--accent">Python</span><span class="badge badge--accent">Kubernetes</span><span class="badge badge--accent">Docker</span><span class="badge badge--accent">Helm</span><span class="badge badge--accent">GitHub Actions</span><span class="badge badge--accent">GitLab CI</span><span class="badge badge--accent">ArgoCD</span><span class="badge badge--accent">Prometheus</span><span class="badge badge--accent">Grafana</span><span class="badge badge--accent">Datadog</span><span class="badge badge--accent">SLO/SLI</span><span class="badge badge--accent">Chaos Engineering</span></div>
+    <div class="badges"><span class="badge badge--accent">Terraform</span><span class="badge badge--accent">CloudFormation</span><span class="badge badge--accent">Bicep</span><span class="badge badge--accent">Ansible</span><span class="badge badge--accent">SaltStack</span><span class="badge badge--accent">Bash</span><span class="badge badge--accent">Python</span><span class="badge badge--accent">Kubernetes</span><span class="badge badge--accent">Docker</span><span class="badge badge--accent">Vagrant</span><span class="badge badge--accent">Helm</span><span class="badge badge--accent">GitHub Actions</span><span class="badge badge--accent">GitLab CI</span><span class="badge badge--accent">ArgoCD</span><span class="badge badge--accent">Prometheus</span><span class="badge badge--accent">Grafana</span><span class="badge badge--accent">Datadog</span><span class="badge badge--accent">SLO/SLI</span><span class="badge badge--accent">Chaos Engineering</span></div>
 
     <div class="invest mt-12">
       <p class="eyebrow">Investimento</p>

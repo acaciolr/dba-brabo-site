@@ -1,0 +1,590 @@
+{
+  "_comment": "Modulos e topicos da mentoria DBRE. Segue o padrao-ouro de data/modulos/mysql.json: cada topico traz conceito, como funciona, na pratica, troubleshooting, tecnologias e comandos reais. Os 4 labs sobem MySQL — o motor mais barato para errar e reconstruir.",
+  "slug": "dbre",
+  "modulos": [
+    {
+      "id": "01",
+      "titulo": "Docker — MySQL em containers",
+      "resumo": "O lab mais rápido: um MySQL 8.0 em segundos, depois um par source–réplica com Compose, e a operação do dia a dia sem perder dado quando o container morre.",
+      "nivel": "Intermediário",
+      "topicos": [
+        {
+          "slug": "docker-mysql-single",
+          "titulo": "MySQL 8.0 em um container",
+          "nivel": "Intermediário",
+          "resumo": "Um container, um volume, uma senha. O lab mínimo que já ensina a diferença entre dado no container e dado no volume.",
+          "conceito": "A imagem oficial mysql:8.0 empacota o servidor e um script de inicialização: na primeira subida com o diretório de dados vazio, ela cria o data directory, define a senha do root a partir de MYSQL_ROOT_PASSWORD, cria o banco de MYSQL_DATABASE e o usuário de MYSQL_USER/MYSQL_PASSWORD. O dado só sobrevive ao container se o /var/lib/mysql estiver montado num volume Docker ou bind mount — sem volume, docker rm apaga o banco junto. A porta 3306 do container é publicada no host com -p, e o healthcheck interno diz quando o MySQL aceita conexão de verdade, não apenas quando o processo subiu.",
+          "comoFunciona": [
+            "Você cria um volume nomeado (docker volume create) e sobe o container com -v apontando para /var/lib/mysql e -e MYSQL_ROOT_PASSWORD definida — sem essa variável o container recusa subir.",
+            "Na primeira inicialização o entrypoint inicializa o data directory, aplica as variáveis de ambiente e deixa o MySQL escutando em 3306 dentro da rede do container.",
+            "A flag -p 3306:3306 publica a porta no host; sem ela, só containers da mesma rede alcançam o banco.",
+            "O healthcheck (mysqladmin ping) marca o container como healthy quando aceita conexão — é o sinal correto para liberar a aplicação, não o estado running.",
+            "Parar e remover o container não toca no volume: subir um novo container com o mesmo volume devolve o banco intacto."
+          ],
+          "naPratica": [
+            "Fixar a tag da imagem (mysql:8.0.36, não mysql:latest) para o lab ser reproduzível entre máquinas.",
+            "Criar o volume antes do container e dar nome explícito (mysql-lab-data) em vez de volume anônimo.",
+            "Guardar a senha fora da linha de comando — arquivo .env lido pelo Compose ou variável de ambiente da sessão, nunca no histórico do terminal em máquina compartilhada.",
+            "Criar schema e tabela de teste logo após subir, reiniciar o container e conferir que o dado continua lá — é o teste de persistência.",
+            "Mapear apenas a porta necessária e documentar usuário, senha e porta no README do lab."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "O container sobe e sai em segundos, em loop de restart.",
+              "causa": "Quase sempre MYSQL_ROOT_PASSWORD ausente, ou um my.cnf montado com sintaxe inválida.",
+              "acao": "Ler docker logs mysql-lab antes de qualquer coisa — a mensagem de erro do entrypoint diz exatamente o que faltou. Corrigir a variável ou o arquivo e recriar o container."
+            },
+            {
+              "sintoma": "Permission denied no /var/lib/mysql ao usar bind mount.",
+              "causa": "O diretório do host pertence a outro UID; o mysqld dentro do container roda como usuário mysql (UID 999).",
+              "acao": "Preferir volume nomeado, que o Docker cria com o dono certo. Se precisar de bind mount, ajustar o dono do diretório no host para 999:999."
+            },
+            {
+              "sintoma": "Aplicação não conecta: connection refused na porta 3306.",
+              "causa": "Porta não publicada, ou tentativa de conexão antes do healthy.",
+              "acao": "Conferir docker ps (a coluna PORTS mostra o mapeamento) e docker inspect --format do health. Só apontar a aplicação depois de healthy."
+            },
+            {
+              "sintoma": "O banco 'sumiu' após docker rm.",
+              "causa": "O container usava o filesystem interno ou um volume anônimo que foi removido junto.",
+              "acao": "Recriar do jeito certo com volume nomeado e restaurar do backup. Volume anônimo não é estratégia de persistência — é acidente esperando acontecer."
+            }
+          ],
+          "tecnologias": [
+            "Docker",
+            "MySQL 8.0",
+            "Volume",
+            "Healthcheck",
+            "mysqladmin"
+          ],
+          "comandos": [
+            {
+              "desc": "Subir o MySQL com volume nomeado",
+              "lang": "bash",
+              "code": "docker volume create mysql-lab-data\n\ndocker run -d --name mysql-lab \\\n  -e MYSQL_ROOT_PASSWORD='<senha-forte>' \\\n  -e MYSQL_DATABASE=labdb \\\n  -e MYSQL_USER=lab \\\n  -e MYSQL_PASSWORD='<senha-lab>' \\\n  -v mysql-lab-data:/var/lib/mysql \\\n  -p 3306:3306 \\\n  mysql:8.0.36\n\ndocker ps\n# conferir: STATUS deve chegar a \"healthy\" em ~20s"
+            },
+            {
+              "desc": "Conectar e provar que o dado persiste",
+              "lang": "bash",
+              "code": "# dentro do host, com o cliente mysql instalado:\nmysql -h 127.0.0.1 -u lab -p labdb\n\n-- dentro do mysql:\nCREATE TABLE teste (id INT PRIMARY KEY AUTO_INCREMENT, nome VARCHAR(50));\nINSERT INTO teste (nome) VALUES ('dbabrabo');\nSELECT * FROM teste;\n\n# fora do mysql: reinicia o container e reconecta\n# docker restart mysql-lab\n# o SELECT acima deve retornar a mesma linha"
+            },
+            {
+              "desc": "Inspecionar saúde e logs",
+              "lang": "bash",
+              "code": "docker logs mysql-lab --tail 30\n\ndocker inspect mysql-lab \\\n  --format '{{json .State.Health.Status}}'\n\n# esperado: \"healthy\"\n# se \"unhealthy\" ou sem campo Health, ler os logs acima"
+            }
+          ]
+        },
+        {
+          "slug": "docker-compose-mysql",
+          "titulo": "Lab source–réplica com Docker Compose",
+          "nivel": "Intermediário",
+          "resumo": "Dois containers MySQL na mesma rede, com server_id e GTID, replicando de verdade — o lab que sustenta todos os exercícios de replicação.",
+          "conceito": "O Compose descreve os dois nós num único arquivo YAML: o serviço db01 como source e o db02 como réplica, ambos na mesma rede bridge criada pelo Compose, onde cada serviço resolve pelo próprio nome via DNS interno. Cada um ganha server_id próprio e GTID habilitado por arquivo de configuração montado, porque replicação exige identidade única e posicionamento global. O source cria o usuário de replicação; a réplica aponta com CHANGE REPLICATION SOURCE TO usando SOURCE_HOST='db01' — o nome do serviço, não um IP — e SOURCE_AUTO_POSITION=1, dispensando arquivo e posição.",
+          "comoFunciona": [
+            "O compose.yaml define db01 e db02 com a mesma imagem fixada, volumes separados, e monta um my-source.cnf e um my-replica.cnf com server_id distintos e gtid_mode=ON.",
+            "docker compose up -d sobe a rede, os volumes e os dois containers; o DNS interno resolve db01 e db02 sem IP fixo.",
+            "No source você cria o usuário repl com REPLICATION SLAVE restrito à rede do Compose.",
+            "Na réplica, um único CHANGE REPLICATION SOURCE TO com SOURCE_AUTO_POSITION=1 seguido de START REPLICA inicia o fluxo pelo GTID.",
+            "SHOW REPLICA STATUS na réplica e a comparação de gtid_executed entre os nós provam que a replicação anda; derrubar e recriar um container com o mesmo volume prova a persistência."
+          ],
+          "naPratica": [
+            "Usar imagens e senhas idênticas nos dois serviços, mudando só server_id, volumes e portas publicadas (3306 para o source, 3307 para a réplica).",
+            "Manter os .cnf em arquivos versionados na pasta do lab — nada de docker exec para editar configuração.",
+            "Subir com docker compose up -d e só configurar a replicação depois de ambos healthy.",
+            "Escrever uma linha no source e ler na réplica como teste de fumaça de todo exercício.",
+            "Derrubar tudo com docker compose down (sem -v) para provar que o lab volta com os dados; usar down -v só quando quiser recomeçar do zero."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Réplica com Last_IO_Error: connection refused a db01.",
+              "causa": "Nome de host errado no CHANGE, ou tentativa antes do source estar healthy.",
+              "acao": "Testar do container da réplica: docker exec -it mysql-replica mysqladmin -h db01 -u repl -p ping. Se falhar, conferir nomes de serviço no compose.yaml e aguardar o healthy do source."
+            },
+            {
+              "sintoma": "ERROR 1236: source purged binary logs containing GTIDs.",
+              "causa": "A réplica pediu GTIDs que o source já purgou — retenção curta ou réplica recriada do zero apontando para um source antigo.",
+              "acao": "Reconstruir a réplica a partir dos dados atuais do source (dump com --set-gtid-purged ou clone) em vez de tentar 'pular' — o intervalo purgado não volta."
+            },
+            {
+              "sintoma": "Os dois nós têm o mesmo server_id ou o mesmo UUID.",
+              "causa": "Cópia do volume ou do auto.cnf de um nó para o outro.",
+              "acao": "Nunca clonar volume entre nós sem apagar auto.cnf. Recriar o volume da réplica e reprovisionar a partir do source."
+            }
+          ],
+          "tecnologias": [
+            "Docker Compose",
+            "MySQL 8.0",
+            "GTID",
+            "auto-position",
+            "DNS interno do Compose"
+          ],
+          "comandos": [
+            {
+              "desc": "compose.yaml do lab source–réplica",
+              "lang": "yaml",
+              "code": "services:\n  db01:\n    image: mysql:8.0.36\n    container_name: mysql-source\n    hostname: db01\n    environment:\n      MYSQL_ROOT_PASSWORD: \"<senha-root>\"\n      MYSQL_USER: repl\n      MYSQL_PASSWORD: \"<senha-repl>\"\n    volumes:\n      - mysql-source-data:/var/lib/mysql\n      - ./my-source.cnf:/etc/mysql/conf.d/lab.cnf:ro\n    ports:\n      - \"3306:3306\"\n    networks: [lab]\n\n  db02:\n    image: mysql:8.0.36\n    container_name: mysql-replica\n    hostname: db02\n    environment:\n      MYSQL_ROOT_PASSWORD: \"<senha-root>\"\n    volumes:\n      - mysql-replica-data:/var/lib/mysql\n      - ./my-replica.cnf:/etc/mysql/conf.d/lab.cnf:ro\n    ports:\n      - \"3307:3306\"\n    networks: [lab]\n\nvolumes:\n  mysql-source-data:\n  mysql-replica-data:\n\nnetworks:\n  lab:"
+            },
+            {
+              "desc": "Arquivos de configuração (um por nó)",
+              "lang": "ini",
+              "code": "# my-source.cnf  (my-replica.cnf é igual, trocando server_id para 2)\n[mysqld]\nserver_id = 1\nlog_bin = mysql-bin\nbinlog_format = ROW\ngtid_mode = ON\nenforce_gtid_consistency = ON\nlog_replica_updates = ON\nbinlog_expire_logs_seconds = 604800"
+            },
+            {
+              "desc": "Subir e ligar a replicação por GTID",
+              "lang": "bash",
+              "code": "docker compose up -d\ndocker compose ps   # aguardar ambos \"healthy\"\n\n# no source (db01): criar o usuário de replicação\n docker exec -it mysql-source mysql -uroot -p -e \"\\\nCREATE USER IF NOT EXISTS 'repl'@'%' IDENTIFIED BY '<senha-repl>'; \\\nGRANT REPLICATION SLAVE ON *.* TO 'repl'@'%'; FLUSH PRIVILEGES;\"\n\n# na réplica (db02): apontar e iniciar\n docker exec -it mysql-replica mysql -uroot -p -e \"\\\nCHANGE REPLICATION SOURCE TO \\\n  SOURCE_HOST='db01', SOURCE_USER='repl', \\\n  SOURCE_PASSWORD='<senha-repl>', SOURCE_AUTO_POSITION=1; \\\nSTART REPLICA;\"\n\n# validar na réplica:\n docker exec -it mysql-replica mysql -uroot -p -e \"SHOW REPLICA STATUS\\\\G\" \\\n  | grep -E 'Replica_IO_Running|Replica_SQL_Running|Seconds_Behind|Last_Error'"
+            }
+          ]
+        },
+        {
+          "slug": "docker-mysql-operacao",
+          "titulo": "Operação do dia a dia: backup, restore e upgrade",
+          "nivel": "Intermediário",
+          "resumo": "Dump consistente com GTID, restore num container limpo e upgrade de minor version trocando a tag — sem susto e sem perda.",
+          "conceito": "Backup lógico com mysqldump continua sendo a ferramenta mais didática: com --single-transaction ele tira um snapshot consistente de tabelas InnoDB sem travar escrita, e com --set-gtid-purged=ON registra no dump o conjunto de GTIDs correspondente, o que permite reconstruir uma réplica apontando para o ponto certo. O restore é um container novo com volume vazio recebendo o dump pela porta publicada. O upgrade de minor (8.0.x para 8.0.y) na imagem oficial é trocar a tag e recriar o container sobre o mesmo volume — o servidor detecta o data directory existente e executa o upgrade automático na subida.",
+          "comoFunciona": [
+            "O mysqldump roda do host contra a porta publicada, com --single-transaction e --routines --events para levar rotinas e agendadores junto.",
+            "O arquivo gerado contém o SET de GTID_PURGED no cabeçalho; guardá-lo junto do dump documenta de qual ponto aquele backup partiu.",
+            "O restore sobe um container limpo (volume novo) e injeta o dump com mysql < backup.sql — se o dump tem GTID, a instância restaurada já nasce com o gtid_executed correspondente.",
+            "O upgrade de minor é docker compose pull + recriar o serviço com a nova tag mantendo o volume; o log da subida mostra o upgrade do dicionário de dados.",
+            "Major upgrade (8.0 para 9.x) não entra nesse fluxo: exige dump + restore ou utilitário de upgrade com checagem prévia — tratar como migração, não como troca de tag."
+          ],
+          "naPratica": [
+            "Agendar o dump por cron no host com data no nome do arquivo e retenção explícita (ex.: 7 dias).",
+            "Testar o restore num container separado antes de declarar que 'tem backup' — backup não testado é promessa.",
+            "Versionar o compose.yaml e os .cnf no git para o lab inteiro ser reconstruível.",
+            "Fazer upgrade primeiro na réplica, observar, e só depois no source — a mesma disciplina de produção, em miniatura.",
+            "Medir o tempo do restore: é o RTO do lab, e o número que decide entre dump e backup físico quando o banco crescer."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Restore falha com erro de GTID_PURGED já executado.",
+              "causa": "Tentativa de importar um dump com GTID num servidor que já tem aquele conjunto ou um conjunto divergente.",
+              "acao": "Restaurar sempre em volume vazio. Se precisar importar num servidor existente, regenerar o dump com --set-gtid-purged=OFF e assumir a reconciliação manual."
+            },
+            {
+              "sintoma": "Dump trava ou demora horas.",
+              "causa": "Tabela MyISAM no meio (quebra o --single-transaction) ou banco grande demais para dump lógico.",
+              "acao": "Mapear engines com SELECT TABLE_SCHEMA, ENGINE, COUNT(*) ... GROUP BY; para MyISAM, aceitar o lock ou migrar para InnoDB. Para banco grande, o aprendizado aqui é o limite do dump — e a deixa para estudar XtraBackup."
+            },
+            {
+              "sintoma": "Após trocar a tag, o container não sobe.",
+              "causa": "Pulo de major version ou variável removida na nova imagem.",
+              "acao": "Ler o docker logs — o servidor diz qual parâmetro rejeitou. Voltar a tag anterior (o volume continua intacto) e planejar o upgrade como migração."
+            }
+          ],
+          "tecnologias": [
+            "mysqldump",
+            "GTID_PURGED",
+            "Docker volumes",
+            "Compose",
+            "Upgrade minor"
+          ],
+          "comandos": [
+            {
+              "desc": "Backup consistente e restore em container limpo",
+              "lang": "bash",
+              "code": "# backup do source (porta 3306 do host)\nmysqldump -h 127.0.0.1 -uroot -p \\\n  --single-transaction --routines --events \\\n  --set-gtid-purged=ON --databases labdb \\\n  > labdb-$(date +%F).sql\n\nls -lh labdb-*.sql\nhead -30 labdb-$(date +%F).sql | grep -i gtid\n\n# restore de teste num container isolado\ndocker run -d --name mysql-restore-test \\\n  -e MYSQL_ROOT_PASSWORD='<senha>' \\\n  -v mysql-restore-data:/var/lib/mysql \\\n  -p 3308:3306 mysql:8.0.36\nsleep 20\nmysql -h 127.0.0.1 -P 3308 -uroot -p < labdb-$(date +%F).sql\nmysql -h 127.0.0.1 -P 3308 -uroot -p -e \"SELECT COUNT(*) FROM labdb.teste;\"\n# conferiu? derruba o teste: docker rm -f mysql-restore-test"
+            },
+            {
+              "desc": "Upgrade de minor trocando a tag",
+              "lang": "bash",
+              "code": "# 1. backup antes de tudo (comando acima)\n# 2. trocar a tag no compose.yaml: mysql:8.0.36 -> mysql:8.0.37\n# 3. recriar mantendo os volumes:\ndocker compose pull db02\ndocker compose up -d db02\ndocker logs mysql-replica --tail 20\n# procurar: \"Upgrade is complete\" / versão nova no log\nmysql -h 127.0.0.1 -P 3307 -uroot -p -e \"SELECT VERSION();\"\n# repetir em db01 só depois de validar a réplica"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "02",
+      "titulo": "Vagrant — VMs reproduzíveis com MySQL",
+      "resumo": "Quando o container esconde demais: VMs VirtualBox com provisionamento versionado, uma com MySQL sozinho e um par em replicação GTID na mesma rede privada.",
+      "nivel": "Intermediário",
+      "topicos": [
+        {
+          "slug": "vagrant-mysql-single",
+          "titulo": "Uma VM com MySQL provisionada do zero",
+          "nivel": "Intermediário",
+          "resumo": "Vagrantfile + script shell que instala o MySQL 8.0 no Ubuntu de forma repetível: vagrant up e o banco está lá, vagrant destroy e não sobra nada.",
+          "conceito": "O Vagrant descreve a VM num Vagrantfile versionado: box base (ubuntu/jammy64), hostname, rede privada com IP fixo e provisionadores shell que rodam apt install e configuram o MySQL a cada vagrant up. Diferente do container, aqui existe um sistema operacional completo com systemd — o MySQL roda como serviço, com data directory em /var/lib/mysql dentro do disco da VM. Destruir e recriar a VM a partir do mesmo Vagrantfile prova que a instalação é código, não memória de quem digitou os comandos uma vez.",
+          "comoFunciona": [
+            "O Vagrantfile fixa a box e o IP privado (ex.: 192.168.56.11), evitando DHCP aleatório que quebraria a replicação no tópico seguinte.",
+            "O provisionador shell atualiza o apt, instala mysql-server 8.0, ajusta bind-address e cria banco e usuário de lab via mysql já como root local.",
+            "vagrant up cria a VM no VirtualBox, executa o provisionamento e deixa o MySQL escutando na rede privada.",
+            "vagrant ssh abre o terminal da VM; do host, mysql -h 192.168.56.11 conecta pela rede privada.",
+            "vagrant halt desliga, vagrant up religa com os dados, vagrant destroy apaga tudo — o Vagrantfile continua sendo a única fonte da verdade."
+          ],
+          "naPratica": [
+            "Fixar a versão da box (config.vm.box_version) para o lab não mudar sozinho num update.",
+            "Deixar o script de provision idempotente: CREATE USER IF NOT EXISTS, CREATE DATABASE IF NOT EXISTS — rodar vagrant provision duas vezes não pode quebrar.",
+            "Reservar memória e CPU explícitos no provider (2 GB / 2 vCPU é o mínimo confortável para MySQL 8.0).",
+            "Nunca editar configuração dentro da VM sem levar de volta para o script — o que não está no provision não existe.",
+            "Commits pequenos no Vagrantfile + provision.sh: cada mudança, um vagrant provision para validar."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "vagrant up falha baixando a box ou criando a VM.",
+              "causa": "VirtualBox desatualizado em relação ao Vagrant, ou rede do host bloqueando o download.",
+              "acao": "Conferir vagrant --version e a versão do VirtualBox (a compatibilidade é estrita), e testar o download da box com vagrant box add --insecure separado do up."
+            },
+            {
+              "sintoma": "Host não alcança o MySQL no IP privado.",
+              "causa": "bind-address ainda 127.0.0.1, ou firewall/skip-networking.",
+              "acao": "Dentro da VM: SELECT @@bind_address; e ss -ltn | grep 3306. Ajustar bind-address para 0.0.0.0 no provision e criar o usuário com host % ou o IP do host."
+            },
+            {
+              "sintoma": "Provision falha na segunda execução.",
+              "causa": "Script não idempotente: CREATE USER sem IF NOT EXISTS aborta e o Vagrant marca o provision como falho.",
+              "acao": "Reescrever com cláusulas IF NOT EXISTS e testar com vagrant provision repetido antes de declarar pronto."
+            }
+          ],
+          "tecnologias": [
+            "Vagrant",
+            "VirtualBox",
+            "Ubuntu 22.04",
+            "MySQL 8.0",
+            "Shell provision"
+          ],
+          "comandos": [
+            {
+              "desc": "Vagrantfile mínimo do lab",
+              "lang": "ruby",
+              "code": "Vagrant.configure(\"2\") do |config|\n  config.vm.box = \"ubuntu/jammy64\"\n  config.vm.hostname = \"db01\"\n  config.vm.network \"private_network\", ip: \"192.168.56.11\"\n\n  config.vm.provider \"virtualbox\" do |vb|\n    vb.memory = 2048\n    vb.cpus = 2\n  end\n\n  config.vm.provision \"shell\", path: \"provision.sh\"\nend"
+            },
+            {
+              "desc": "provision.sh — instala e prepara o MySQL",
+              "lang": "bash",
+              "code": "#!/usr/bin/env bash\nset -euo pipefail\nexport DEBIAN_FRONTEND=noninteractive\n\napt-get update -y\napt-get install -y mysql-server-8.0\n\n# escuta na rede privada do lab\nsed -i 's/^bind-address.*/bind-address = 0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf\nsystemctl enable --now mysql\n\nmysql <<'SQL'\nCREATE DATABASE IF NOT EXISTS labdb;\nCREATE USER IF NOT EXISTS 'lab'@'%' IDENTIFIED BY '<senha-lab>';\nGRANT ALL ON labdb.* TO 'lab'@'%';\nFLUSH PRIVILEGES;\nSQL\n\nmysql -e \"SELECT VERSION();\""
+            },
+            {
+              "desc": "Ciclo de vida da VM",
+              "lang": "bash",
+              "code": "vagrant up        # cria + provisiona (demora na 1ª vez: baixa a box)\nvagrant status\nvagrant ssh -c \"systemctl status mysql --no-pager\"\n\n# do host, pela rede privada:\nmysql -h 192.168.56.11 -u lab -p -e \"SELECT VERSION();\"\n\nvagrant halt      # desliga mantendo o disco\nvagrant up        # religa: o dado continua\nvagrant destroy -f  # apaga tudo; o Vagrantfile recria igual"
+            }
+          ]
+        },
+        {
+          "slug": "vagrant-mysql-replica",
+          "titulo": "Duas VMs em replicação GTID",
+          "nivel": "Intermediário",
+          "resumo": "O mesmo Vagrantfile, agora com db01 e db02 em rede privada fixa, cada uma com server_id próprio, replicando por GTID como em produção.",
+          "conceito": "Um Vagrantfile multi-machine define db01 (192.168.56.11) e db02 (192.168.56.12) com o mesmo box e provisionadores parametrizados por papel: o source recebe server_id=1 e cria o usuário repl; a réplica recebe server_id=2 com GTID e super_read_only. IPs fixos na mesma rede privada dispensam DNS e espelham o que acontece entre dois servidores físicos. A replicação é a mesma do Compose — CHANGE REPLICATION SOURCE TO com SOURCE_AUTO_POSITION=1 — mas agora atravessando VMs completas, com systemd, logs em /var/log/mysql e latência de rede real entre nós.",
+          "comoFunciona": [
+            "O Vagrantfile declara config.vm.define para cada nó, cada um com IP privado próprio e o mesmo script de provision recebendo ROLE e SERVER_ID por variável de ambiente.",
+            "O provision instala o MySQL, grava /etc/mysql/conf.d/lab.cnf com server_id, binlog ROW e GTID, reinicia o serviço e, se ROLE=source, cria o usuário repl.",
+            "Com as duas VMs no ar, você executa na réplica o CHANGE apontando para 192.168.56.11 e START REPLICA.",
+            "SHOW REPLICA STATUS e a comparação de gtid_executed validam o fluxo; inserir no source e ler na réplica é o teste de fumaça.",
+            "vagrant halt db02 + vagrant up db02 simula a queda de uma réplica; a replicação retoma sozinha do ponto guardado."
+          ],
+          "naPratica": [
+            "Subir primeiro o source, validar o MySQL nele, e só depois subir a réplica — ordem importa no provision.",
+            "Manter um único provision.sh com if de papel em vez de dois scripts copiados — divergência entre scripts vira divergência entre nós.",
+            "Usar super_read_only=ON na réplica para impedir escrita acidental que gere GTID local.",
+            "Documentar os IPs e as credenciais no README do lab; IP fixo é contrato.",
+            "Ensaia halt/restart de cada nó com a replicação rodando antes de se declarar pronto."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Réplica não resolve ou não alcança o source.",
+              "causa": "VMs em redes diferentes, ou provision rodou antes da rede subir.",
+              "acao": "De dentro da réplica: ping -c2 192.168.56.11 e mysqladmin -h 192.168.56.11 -u repl -p ping. Se o ping falha, vagrant reload db02; se só o mysql falha, revisar usuário e bind-address no source."
+            },
+            {
+              "sintoma": "server_id igual nos dois nós e a replicação recusa iniciar.",
+              "causa": "Variável SERVER_ID não chegou ao provision de um dos nós.",
+              "acao": "Em cada VM: SELECT @@server_id; Se iguais, corrigir o Vagrantfile e vagrant provision. Não editar my.cnf à mão — corrigir a fonte."
+            },
+            {
+              "sintoma": "Após vagrant destroy de um nó, o outro reclama de GTIDs desconhecidos.",
+              "causa": "O nó destruído foi recriado vazio e o antigo UUID ainda aparece no conjunto do parceiro.",
+              "acao": "É esperado ao recriar do zero: reprovisionar a réplica a partir do source atual (dump com GTID) em vez de tentar reaproveitar coordenadas antigas."
+            }
+          ],
+          "tecnologias": [
+            "Vagrant multi-machine",
+            "MySQL GTID",
+            "server_id",
+            "super_read_only",
+            "Rede privada VirtualBox"
+          ],
+          "comandos": [
+            {
+              "desc": "Vagrantfile com dois nós",
+              "lang": "ruby",
+              "code": "Vagrant.configure(\"2\") do |config|\n  config.vm.box = \"ubuntu/jammy64\"\n\n  config.vm.define \"db01\" do |db|\n    db.vm.hostname = \"db01\"\n    db.vm.network \"private_network\", ip: \"192.168.56.11\"\n    db.vm.provider(\"virtualbox\") { |vb| vb.memory = 2048; vb.cpus = 2 }\n    db.vm.provision \"shell\", path: \"provision.sh\",\n      env: { \"ROLE\" => \"source\", \"SERVER_ID\" => \"1\" }\n  end\n\n  config.vm.define \"db02\" do |db|\n    db.vm.hostname = \"db02\"\n    db.vm.network \"private_network\", ip: \"192.168.56.12\"\n    db.vm.provider(\"virtualbox\") { |vb| vb.memory = 2048; vb.cpus = 2 }\n    db.vm.provision \"shell\", path: \"provision.sh\",\n      env: { \"ROLE\" => \"replica\", \"SERVER_ID\" => \"2\" }\n  end\nend"
+            },
+            {
+              "desc": "Trecho do provision.sh por papel",
+              "lang": "bash",
+              "code": "# ROLE e SERVER_ID vêm do Vagrantfile\ncat > /etc/mysql/conf.d/lab.cnf <<EOF\n[mysqld]\nserver_id = ${SERVER_ID}\nlog_bin = mysql-bin\nbinlog_format = ROW\ngtid_mode = ON\nenforce_gtid_consistency = ON\nlog_replica_updates = ON\nbinlog_expire_logs_seconds = 604800\nEOF\n\nif [ \"${ROLE}\" = \"replica\" ]; then\n  echo \"super_read_only = ON\" >> /etc/mysql/conf.d/lab.cnf\nfi\nsystemctl restart mysql\n\nif [ \"${ROLE}\" = \"source\" ]; then\nmysql <<'SQL'\nCREATE USER IF NOT EXISTS 'repl'@'%' IDENTIFIED BY '<senha-repl>';\nGRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';\nFLUSH PRIVILEGES;\nSQL\nfi"
+            },
+            {
+              "desc": "Ligar a replicação entre as VMs",
+              "lang": "bash",
+              "code": "vagrant up db01   # primeiro o source\nvagrant up db02   # depois a réplica\n\nvagrant ssh db02 -c \"mysql -uroot -e \\\"\\\nCHANGE REPLICATION SOURCE TO \\\n  SOURCE_HOST='192.168.56.11', SOURCE_USER='repl', \\\n  SOURCE_PASSWORD='<senha-repl>', SOURCE_AUTO_POSITION=1; \\\nSTART REPLICA;\\\"\"\n\nvagrant ssh db02 -c \"mysql -uroot -e 'SHOW REPLICA STATUS\\\\G'\" \\\n  | grep -E 'Replica_IO_Running|Replica_SQL_Running|Seconds_Behind'\n\n# teste de fumaça:\nvagrant ssh db01 -c \"mysql -uroot -e \\\"CREATE DATABASE IF NOT EXISTS labdb; CREATE TABLE IF NOT EXISTS labdb.teste (id INT PRIMARY KEY); INSERT INTO labdb.teste VALUES (1) ON DUPLICATE KEY UPDATE id=id;\\\"\"\nvagrant ssh db02 -c \"mysql -uroot -e 'SELECT * FROM labdb.teste;'\""
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "03",
+      "titulo": "Terraform — Infra declarativa para labs MySQL",
+      "resumo": "Do container local ao RDS na AWS: o mesmo fluxo init/plan/apply, estado versionado no gitignore, e destroy no fim para não pagar conta à toa.",
+      "nivel": "Intermediário → Avançado",
+      "topicos": [
+        {
+          "slug": "terraform-docker-mysql",
+          "titulo": "MySQL local com o provider Docker",
+          "nivel": "Intermediário",
+          "resumo": "O primeiro contato com Terraform sem nuvem nem custo: main.tf que declara imagem, rede e container MySQL, com senha em variável sensível.",
+          "conceito": "Terraform descreve infraestrutura desejada em HCL e converge a realidade para ela: terraform plan mostra a diferença entre o estado atual (terraform.tfstate) e o declarado, e terraform apply executa. Com o provider kreuzwerker/docker, os recursos são imagem e container na daemon local — o mesmo MySQL 8.0 dos labs anteriores, mas agora criado por código versionado em vez de comandos ad hoc. Variáveis tipadas com sensitive=true tiram a senha do código, e outputs expõem porta e nome do volume sem que ninguém precise inspecionar estado.",
+          "comoFunciona": [
+            "O bloco terraform declara o provider e a versão; o resource docker_image fixa a imagem e o docker_container declara nome, portas, env e volumes.",
+            "terraform init baixa o provider; plan mostra create de imagem + container; apply executa e grava o tfstate.",
+            "Mudar a senha ou a porta no .tfvars e rodar plan mostra exatamente o que será recriado antes de tocar em qualquer coisa.",
+            "terraform output exibe como conectar; terraform destroy derruba container, rede e imagem conforme o estado.",
+            "O .gitignore exclui tfstate, .terraform/ e *.tfvars com segredo — o repositório guarda o desejo, nunca o segredo nem o estado."
+          ],
+          "naPratica": [
+            "Fixar versão do provider (=) e tag da imagem para o lab não mudar sozinho.",
+            "Separar variáveis em variables.tf + terraform.tfvars.example (com valores fake) e nunca commitar o tfvars real.",
+            "Rodar plan antes de todo apply e ler a saída — plan que ninguém lê é enfeite.",
+            "Um recurso por responsabilidade: imagem, volume/rede e container separados facilitam destroy parcial.",
+            "Guardar o mysql-lab/ inteiro no git: main.tf, variables.tf, outputs.tf e o README com os 4 comandos."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "terraform apply falha falando do socket Docker.",
+              "causa": "Daemon parada, ou provider apontando para socket errado (comum em Docker Desktop vs. engine Linux).",
+              "acao": "Conferir docker ps antes do Terraform. Se o Docker responde e o provider não, explicitar host = \"unix:///var/run/docker.sock\" no bloco do provider."
+            },
+            {
+              "sintoma": "Container recriado a cada apply sem mudança aparente.",
+              "causa": "Atributo volátil no recurso (ex.: env com timestamp) forçando replacement, ou imagem latest puxando digest novo.",
+              "acao": "Ler o plan com atenção: ele nomeia o atributo culpado com forces replacement. Fixar a tag com digest e remover o atributo volátil."
+            },
+            {
+              "sintoma": "Senha vazou no log do apply ou no tfstate.",
+              "causa": "Variável sem sensitive=true, ou output sem sensitive expondo a senha.",
+              "acao": "Marcar variable e output como sensitive, e tratar o tfstate como segredo: nunca commitar, e em time usar backend remoto com criptografia."
+            }
+          ],
+          "tecnologias": [
+            "Terraform",
+            "Provider Docker",
+            "HCL",
+            "tfstate",
+            "MySQL 8.0"
+          ],
+          "comandos": [
+            {
+              "desc": "main.tf do lab local",
+              "lang": "hcl",
+              "code": "terraform {\n  required_providers {\n    docker = {\n      source  = \"kreuzwerker/docker\"\n      version = \"= 3.0.2\"\n    }\n  }\n}\n\nprovider \"docker\" {}\n\nresource \"docker_image\" \"mysql\" {\n  name = \"mysql:8.0.36\"\n}\n\nresource \"docker_volume\" \"data\" {\n  name = \"tf-mysql-data\"\n}\n\nresource \"docker_container\" \"mysql\" {\n  name  = \"tf-mysql\"\n  image = docker_image.mysql.image_id\n\n  env = [\n    \"MYSQL_ROOT_PASSWORD=${var.root_password}\",\n    \"MYSQL_DATABASE=labdb\"\n  ]\n\n  ports {\n    internal = 3306\n    external = 3306\n  }\n\n  volumes {\n    volume_name    = docker_volume.data.name\n    container_path = \"/var/lib/mysql\"\n  }\n}\n\nvariable \"root_password\" {\n  type      = string\n  sensitive = true\n}\n\noutput \"como_conectar\" {\n  value = \"mysql -h 127.0.0.1 -uroot -p labdb\"\n}"
+            },
+            {
+              "desc": "Fluxo init → plan → apply → destroy",
+              "lang": "bash",
+              "code": "terraform init\nterraform plan -var=\"root_password=<senha-forte>\" -out lab.plan\n# ler o plan: deve mostrar 3 creates (imagem, volume, container)\nterraform apply lab.plan\n\nterraform output como_conectar\nmysql -h 127.0.0.1 -uroot -p -e \"SELECT VERSION();\"\n\n# fim do lab: derruba tudo que o estado registrou\nterraform destroy -var=\"root_password=<senha-forte>\""
+            }
+          ]
+        },
+        {
+          "slug": "terraform-cloud-mysql",
+          "titulo": "RDS MySQL na AWS com Terraform",
+          "nivel": "Intermediário → Avançado",
+          "resumo": "O mesmo fluxo, agora contra a AWS: security group, subnet group e instância db.t3.micro, com endpoint em output e destroy obrigatório no fim.",
+          "conceito": "Contra a nuvem, o Terraform gerencia recursos reais e cobráveis: aws_db_instance cria uma instância RDS MySQL numa VPC, com classe, storage, engine e janela de backup declarados. O security group limita 3306 ao seu IP, o db_subnet_group espalha a instância pelas subnets, e manage_master_user_password ou uma variável sensível evita senha em texto claro no código. Skip_final_snapshot e delete_automated_backups liberam o destroy limpo do lab — em produção ambos seriam o oposto. O endpoint sai em output: é ele que a aplicação usa, nunca um IP anotado à mão.",
+          "comoFunciona": [
+            "O provider aws assume credenciais via variáveis de ambiente ou perfil; o código declara SG, subnet group e a instância com engine mysql 8.0 e classe barata de lab.",
+            "terraform plan mostra a instância + SG + subnet group a criar, com os atributos sensíveis ocultados.",
+            "terraform apply leva ~5–10 minutos: o RDS provisiona storage, aplica o parameter group e expõe o endpoint.",
+            "O output imprime o endpoint; mysql -h <endpoint> conecta do IP liberado no SG.",
+            "terraform destroy remove instância, snapshots automáticos e SG — rodar e conferir no console que não restou nada é parte do exercício."
+          ],
+          "naPratica": [
+            "Usar db.t3.micro + 20 GB gp3 para o lab: o menor custo que ainda roda MySQL 8.0 com dignidade.",
+            "Liberar 3306 só para o seu IP (/32), nunca 0.0.0.0/0 — SG aberto em lab vira incidente de verdade.",
+            "Definir backup_retention_period=7 e janela de manutenção explícita para exercitar PITR no lab de backup.",
+            "Nunca commitar tfvars com senha nem access key; usar .gitignore + variáveis de ambiente.",
+            "Orçar antes: conferir o preço da classe na região e destruir no mesmo dia — lab esquecido ligado é a conta mais comum da AWS."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Apply falha com erro de subnet group ou AZ.",
+              "causa": "Subnets em uma única AZ, ou VPC default apagada na região.",
+              "acao": "O db_subnet_group exige subnets em pelo menos 2 AZs. Listar as subnets da VPC e corrigir o data source antes de reaplicar."
+            },
+            {
+              "sintoma": "Timeout conectando no endpoint após apply com sucesso.",
+              "causa": "Security group sem o seu IP, ou publicamente_accessível=false numa VPC sem rota.",
+              "acao": "Conferir o SG no console (a regra de entrada tem o seu IP público atual?) e o atributo publicly_accessible. IP doméstico muda — regra antiga com IP antigo é a causa número um."
+            },
+            {
+              "sintoma": "Destroy trava pedindo snapshot final.",
+              "causa": "skip_final_snapshot=false sem nome de snapshot informado.",
+              "acao": "No lab, manter skip_final_snapshot=true. Em produção, o comportamento correto é o inverso — exigir snapshot nomeado antes de destruir."
+            }
+          ],
+          "tecnologias": [
+            "Terraform",
+            "AWS RDS",
+            "Security Group",
+            "db_subnet_group",
+            "MySQL 8.0"
+          ],
+          "comandos": [
+            {
+              "desc": "rds.tf — instância de lab",
+              "lang": "hcl",
+              "code": "provider \"aws\" {\n  region = \"us-east-1\"\n}\n\ndata \"aws_vpc\" \"default\" {\n  default = true\n}\n\ndata \"aws_subnets\" \"default\" {\n  filter {\n    name   = \"vpc-id\"\n    values = [data.aws_vpc.default.id]\n  }\n}\n\nresource \"aws_security_group\" \"mysql_lab\" {\n  name        = \"mysql-lab-sg\"\n  description = \"Lab DBA BRABO - so meu IP\"\n  vpc_id      = data.aws_vpc.default.id\n\n  ingress {\n    from_port   = 3306\n    to_port     = 3306\n    protocol    = \"tcp\"\n    cidr_blocks = [\"${var.meu_ip}/32\"]\n  }\n\n  egress {\n    from_port   = 0\n    to_port     = 0\n    protocol    = \"-1\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n  }\n}\n\nresource \"aws_db_subnet_group\" \"lab\" {\n  name       = \"mysql-lab-subnets\"\n  subnet_ids = slice(data.aws_subnets.default.ids, 0, 2)\n}\n\nresource \"aws_db_instance\" \"lab\" {\n  identifier             = \"dbabrabo-lab\"\n  engine                 = \"mysql\"\n  engine_version         = \"8.0.36\"\n  instance_class         = \"db.t3.micro\"\n  allocated_storage      = 20\n  storage_type           = \"gp3\"\n  db_name                = \"labdb\"\n  username               = \"admin\"\n  manage_master_user_password = true\n  db_subnet_group_name   = aws_db_subnet_group.lab.name\n  vpc_security_group_ids = [aws_security_group.mysql_lab.id]\n  publicly_accessible    = true\n  backup_retention_period = 7\n  skip_final_snapshot    = true\n  delete_automated_backups = true\n}\n\nvariable \"meu_ip\" {\n  type = string  # seu IP público, sem /32\n}\n\noutput \"endpoint\" {\n  value = aws_db_instance.lab.endpoint\n}"
+            },
+            {
+              "desc": "Subir, usar e destruir sem deixar conta",
+              "lang": "bash",
+              "code": "export AWS_PROFILE=lab   # ou AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY\nterraform init\nterraform plan -var=\"meu_ip=$(curl -s ifconfig.me)\" -out lab.plan\nterraform apply lab.plan   # ~5-10 min\n\nterraform output -raw endpoint\n# conecta do seu IP liberado:\nmysql -h $(terraform output -raw endpoint | cut -d: -f1) \\\n  -u admin -p -e \"SELECT VERSION();\"\n\n# FIM DO LAB — não pule esta parte:\nterraform destroy -var=\"meu_ip=$(curl -s ifconfig.me)\"\n# conferir no console AWS: RDS > Databases vazia"
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    },
+    {
+      "id": "04",
+      "titulo": "SaltStack — Configuração idempotente do MySQL",
+      "resumo": "Master e minions, states versionados e pillar por papel: o MySQL instalado e replicado por código, com salt '*' state.apply como único gesto.",
+      "nivel": "Avançado",
+      "topicos": [
+        {
+          "slug": "salt-mysql-single",
+          "titulo": "Master + minion instalando MySQL por state",
+          "nivel": "Avançado",
+          "resumo": "Um master, um minion Ubuntu, chave aceita e um state que instala o MySQL 8.0, entrega o my.cnf e garante o serviço ligado — rode duas vezes, mude nada.",
+          "conceito": "SaltStack separa transporte e desejo: o master (portas 4505/4506) publica jobs e recebe retornos; o minion executa. A confiança começa com a troca de chaves — o minion gera um par e o master aceita com salt-key -A, identificando cada máquina pelo id. O estado desejado vive em states SLS (YAML com Jinja): pkg.installed garante o pacote, file.managed garante o conteúdo do my.cnf, service.running garante o serviço ligado e observando os arquivos. O top.sls mapeia minion a state. Rodar state.highstate duas vezes e ver zero mudança na segunda é a prova de idempotência.",
+          "comoFunciona": [
+            "Você instala salt-master numa VM (ou no host) e salt-minion na VM alvo, apontando o minion para o master por master: <ip-ou-nome> em /etc/salt/minion.",
+            "O minion se apresenta; no master, salt-key -L mostra a chave pendente e salt-key -A -y <id> confere confiança.",
+            "Em /srv/salt/mysql/init.sls você declara pacote, /etc/mysql/conf.d/lab.cnf e serviço com watch — qualquer mudança no .cnf reinicia o MySQL sozinho.",
+            "O /srv/salt/top.sls associa base -> minion -> mysql; salt 'db*' state.apply (ou highstate) converge.",
+            "salt 'db*' service.status mysql e um mysql -e 'SELECT VERSION()' pelo minion provam o resultado; repetir o apply prova a idempotência."
+          ],
+          "naPratica": [
+            "Fixar o id do minion igual ao hostname (db01) para o targeting por nome funcionar sem glob complicado.",
+            "Versionar /srv/salt inteiro no git — states, pillar e top.sls são o runbook executável.",
+            "Testar o state com salt 'db*' state.apply test=True primeiro: o dry-run mostra o que mudaria sem mudar nada.",
+            "Separar dados sensíveis em pillar (senhas), nunca no state — o state é público por natureza.",
+            "Abrir 4505/4506 só para os minions; master exposto para a internet com chave aceita sem conferência é invasão terceirizada."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Minion não aparece em salt-key -L.",
+              "causa": "Minion apontando para master errado, firewall bloqueando 4505/4506, ou clock skew quebrando o handshake.",
+              "acao": "No minion: systemctl status salt-minion e salt-minion -l debug (mostra para onde ele tenta falar). No caminho: ping + nc -zv <master> 4505. Conferir data/hora nos dois lados."
+            },
+            {
+              "sintoma": "State aplica mas o MySQL não reinicia após mudar o .cnf.",
+              "causa": "Faltou o watch no service.running apontando para o file.managed.",
+              "acao": "Declarar watch: - file: /etc/mysql/conf.d/lab.cnf no serviço. Sem watch, o Salt garante o arquivo mas não o efeito."
+            },
+            {
+              "sintoma": "file.managed falha com permission denied.",
+              "causa": "Minion rodando como usuário sem escrita em /etc/mysql, ou pasta conf.d inexistente na distro.",
+              "acao": "Garantir o diretório com file.directory antes do file.managed, e rodar o minion como root (padrão) nos labs."
+            }
+          ],
+          "tecnologias": [
+            "SaltStack",
+            "salt-master",
+            "salt-minion",
+            "States SLS",
+            "top.sls"
+          ],
+          "comandos": [
+            {
+              "desc": "Instalar master e minion (Ubuntu 22.04)",
+              "lang": "bash",
+              "code": "# no master:\ncurl -fsSL https://github.com/saltstack/salt-bootstrap/releases/latest/download/bootstrap-salt.sh -o /tmp/bootstrap.sh\nsh /tmp/bootstrap.sh -M -X stable   # -M instala o master\nsystemctl enable --now salt-master\nsalt --version\n\n# no minion (VM db01):\nsh /tmp/bootstrap.sh -X stable\n echo 'master: <IP-DO-MASTER>' > /etc/salt/minion.d/master.conf\n echo 'id: db01' > /etc/salt/minion.d/id.conf\nsystemctl restart salt-minion\n\n# no master: aceitar a chave conferindo o fingerprint\nsalt-key -L\nsalt-key -A -y db01\nsalt 'db01' test.ping   # esperado: True"
+            },
+            {
+              "desc": "States do MySQL (/srv/salt/)",
+              "lang": "yaml",
+              "code": "# /srv/salt/top.sls\nbase:\n  'db01':\n    - mysql\n\n# /srv/salt/mysql/init.sls\nmysql-server:\n  pkg.installed:\n    - name: mysql-server-8.0\n\n/etc/mysql/conf.d/lab.cnf:\n  file.managed:\n    - source: salt://mysql/files/lab.cnf\n    - user: root\n    - group: root\n    - mode: '0644'\n    - require:\n      - pkg: mysql-server\n\nmysql:\n  service.running:\n    - enable: True\n    - watch:\n      - file: /etc/mysql/conf.d/lab.cnf\n\n# /srv/salt/mysql/files/lab.cnf\n# [mysqld]\n# server_id = 1\n# bind-address = 0.0.0.0\n# log_bin = mysql-bin\n# binlog_format = ROW\n# gtid_mode = ON\n# enforce_gtid_consistency = ON"
+            },
+            {
+              "desc": "Aplicar e provar idempotência",
+              "lang": "bash",
+              "code": "# dry-run primeiro:\nsalt 'db01' state.apply test=True\n\n# aplicar de verdade:\nsalt 'db01' state.apply\n\n# repetir: a 2ª execução deve reportar 0 mudanças\nsalt 'db01' state.apply | grep -E 'Succeeded|Failed|Changed'\n\n# provar o MySQL no minion:\nsalt 'db01' cmd.run \"mysql -e 'SELECT VERSION();'\""
+            }
+          ]
+        },
+        {
+          "slug": "salt-mysql-replica",
+          "titulo": "Source–réplica com pillar e states por papel",
+          "nivel": "Avançado",
+          "resumo": "Dois minions, um pillar dizendo quem é source e quem é réplica, template Jinja gerando o my.cnf certo para cada um e o usuário repl criado por state.",
+          "conceito": "Pillar é o dado por minion que o master entrega sob demanda: cada minion vê só o seu. Você define mysql:role e mysql:server_id por id (db01 source/1, db02 replica/2) e o state lê esses valores via Jinja para renderizar o lab.cnf com o server_id correto e, na réplica, super_read_only. O mesmo state cria o banco labdb e — só no source — o usuário repl via mysql_user.present. A ligação da replicação (CHANGE + START) roda como um state cmd.run com unless que verifica se a réplica já está rodando, para o highstate continuar idempotente. O resultado é fleet como código: adicionar um db03 é uma linha no pillar, não um procedimento novo.",
+          "comoFunciona": [
+            "O /srv/pillar/top.sls entrega mysql.sls a db01 e db02; o mysql.sls define role e server_id por minion.",
+            "O template lab.cnf usa {{ pillar['mysql']['server_id'] }} e um bloco condicional que adiciona super_read_only só quando role == 'replica'.",
+            "O state mysql/replica.sls cria o usuário repl apenas no source (when por grain/pillar) e executa o CHANGE na réplica com unless checando Replica_SQL_Running.",
+            "salt 'db*' state.highstate converge os dois; salt 'db02' cmd.run com SHOW REPLICA STATUS valida.",
+            "Inserir no source e ler na réplica fecha o ciclo; salt 'db*' mysql.query substitui o ssh para as verificações de rotina."
+          ],
+          "naPratica": [
+            "Manter pillar separado de states e fora do mesmo commit de senha real — usar pillar.example no git e o real só no master.",
+            "Todo cmd.run com comando de escrita precisa de unless ou onlyif — sem guarda, não é state, é script remoto.",
+            "Testar o template com salt 'db02' slsutil.renderer antes do highstate para ver o .cnf renderizado sem aplicar.",
+            "Rodar highstate por papel (salt -G ou salt 'db01') antes do tudo-junto para isolar erro de targeting.",
+            "Documentar a promoção de réplica como operação manual fora do highstate — failover automático não se improvisa em state."
+          ],
+          "troubleshooting": [
+            {
+              "sintoma": "Réplica renderizou com server_id do source.",
+              "causa": "Pillar não chegou ao minion (top.sls do pillar sem match) e o template usou default.",
+              "acao": "salt 'db02' pillar.items mysql — se vazio, corrigir /srv/pillar/top.sls e salt 'db02' saltutil.refresh_pillar antes de reaplicar."
+            },
+            {
+              "sintoma": "CHANGE roda a cada highstate e quebra a replicação.",
+              "causa": "cmd.run sem unless: todo highstate reexecuta o CHANGE e reinicia as threads.",
+              "acao": "Adicionar unless que só permite executar quando Replica_SQL_Running != Yes. State sem guarda para operação não-idempotente é bug, não automação."
+            },
+            {
+              "sintoma": "mysql_user.present falha com access denied.",
+              "causa": "O state conecta como usuário sem GRANT ou sem socket root disponível.",
+              "acao": "No lab, executar a criação como root via socket (connection_user: root, connection_unix_socket). Em produção, usar credencial de pillar com o mínimo necessário."
+            }
+          ],
+          "tecnologias": [
+            "SaltStack Pillar",
+            "Jinja",
+            "mysql_user",
+            "GTID",
+            "state.highstate"
+          ],
+          "comandos": [
+            {
+              "desc": "Pillar por papel (/srv/pillar/)",
+              "lang": "yaml",
+              "code": "# /srv/pillar/top.sls\nbase:\n  'db01':\n    - mysql\n  'db02':\n    - mysql\n\n# /srv/pillar/mysql.sls (exemplo; no master real, senhas em pillar seguro)\n{% if grains['id'] == 'db01' %}\nmysql:\n  role: source\n  server_id: 1\n{% elif grains['id'] == 'db02' %}\nmysql:\n  role: replica\n  server_id: 2\n  source_host: 192.168.56.11\n{% endif %}"
+            },
+            {
+              "desc": "Template e state da replicação",
+              "lang": "yaml",
+              "code": "# /srv/salt/mysql/files/lab.cnf (Jinja)\n[mysqld]\nserver_id = {{ pillar['mysql']['server_id'] }}\nbind-address = 0.0.0.0\nlog_bin = mysql-bin\nbinlog_format = ROW\ngtid_mode = ON\nenforce_gtid_consistency = ON\nlog_replica_updates = ON\n{% if pillar['mysql']['role'] == 'replica' %}\nsuper_read_only = ON\n{% endif %}\n\n# /srv/salt/mysql/replica.sls (apenas o essencial)\nrepl-user:\n  mysql_user.present:\n    - name: repl\n    - host: '%'\n    - password: {{ pillar['repl_password'] }}\n    - connection_user: root\n    - connection_unix_socket: /var/run/mysqld/mysqld.sock\n    - onlyif: test \"{{ pillar['mysql']['role'] }}\" = source\n\nligar-replica:\n  cmd.run:\n    - name: >\n        mysql -uroot -e \"CHANGE REPLICATION SOURCE TO\n        SOURCE_HOST='{{ pillar['mysql']['source_host'] }}',\n        SOURCE_USER='repl',\n        SOURCE_PASSWORD='{{ pillar['repl_password'] }}',\n        SOURCE_AUTO_POSITION=1; START REPLICA;\"\n    - unless: mysql -uroot -NBe \"SHOW REPLICA STATUS\" | grep -q Yes\n    - onlyif: test \"{{ pillar['mysql']['role'] }}\" = replica"
+            },
+            {
+              "desc": "Convergir a fleet e validar",
+              "lang": "bash",
+              "code": "salt 'db*' saltutil.refresh_pillar\nsalt 'db*' pillar.items mysql   # conferir: db01=source/1, db02=replica/2\n\nsalt 'db*' state.highstate\nsalt 'db*' state.highstate   # 2ª vez: 0 mudanças = idempotente\n\n# validar a replicação sem ssh:\nsalt 'db02' cmd.run \"mysql -uroot -NBe 'SHOW REPLICA STATUS\\\\G' | grep -E 'Running|Behind'\"\nsalt 'db01' mysql.query labdb \"CREATE TABLE IF NOT EXISTS teste (id INT PRIMARY KEY); INSERT INTO teste VALUES (1) ON DUPLICATE KEY UPDATE id=id;\"\nsalt 'db02' mysql.query labdb \"SELECT * FROM teste;\""
+            }
+          ]
+        }
+      ],
+      "detalhado": true
+    }
+  ]
+}
