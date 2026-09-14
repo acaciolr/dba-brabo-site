@@ -177,6 +177,7 @@ a.eopt { display: grid; }
 .ebtn[disabled] { opacity: .45; cursor: not-allowed; }
 
 /* ---------- terminal ---------- */
+.ewrap--wide { max-width: min(1760px, 100% - 16px); }
 .eterm { background: #0A0C0E; border: 1px solid var(--eco-line); border-radius: var(--eco-r); overflow: hidden; }
 .eterm__bar {
   display: flex; align-items: center; gap: 8px;
