@@ -56,19 +56,23 @@ const badgeClass = s => ({
   ONLINE: 'badge--online', OFFLINE: 'badge--offline',
   STARTING: 'badge--starting', STOPPING: 'badge--stopping',
 }[s] || 'badge--offline');
+const TECH_COLOR = { ORACLE: '#F0805A', MYSQL: '#34D3C4', 'SQL SERVER': '#F08A6E', POSTGRESQL: '#4FD1B0', MONGODB: '#47C98E' };
 
 function renderStatus(groups) {
   const box = $('#statusGroups');
   if (!box) return;
-  box.innerHTML = groups.map(g => `
+  box.innerHTML = groups.map(g => {
+    const cor = TECH_COLOR[g.tech] || '#8B949E';
+    return `
     <div class="estatus__group">
-      <h4>${esc(g.tech)}</h4>
+      <h4><span class="edot" style="background:${cor};color:${cor}"></span>${esc(g.tech)}</h4>
       ${g.vms.map(v => `
         <a class="evm" href="terminal/?vm=${encodeURIComponent(v.name)}" data-vm="${esc(v.name)}" title="Abrir console de ${esc(v.name)} (mock v1)">
           <span class="evm__name">${esc(v.name)}</span>
           <span class="badge ${badgeClass(v.status)}" data-badge>${esc(v.status)}</span>
         </a>`).join('')}
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 /* ---------- teclado: 1–5 abrem ecossistemas ---------- */

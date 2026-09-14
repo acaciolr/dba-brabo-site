@@ -334,3 +334,70 @@ h1, h2, .ehero__title, .estat__num { font-family: var(--eco-font-display), var(-
 .estat { transition: border-color .15s ease; }
 .estat:hover { border-color: var(--eco-brand); }
 .eopt:hover, .eopt:focus-visible { background: rgba(255, 138, 76, .1); }
+
+/* ==========================================================================
+   Ponte bonita: cards de ambiente com a cor de cada tecnologia
+   ========================================================================== */
+.ecards { display: grid; gap: 10px; }
+.ecard {
+  --accent: var(--eco-brand);
+  position: relative;
+  display: grid; grid-template-columns: 52px 1fr auto; gap: 14px; align-items: center;
+  padding: 14px 18px 14px 20px;
+  border: 1px solid var(--eco-line); border-radius: 12px;
+  background: linear-gradient(180deg, var(--eco-panel-2), var(--eco-panel));
+  color: var(--eco-fg); text-decoration: none; overflow: hidden;
+  transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+.ecard::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+.ecard:hover, .ecard:focus-visible {
+  transform: translateY(-2px); border-color: var(--accent); outline: none;
+  box-shadow: 0 12px 32px -14px var(--accent);
+}
+.ecard__key {
+  font-family: var(--eco-mono); font-size: 12px; font-weight: 700;
+  color: var(--accent); border: 1px solid var(--eco-line); border-radius: 8px;
+  width: 40px; height: 40px; display: grid; place-items: center;
+  background: rgba(0, 0, 0, .35);
+  transition: border-color .16s ease;
+}
+.ecard:hover .ecard__key { border-color: var(--accent); }
+.ecard__name {
+  display: block; font-family: var(--eco-font-display); font-size: 1.02rem;
+  font-weight: 700; letter-spacing: .01em;
+}
+.ecard__name b { color: var(--accent); font-weight: 800; }
+.ecard__sub {
+  display: block; font-family: var(--eco-mono); font-size: 12px;
+  color: var(--eco-dim); margin-top: 2px;
+}
+.ecard__go {
+  font-size: 20px; color: var(--eco-faint);
+  transition: transform .16s ease, color .16s ease;
+}
+.ecard:hover .ecard__go { transform: translateX(4px); color: var(--accent); }
+.ecard--ghost { border-style: dashed; }
+.ecard--ghost .ecard__name b { color: inherit; }
+
+/* ---------- herói com brilho ---------- */
+.ehero { position: relative; overflow: hidden; }
+.ehero::after {
+  content: ''; position: absolute; inset: -40% -10% auto; height: 180%;
+  background: radial-gradient(ellipse 60% 55% at 50% 0%, rgba(255, 138, 76, .12), transparent 70%);
+  pointer-events: none;
+}
+.ehero__eyebrow, .ehero__title, .ehero__claim, .ebanner__meta { position: relative; }
+
+/* ---------- status com ponto por tecnologia ---------- */
+.edot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 8px; vertical-align: 1px;
+  box-shadow: 0 0 8px currentColor;
+}
+.estatus__group > h4 { display: flex; align-items: center; }
+.evm { border: 1px solid transparent; }
+.evm:hover { border-color: var(--eco-line); }
