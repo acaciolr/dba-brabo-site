@@ -1,7 +1,9 @@
-# ECOSSISTEMA SUPER DBA — Hub Central (v1.0)
+# ECOSSISTEMA SUPER DBA — Ponte para as VMs (v1.2)
 
-Hub estático que dá acesso aos ambientes de treinamento DBA BRABO
-(Oracle, MySQL, SQL Server, PostgreSQL, MongoDB).
+Hub estático que é só a ponte para as VMs de treinamento DBA BRABO
+(Oracle, MySQL, SQL Server, PostgreSQL, MongoDB): ambientes + status.
+Sem operations, sem monitoring, sem labs no hub — cada ambiente leva
+às suas VMs e ao console.
 
 ## Regra de ouro
 
@@ -26,9 +28,9 @@ python3 -m http.server 8080
 
 ```text
 ecosistema/
-├── index.html          hub (banner ASCII + menu TUI + status)
-├── css/tui.css         design system terminal (paleta própria)
-├── js/hub.js           menu, status, relógio, simulação local
+├── index.html          hub (ponte: ambientes + status das VMs)
+├── css/tui.css         design system terminal (ponte visual com o portal)
+├── js/hub.js           status, relógio, atalhos 1–5
 ├── json/vms.json       VMs por tecnologia (mock Fase 1)
 ├── json/labs.json      labs disponíveis (mock)
 ├── json/users.json     usuários (mock, display)
@@ -42,12 +44,13 @@ ecosistema/
 
 ## Fase 1 — o que é real e o que é mock
 
-REAL: navegação, menu por teclado, relógio, JSONs locais,
-`START ALL` / `STOP ALL` (simulação visual, reseta no reload).
+REAL: ponte para os 5 ambientes, atalhos de teclado 1–5, relógio,
+status das VMs via `json/vms.json` local.
 
 MOCK: status das VMs, key manager, terminal (responde local,
 sem SSH), VM manager. Tudo marcado `MOCK v1` / `FUTURE BACKEND`
-no código onde entrará rede de verdade.
+no código onde entrará rede de verdade. Runbooks (operacoes),
+monitoramento e labs continuam existindo como páginas, fora do hub.
 
 ## Acesso (v1.1)
 
