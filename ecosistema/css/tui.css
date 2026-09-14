@@ -188,7 +188,8 @@ a.eopt { display: grid; }
 .eterm__dots i:nth-child(1) { background: #F85149; }
 .eterm__dots i:nth-child(2) { background: #D29922; }
 .eterm__dots i:nth-child(3) { background: #3FB950; }
-#xterm { height: 480px; padding: 8px; }
+#xterm { height: clamp(560px, 78svh, 920px); padding: 12px; }
+#xterm .xterm-viewport { scrollbar-width: thin; }
 .eterm__fallback { padding: 16px; }
 .eterm__fallback pre {
   background: #000; border: 1px solid var(--eco-line-soft); border-radius: 6px;
