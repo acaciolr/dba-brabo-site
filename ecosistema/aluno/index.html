@@ -2,12 +2,116 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="0; url=../">
-<link rel="canonical" href="../">
-<title>Redirecionando… — ECOSSISTEMA SUPER DBA</title>
-<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Área do Aluno — ECOSSISTEMA SUPER DBA</title>
+<meta name="description" content="Acesso restrito ao ecossistema de labs DBA BRABO: Oracle, MySQL, SQL Server, PostgreSQL e MongoDB.">
+<meta name="theme-color" content="#07090D">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="icon" href="../../assets/logo/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../css/tui.css">
 </head>
-<body style="background:#0B0D10;color:#E6EDF3;font-family:monospace;padding:32px">
-<p>A área do aluno <b>é</b> este hub. <a style="color:#58A6FF" href="../">Entrar no ECOSSISTEMA SUPER DBA</a>…</p>
+<body>
+
+<header class="etop">
+  <a class="ebrand" href="../../" aria-label="DBA BRABO — voltar ao portal">
+    <img src="../../assets/logo/avatar-96.png" alt="" width="30" height="30">
+    <span>DBA <b>BRABO</b><small>Ecossistema Super DBA</small></span>
+  </a>
+  <span class="etop__sp"></span>
+  <a class="esair esair--ghost" href="../../">Portal</a>
+</header>
+
+<div class="ewrap">
+  <main class="elogin" aria-label="Acesso à área do aluno">
+    <div class="elogin__card epanel">
+      <span class="eleg">Área do aluno</span>
+
+      <div class="elogin__marca">
+        <img src="../../assets/logo/avatar-96.png" alt="DBA BRABO" width="44" height="44">
+        <div>
+          <b>ECOSSISTEMA SUPER DBA</b>
+          <span>Oracle · MySQL · SQL Server · PostgreSQL · MongoDB</span>
+        </div>
+      </div>
+
+      <h1>Acesso ao ecossistema</h1>
+      <p class="elogin__sub">Entre com seu usuário e senha para abrir o hub de labs, consoles e runbooks.</p>
+
+      <form id="formLogin" autocomplete="off">
+        <div class="ecampo">
+          <label for="usuario">usuário</label>
+          <input type="text" id="usuario" name="usuario" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="dbabrabo">
+        </div>
+        <div class="ecampo">
+          <label for="senha">senha</label>
+          <input type="password" id="senha" name="senha" required placeholder="••••••••••">
+        </div>
+        <div class="e-erro" id="erro" role="alert"></div>
+        <button class="ebtn ebtn--primary ebtn--block" type="submit" id="btnEntrar">Entrar no ecossistema</button>
+      </form>
+
+      <div class="e-ok" id="jaLogado" hidden>
+        <p>Você já está logado como <b data-eco-user></b>.</p>
+        <p style="display:flex;gap:8px;flex-wrap:wrap">
+          <a class="ebtn ebtn--primary" href="../">Abrir o hub</a>
+          <a class="ebtn" href="./" data-eco-sair="./">Sair</a>
+        </p>
+      </div>
+
+      <p class="elogin__nota">A sessão vale nesta aba e morre ao fechá-la — igual à área do mentor.
+        Sem sessão, hub, consoles e managers redirecionam para cá.</p>
+      <p class="elogin__nota"><a href="../../">&larr; voltar ao portal</a></p>
+    </div>
+  </main>
+</div>
+
+<script src="../js/auth.js"></script>
+<script>
+(function () {
+  var form = document.getElementById('formLogin');
+  var errBox = document.getElementById('erro');
+  var btn = document.getElementById('btnEntrar');
+
+  if (EcoAuth.estaLogado()) {
+    document.getElementById('jaLogado').hidden = false;
+    document.querySelectorAll('[data-eco-user]').forEach(function (el) { el.textContent = EcoAuth.usuario; });
+  }
+
+  function erro(msg) {
+    errBox.textContent = msg;
+    errBox.classList.add('is-on');
+  }
+  function limpaErro() { errBox.classList.remove('is-on'); }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    limpaErro();
+    btn.disabled = true;
+    var volta = btn.textContent;
+    btn.textContent = 'Verificando…';
+    try {
+      var ok = await EcoAuth.entrar(
+        document.getElementById('usuario').value,
+        document.getElementById('senha').value
+      );
+      if (ok) {
+        location.href = EcoAuth.proximoOu('../');
+        return;
+      }
+      erro('Usuário ou senha incorretos.');
+      document.getElementById('senha').value = '';
+      document.getElementById('senha').focus();
+    } catch (err) {
+      erro(err.message || 'Falha ao verificar. Tente de novo.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = volta;
+    }
+  });
+})();
+</script>
 </body>
 </html>

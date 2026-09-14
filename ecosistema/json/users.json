@@ -1,7 +1,6 @@
 {
-  "_comment": "MOCK Fase 1 — usuários fictícios, só display. Login real chega na v2 (SQLite).",
+  "_comment": "Fase 1.1 — o hub e as subpáginas exigem sessão (ecosistema/js/auth.js + login em ecosistema/aluno/). A senha NUNCA fica aqui nem no JS: só o SHA-256 de 'usuario:senha'. Login real com backend chega na v2.",
   "users": [
-    { "user": "acaciolr", "role": "admin", "nome": "Acácio — DBA BRABO" },
-    { "user": "aluno01", "role": "aluno", "nome": "Aluno 01" }
+    { "user": "dbabrabo", "role": "admin", "nome": "Master — DBA BRABO" }
   ]
 }

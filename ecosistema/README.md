@@ -49,6 +49,21 @@ MOCK: status das VMs, key manager, terminal (responde local,
 sem SSH), VM manager. Tudo marcado `MOCK v1` / `FUTURE BACKEND`
 no código onde entrará rede de verdade.
 
+## Acesso (v1.1)
+
+O hub e as 11 subpáginas exigem sessão. Sem sessão, caem no login:
+
+- Login: `ecosistema/aluno/` — usuário master `dbabrabo` + senha.
+- Gate: `js/auth.js` (`EcoAuth.exigirLogin()` no `<head>` de cada página
+  protegida; `ecosistema/mentor/` só redireciona p/ `mentor/`, que tem o
+  próprio acesso cifrado).
+- A senha NUNCA fica no repositório: no código vai só o SHA-256 de
+  `"usuario:senha"`. Para trocar a senha, gere o novo hash e troque
+  `MASTER_HASH` em `js/auth.js`:
+  `node -e "console.log(require('crypto').createHash('sha256').update('dbabrabo:NOVA_SENHA','utf8').digest('hex'))"`
+- Sessão em `sessionStorage` (morre ao fechar a aba). Login real com
+  backend chega na v2 — este gate é trava de UX, não segurança real.
+
 ## Roadmap
 
 | Versão | Entrega |

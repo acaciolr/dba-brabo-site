@@ -9,23 +9,31 @@
 <link rel="icon" href="../assets/logo/favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="css/tui.css">
+<script src="js/auth.js"></script>
+<script>EcoAuth.exigirLogin('./aluno/');</script>
 </head>
 <body>
 
 <header class="etop">
+  <a class="ebrand" href="../" aria-label="DBA BRABO — voltar ao portal">
+    <img src="../assets/logo/avatar-96.png" alt="" width="30" height="30">
+    <span>DBA <b>BRABO</b><small>Ecossistema Super DBA</small></span>
+  </a>
   <button class="burger" id="burger" type="button" aria-label="Abrir menu">☰</button>
-  <span class="etop__title">Menu</span>
   <span class="etop__sp"></span>
+  <span class="euser" data-eco-user hidden></span>
   <span class="etop__clock" id="clock">--/--/---- --:--:--</span>
-  <span>v1.0</span>
+  <a class="esair" href="./aluno/" data-eco-sair="./aluno/">Sair</a>
 </header>
 
 <div class="ewrap">
 
-  <section class="ebanner" aria-label="ECOSSISTEMA SUPER DBA">
-    <pre id="asciiBanner" aria-hidden="true">ECOSSISTEMA SUPER DBA</pre>
+  <section class="ebanner ehero" aria-label="ECOSSISTEMA SUPER DBA">
+    <p class="ehero__eyebrow">Ecossistema de formação técnica · DBA BRABO</p>
+    <h1 class="ehero__title">ECOSSISTEMA <span>SUPER DBA</span></h1>
+    <p class="ehero__claim">“Não basta saber usar banco de dados. É preciso saber administrá-lo.”</p>
     <p class="ebanner__meta" id="hostMeta"><span>carregando…</span></p>
   </section>
 
@@ -111,7 +119,7 @@
     <span style="flex:1"></span>
     <a href="../">Portal</a>
     <a href="../mentor/">Área do mentor</a>
-    <a href="README.md">Roadmap</a>
+    <a href="./aluno/" data-eco-sair="./aluno/">Sair</a>
   </footer>
 
 </div>

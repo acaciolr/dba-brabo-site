@@ -9,16 +9,23 @@
 <link rel="icon" href="../../assets/logo/favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="../css/tui.css">
+<script src="../js/auth.js"></script>
+<script>EcoAuth.exigirLogin('../aluno/');</script>
 </head>
 <body>
 
 <header class="etop">
-  <span class="etop__title"><a href="../" style="color:inherit;text-decoration:none">← ECOSSISTEMA</a> / OPERATIONS</span>
+  <a class="ebrand" href="../" aria-label="ECOSSISTEMA SUPER DBA — início">
+    <img src="../../assets/logo/avatar-96.png" alt="" width="28" height="28">
+    <span>DBA <b>BRABO</b><small>Super DBA</small></span>
+  </a>
+  <span class="etop__title">/ OPERATIONS</span>
   <span class="etop__sp"></span>
+  <span class="euser" data-eco-user hidden></span>
   <span class="etop__clock" id="clock">--/--/---- --:--:--</span>
-  <span>v1.0</span>
+  <a class="esair" href="../aluno/" data-eco-sair="../aluno/">Sair</a>
 </header>
 
 <div class="ewrap">

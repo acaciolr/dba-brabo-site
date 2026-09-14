@@ -188,8 +188,10 @@ const FONT = {
   U: ['#   #', '#   #', '#   #', '#   #', ' ### '],
 };
 function banner(texto) {
+  /* Herói atual é HTML estilizado (ehero__title), não ASCII. Mantém o
+     fallback para páginas antigas que ainda tenham <pre id=asciiBanner>. */
   const el = $('#asciiBanner');
-  if (!el) return;
+  if (!el || el.tagName !== 'PRE') return;
   const linhas = ['', '', '', '', ''];
   for (const ch of texto.toUpperCase()) {
     const g = FONT[ch] || ['      '];

@@ -242,3 +242,95 @@ a.eopt { display: grid; }
 .erun table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
 .erun th, .erun td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--eco-line-soft); }
 .erun th { color: var(--eco-dim); text-transform: uppercase; font-size: 10px; letter-spacing: .1em; }
+
+/* ==========================================================================
+   Ponte visual com o portal (login gate v1.1)
+   Traz marca, tipografia e botões do portal para dentro do TUI sem matar
+   a identidade de terminal: o mono continua no corpo, Poppins nos títulos.
+   ========================================================================== */
+:root {
+  --eco-brand: #FF8A4C;
+  --eco-brand-2: #2ED8C3;
+  --eco-info: #4B93FF;
+  --eco-font-display: "Poppins", "Segoe UI", system-ui, sans-serif;
+  --eco-font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+h1, h2, .ehero__title, .estat__num { font-family: var(--eco-font-display), var(--eco-mono); }
+
+/* ---------- marca + sessão no topo ---------- */
+.ebrand {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--eco-fg); text-decoration: none; white-space: nowrap;
+}
+.ebrand img { width: 30px; height: 30px; border-radius: 50%; display: block; }
+.ebrand span { font-family: var(--eco-font-display); font-size: 13px; font-weight: 700; letter-spacing: .04em; line-height: 1.1; }
+.ebrand span b { color: var(--eco-brand); font-weight: 800; }
+.ebrand small { display: block; font-family: var(--eco-mono); font-size: 10px; font-weight: 400; letter-spacing: .12em; text-transform: uppercase; color: var(--eco-dim); }
+.euser {
+  font-size: 11px; color: var(--eco-green-hi);
+  border: 1px solid rgba(63, 185, 80, .5); border-radius: 100px; padding: 2px 10px;
+  max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.euser::before { content: "● "; }
+.esair {
+  font-size: 12px; color: var(--eco-fg); text-decoration: none;
+  border: 1px solid var(--eco-line); border-radius: 6px; padding: 4px 12px;
+  background: var(--eco-panel-2); white-space: nowrap;
+}
+.esair:hover { border-color: var(--eco-brand); color: var(--eco-brand); }
+.esair--ghost { background: none; }
+
+/* ---------- herói do hub (estilo portal, alma terminal) ---------- */
+.ehero { text-align: center; }
+.ehero__eyebrow {
+  margin: 0 0 8px; font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--eco-brand-2);
+}
+.ehero__title {
+  margin: 0 0 8px; font-size: clamp(1.7rem, 4.5vw, 2.9rem); font-weight: 800;
+  letter-spacing: .02em; color: var(--eco-fg); line-height: 1.1;
+}
+.ehero__title span {
+  background: linear-gradient(100deg, var(--eco-brand), #E8B33C);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.ehero__claim { margin: 0 0 4px; color: var(--eco-dim); font-size: 13px; font-family: var(--eco-font-body); }
+
+/* ---------- login ---------- */
+.elogin { display: grid; place-items: center; padding: 32px 0; }
+.elogin__card { width: min(480px, 100%); padding: 30px clamp(18px, 4vw, 32px) 26px; }
+.elogin__marca { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.elogin__marca img { width: 44px; height: 44px; border-radius: 50%; }
+.elogin__marca b { font-family: var(--eco-font-display); font-size: 15px; letter-spacing: .03em; display: block; }
+.elogin__marca span { font-size: 11px; color: var(--eco-dim); }
+.elogin__card h1 { font-size: 1.4rem; margin: 0 0 4px; }
+.elogin__sub { color: var(--eco-dim); font-size: 13px; font-family: var(--eco-font-body); margin: 0 0 18px; }
+.elogin form { display: grid; gap: 14px; margin-top: 6px; }
+.ecampo { display: grid; gap: 6px; }
+.ecampo label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--eco-dim); }
+.ecampo input {
+  width: 100%; padding: 10px 12px; background: #000; color: var(--eco-fg);
+  border: 1px solid var(--eco-line); border-radius: 8px;
+  font-family: var(--eco-mono); font-size: 14px;
+}
+.ecampo input:focus-visible { outline: 2px solid var(--eco-brand); outline-offset: 1px; border-color: transparent; }
+.e-erro {
+  display: none; font-size: 13px; color: #FF9D97;
+  background: rgba(248, 81, 73, .1); border: 1px solid rgba(248, 81, 73, .35);
+  border-radius: 8px; padding: 10px 14px;
+}
+.e-erro.is-on { display: block; }
+.e-ok {
+  margin-top: 16px; font-size: 13px; color: var(--eco-green-hi);
+  background: rgba(63, 185, 80, .08); border: 1px solid rgba(63, 185, 80, .35);
+  border-radius: 8px; padding: 12px 14px;
+}
+.elogin__nota { font-size: 12px; color: var(--eco-faint); margin: 14px 0 0; }
+.elogin__nota a { color: var(--eco-dim); }
+.ebtn--block { width: 100%; padding: 10px 12px; font-size: 13px; }
+
+/* ---------- cards com respiro do portal ---------- */
+.estat { transition: border-color .15s ease; }
+.estat:hover { border-color: var(--eco-brand); }
+.eopt:hover, .eopt:focus-visible { background: rgba(255, 138, 76, .1); }
