@@ -574,12 +574,22 @@ function validar() {
   // isso acontece o original some, o git marca como DELETADO e um commit apaga
   // o arquivo do repositorio. Foi o que derrubou o site em 27/08 com o
   // style.css. Qualquer duplicata fora de _conflitos/ trava o build.
+  // Cuidado com falso positivo: " 01" pode ser numeracao legitima do autor
+  // ("Log Shipping 01.docx"), nao conflito. Conflito de sincronizacao usa um
+  // digito simples 2-9 ("style 2.css"); qualquer outra numeracao so trava se
+  // o original sem numero existir ao lado (duplicata real).
   const varrer = (dir, achados = []) => {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
       if (['.git', 'node_modules', '_conflitos', 'Banners'].includes(e.name)) continue;
       const abs = path.join(dir, e.name);
       if (e.isDirectory()) varrer(abs, achados);
-      else if (/ \d+(\.[^.]+)?$/.test(e.name)) achados.push(path.relative(ROOT, abs));
+      else {
+        const m = e.name.match(/^(.*) (\d+)((?:\.[^.]+)?)$/);
+        if (!m) continue;
+        const conflitoClassico = /^[2-9]$/.test(m[2]);
+        const temOriginalAoLado = fs.existsSync(path.join(dir, m[1] + m[3]));
+        if (conflitoClassico || temOriginalAoLado) achados.push(path.relative(ROOT, abs));
+      }
     }
     return achados;
   };

@@ -559,3 +559,16 @@ function restaurarHash() {
   bt.scrollIntoView({ block: 'nearest' });
   abrirTopico(trilha, modulo, topico);
 }
+
+/* ---------- ponte com a área do aluno (só UX, sem tocar na cripto) -------- */
+/* Se já existe sessão do ecossistema (só guarda {u, t}, sem segredo),
+   preenche o usuário aqui para não digitar duas vezes. A senha do mentor
+   continua sendo pedida sempre: cada área valida à sua maneira. */
+(function ponteAluno() {
+  try {
+    const campo = document.querySelector('#usuario');
+    if (!campo || campo.value) return;
+    const s = JSON.parse(sessionStorage.getItem('dbabrabo.eco.auth.v1') || 'null');
+    if (s && s.u) campo.value = s.u;
+  } catch (_) { /* sem ponte, sem problema */ }
+})();

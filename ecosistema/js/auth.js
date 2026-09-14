@@ -65,8 +65,10 @@
   function proximoOu(padrao) {
     var n = null;
     try { n = sessionStorage.getItem(CHAVE_NEXT) || null; sessionStorage.removeItem(CHAVE_NEXT); } catch (_) {}
-    /* Só aceita destino interno do ecossistema (anti open-redirect). */
-    if (n && /^\/ecosistema\//.test(n)) return n;
+    /* n vem de location.pathname: sempre mesmo site, sem esquema. Aceita
+       qualquer caminho do ecossistema, com ou sem subpasta de projeto
+       ("/dba-brabo-site/ecosistema/..." também vale). */
+    if (n && /(^|\/)ecosistema\//.test(n)) return n;
     if (n && /^\.\.?(\/|$)/.test(n)) return n;
     return padrao;
   }

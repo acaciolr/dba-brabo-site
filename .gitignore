@@ -34,3 +34,7 @@ conteudo-mentor/
 # Travas transitórias do LibreOffice/Word — nunca versionar.
 .~lock.*#
 *.~lock.*
+
+# Pacotes locais de transporte do conteudo cifrado do mentor (data/mentor/*.enc ja vai versionado). O .zip duplica MBs rastreados e pode conter build com outra senha: o fluxo oficial e tools/build-mentor.mjs + tools/build-users.mjs.
+mentor-imagens-diagramas.zip
+mentor-passo-a-passo.zip
