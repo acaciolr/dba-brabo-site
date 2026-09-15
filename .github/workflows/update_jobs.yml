@@ -13,8 +13,10 @@
 name: Atualizar vagas
 
 on:
-  schedule:
-    - cron: '0 10 * * *'
+  # Agendamento PAUSADO — página /vagas/ desativada por enquanto.
+  # Para reativar: descomentar o schedule abaixo.
+  # schedule:
+  #   - cron: '0 10 * * *'
   workflow_dispatch:
 
 permissions:

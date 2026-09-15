@@ -151,7 +151,6 @@ function header(base) {
     <a class="nav__link" href="${base}/#projetos" data-i18n="nav.projetos">Projetos</a>
     <a class="nav__link" href="${base}/#tecnologias" data-i18n="nav.stack">Stack</a>
     <a class="nav__link" href="${base}/#roadmap" data-i18n="nav.roadmap">Roadmap</a>
-    <a class="nav__link" href="${base}/vagas/" data-i18n="nav.vagas">Vagas</a>
     <a class="nav__link" href="${base}/#faq" data-i18n="nav.faq">FAQ</a>
     <span class="nav__actions">
       <a class="btn btn--primary btn--sm" href="${base}/#comunidade" data-community data-i18n="nav.comunidade">Comunidade</a>
@@ -188,7 +187,7 @@ function footer(base) {
       <div class="footer__col"><h4 data-i18n="footer.portal">Portal</h4>
         <a href="${base}/#sobre" data-i18n="nav.sobre">Sobre</a><a href="${base}/#metodologia" data-i18n="nav.metodologia">Metodologia</a>
         <a href="${base}/#projetos" data-i18n="nav.projetos">Projetos</a><a href="${base}/#tecnologias" data-i18n="nav.stack">Stack</a>
-        <a href="${base}/#roadmap" data-i18n="nav.roadmap">Roadmap</a><a href="${base}/vagas/" data-i18n="nav.vagas">Vagas</a><a href="${base}/#faq" data-i18n="nav.faq">FAQ</a></div>
+        <a href="${base}/#roadmap" data-i18n="nav.roadmap">Roadmap</a><a href="${base}/#faq" data-i18n="nav.faq">FAQ</a></div>
       <div class="footer__col"><h4 data-i18n="footer.redes">Redes</h4><div id="footerSocial"></div></div>
     </div>
     <div class="footer__bottom">
@@ -564,7 +563,7 @@ function sitemap() {
   const urls = [
     { loc: `${ORIGIN}/`, pri: '1.0', freq: 'weekly' },
     { loc: `${ORIGIN}/mentorias/`, pri: '0.9', freq: 'weekly' },
-    { loc: `${ORIGIN}/vagas/`, pri: '0.8', freq: 'weekly' },
+    // /vagas/ desativada por enquanto (página estacionada p/ o futuro) — fora do sitemap.
     ...catalogo.mentorias.map(m => ({ loc: `${ORIGIN}/mentorias/${m.slug}/`, pri: m.destaque ? '0.8' : '0.7', freq: 'monthly' }))
   ];
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -577,6 +576,7 @@ ${urls.map(u => `  <url><loc>${u.loc}</loc><lastmod>${hoje}</lastmod><changefreq
 const robots = () => `User-agent: *
 Allow: /
 Disallow: /mentor/
+Disallow: /vagas/
 
 Sitemap: ${ORIGIN}/sitemap.xml
 `;
