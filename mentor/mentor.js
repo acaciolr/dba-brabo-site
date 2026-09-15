@@ -41,6 +41,10 @@ async function carregarIdioma() {
   try {
     const l = localStorage.getItem('dbabrabo.lang');
     if (l === 'pt' || l === 'en') I18N.lang = l;
+    else {
+      const nav = String(navigator.language || navigator.userLanguage || 'pt').toLowerCase();
+      I18N.lang = nav.startsWith('en') ? 'en' : 'pt';
+    }
   } catch {}
   aplicarIdioma();
   const btn = $('#langToggleTop');

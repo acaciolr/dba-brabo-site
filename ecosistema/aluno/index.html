@@ -77,8 +77,14 @@
 /* Idioma da área do aluno: mesma chave do portal (dbabrabo.lang). */
 (function () {
   var LANG = 'pt', DICT = null;
-  try { LANG = localStorage.getItem('dbabrabo.lang') || 'pt'; } catch (_) { LANG = 'pt'; }
-  if (LANG !== 'pt' && LANG !== 'en') LANG = 'pt';
+  try {
+    var salvo = localStorage.getItem('dbabrabo.lang');
+    if (salvo === 'pt' || salvo === 'en') LANG = salvo;
+    else {
+      var nav = String(navigator.language || navigator.userLanguage || 'pt').toLowerCase();
+      LANG = nav.indexOf('en') === 0 ? 'en' : 'pt';
+    }
+  } catch (_) { LANG = 'pt'; }
   function g(o, k) { return String(k).split('.').reduce(function (a, p) { return (a && a[p] != null) ? a[p] : null; }, o); }
   function T(k, fb) { return g(DICT && DICT[LANG], k) || g(DICT && DICT.pt, k) || fb || k; }
   window.EcoT = function (k) { return T('aluno.' + k, null); };

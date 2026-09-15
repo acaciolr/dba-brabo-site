@@ -1116,9 +1116,22 @@ async function renderAll() {
   revealScan();
 }
 
+/* Idioma inicial: escolha salva > idioma do navegador > PT.
+   Só o clique no botão persiste; a detecção vale para a sessão fresca. */
+function idiomaInicial() {
+  try {
+    const salvo = localStorage.getItem('dbabrabo.lang');
+    if (salvo === 'pt' || salvo === 'en') return salvo;
+  } catch {}
+  try {
+    const nav = String(navigator.language || navigator.userLanguage || 'pt').toLowerCase();
+    if (nav.startsWith('en')) return 'en';
+  } catch {}
+  return 'pt';
+}
+
 function setupIdioma() {
-  try { LANG = localStorage.getItem('dbabrabo.lang') || 'pt'; } catch { LANG = 'pt'; }
-  if (!['pt', 'en'].includes(LANG)) LANG = 'pt';
+  LANG = idiomaInicial();
   aplicarIdioma();
   const btn = $('#langToggle');
   if (btn) btn.addEventListener('click', async () => {
