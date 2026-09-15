@@ -97,7 +97,14 @@
         "inscricao": "https://www.sympla.com.br/evento/data-ai-saturday-vitoria-2026-1156/3443729",
         "comunidade": ""
       },
+      "realizador": {
+        "titulo": "Realização: Power Tuning",
+        "texto": "Consultoria capixaba Microsoft Solutions Partner (Dados e IA + Azure), com 12 anos e mais de 1.400 empresas atendidas em SQL Server, Oracle, MySQL, PostgreSQL, Power BI, Fabric e IA corporativa. No Data Saturday, os consultores da Power Tuning conduzem as palestras o dia inteiro.",
+        "site": "https://powertuning.com.br/",
+        "siteRotulo": "powertuning.com.br"
+      },
       "redes": [
+        { "label": "Site Power Tuning", "url": "https://powertuning.com.br/" },
         { "label": "Instagram", "url": "https://www.instagram.com/soupowertuning/" },
         { "label": "YouTube", "url": "https://www.youtube.com/@PowerTuningData" },
         { "label": "Facebook", "url": "https://www.facebook.com/SouPowerTuning/" },

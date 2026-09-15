@@ -568,8 +568,13 @@ function renderEventos() {
           ${passado ? '' : botao(L.inscricao, 'Inscrição', 'btn--outline btn--sm')}
           ${passado ? '' : botao(L.transmissao, 'Assistir ao vivo', 'btn--outline btn--sm')}
           ${botao(L.comunidade, 'Comunidade', 'btn--ghost btn--sm')}
-          ${((e.redes || []).map(r => botao(r.url, r.label, 'btn--ghost btn--sm')).join(''))}
         </div>
+        ${(e.realizador || (e.redes || []).length) ? `
+        <div class="evento__org">
+          ${e.realizador && e.realizador.titulo ? `<p class="evento__org-titulo">${esc(e.realizador.titulo)}</p>` : ''}
+          ${e.realizador && e.realizador.texto ? `<p class="evento__org-texto">${esc(e.realizador.texto)}${e.realizador.site ? ` <a href="${esc(e.realizador.site)}" target="_blank" rel="noopener">${esc(e.realizador.siteRotulo || 'Site oficial')}</a>` : ''}</p>` : ''}
+          ${((e.redes || []).length) ? `<div class="evento__btns evento__btns--redes">${((e.redes || []).map(r => botao(r.url, r.label, 'btn--ghost btn--sm')).join(''))}</div>` : ''}
+        </div>` : ''}
       </div>
     </article>`;
   };

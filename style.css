@@ -1136,6 +1136,20 @@ section + section { border-top: 1px solid var(--line); }
 
 .evento__btns { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-4); }
 
+/* realizador do evento: bloco de contexto acima dos links das redes sociais */
+.evento__org {
+  margin-top: var(--s-4); padding-top: var(--s-4);
+  border-top: 1px dashed var(--line);
+  display: grid; gap: var(--s-2);
+}
+.evento__org-titulo {
+  font-family: var(--font-display); font-size: var(--fs-xs); font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--accent);
+}
+.evento__org-texto { color: var(--fg-1); font-size: var(--fs-sm); }
+.evento__org-texto a { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+.evento__btns--redes { margin-top: var(--s-2); }
+
 /* edicoes anteriores: linha compacta, sem peso visual de card */
 .eventos-passados { margin-top: var(--s-12); }
 .eventos-passados__head {
