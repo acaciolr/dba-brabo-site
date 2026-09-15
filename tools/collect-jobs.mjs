@@ -8,6 +8,8 @@
      3. Adzuna (BR) ...... OPCIONAL — exige ADZUNA_APP_ID + ADZUNA_APP_KEY
         (cadastro grátis em developer.adzuna.com; exige atribuição — os
         links salvos já são os redirect oficiais, que creditam a fonte)
+     4. Jooble (BR) ....... OPCIONAL — exige JOOBLE_API_KEY
+        (chave grátis em jooble.org; POST oficial, sem scraping)
 
    O que faz:
      1. Busca vagas com keywords de banco de dados em cada fonte;
@@ -109,6 +111,15 @@ async function getJSON(u) {
   return r.json();
 }
 
+async function postJSON(u, corpo) {
+  const r = await fetch(u, {
+    method: 'POST', headers: { ...UA, 'Content-Type': 'application/json' },
+    body: JSON.stringify(corpo), signal: AbortSignal.timeout(25000),
+  });
+  if (!r.ok) throw new Error(`${u} — HTTP ${r.status}`);
+  return r.json();
+}
+
 /* ---------------- fonte 1: Arbeitnow ------------------------------------ */
 async function coletarArbeitnow() {
   const termos = ['Oracle DBA', 'MySQL DBA', 'PostgreSQL DBA', 'SQL Server DBA', 'DBRE', 'Database Engineer', 'Exadata', 'MongoDB DBA'];
@@ -193,6 +204,51 @@ async function coletarAdzuna() {
   return { fonte: 'adzuna', termos, vagas: out };
 }
 
+/* ---------------- fonte 4: Jooble BR (opcional, com chave) --------------- */
+/* API oficial (POST jooble.org/api/{key}). Salário vem em texto livre
+   ("R$ 5.000 - R$ 7.000") — extrai números quando dá, senão null. */
+function salarioJooble(txt) {
+  const nums = [...String(txt || '').matchAll(/R\$\s*([\d.]+)/g)]
+    .map(m => parseInt(m[1].replace(/\./g, ''), 10)).filter(n => n > 0);
+  if (!nums.length) return { min: null, max: null };
+  return { min: Math.min(...nums), max: Math.max(...nums) };
+}
+
+async function coletarJooble() {
+  const key = process.env.JOOBLE_API_KEY;
+  if (!key) return { fonte: 'jooble', pulada: true, vagas: [] };
+  const termos = ['Oracle DBA', 'DBA Oracle', 'MySQL DBA', 'PostgreSQL DBA', 'DBA PostgreSQL',
+    'SQL Server DBA', 'DBA SQL Server', 'MongoDB DBA', 'DBRE', 'Database Engineer',
+    'Exadata', 'Administrador de Banco de Dados', 'Analista de Dados SQL'];
+  const out = [], vistos = new Set();
+  for (const q of termos) {
+    const dados = await postJSON(`https://jooble.org/api/${key}`, { keywords: q, location: 'Brazil' })
+      .catch(err => (console.error(`  ! jooble[${q}]: ${err.message}`), null));
+    for (const v of (dados && dados.jobs) || []) {
+      const titulo = (v.title || '').replace(/<[^>]*>/g, ' ').trim();
+      const desc = `${v.snippet || ''} ${v.company || ''}`;
+      const area = classificar(titulo, desc);
+      if (!area) continue;
+      const id = idEstavel('jooble', v.link || `${v.company}-${titulo}`);
+      if (vistos.has(id)) continue;
+      vistos.add(id);
+      const sal = salarioJooble(v.salary);
+      const remoto = /remot[oa]|home office/i.test(`${titulo} ${v.snippet || ''} ${v.location || ''}`);
+      out.push({
+        id, area, title: titulo, company: (v.company || '').trim() || 'Empresa não informada',
+        location: (v.location || '').trim() || 'Brasil',
+        modality: remoto ? 'Remoto' : 'A combinar', remote: remoto,
+        salary_min: sal.min, salary_max: sal.max,
+        salary_currency: (sal.min ?? sal.max) != null ? 'BRL' : null,
+        seniority: senioridade(titulo), technologies: [],
+        published: isoData(v.updated), description: resumo(v.snippet),
+        url: v.link, origem: 'jooble',
+      });
+    }
+  }
+  return { fonte: 'jooble', termos, vagas: out };
+}
+
 /* ---------------- mescla + gravação -------------------------------------- */
 function mesclar(base, novas) {
   const mapa = new Map(novas.map(j => [j.id, j]));
@@ -216,7 +272,7 @@ function mesclar(base, novas) {
 }
 
 async function main() {
-  const coletores = { arbeitnow: coletarArbeitnow, remotive: coletarRemotive, adzuna: coletarAdzuna };
+  const coletores = { arbeitnow: coletarArbeitnow, remotive: coletarRemotive, adzuna: coletarAdzuna, jooble: coletarJooble };
   const quais = ONLY ? Object.keys(coletores).filter(k => ONLY.includes(k)) : Object.keys(coletores);
   console.log(`coletando: ${quais.join(', ')}${DRY ? ' (dry-run)' : ''}`);
   let todas = [];

@@ -5,9 +5,10 @@
 # classifica por área, regenera data/jobs.json e commita. O push dispara o
 # workflow de deploy, que publica no GitHub Pages.
 #
-# Setup opcional (Adzuna BR): Settings > Secrets > Actions > New secret:
+# Setup opcional (Adzuna BR + Jooble BR): Settings > Secrets > Actions:
 #   ADZUNA_APP_ID e ADZUNA_APP_KEY (grátis em developer.adzuna.com).
-# Sem elas, a fonte Adzuna é pulada automaticamente.
+#   JOOBLE_API_KEY (grátis em jooble.org).
+# Sem elas, essas fontes são puladas automaticamente.
 
 name: Atualizar vagas
 
@@ -37,6 +38,7 @@ jobs:
         env:
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          JOOBLE_API_KEY: ${{ secrets.JOOBLE_API_KEY }}
         run: node tools/collect-jobs.mjs
 
       - name: Validar JSON
