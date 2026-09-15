@@ -33,17 +33,36 @@ function aplicarIdioma() {
   const btn = $('#langToggleTop');
   if (btn) btn.textContent = I18N.lang === 'pt' ? 'EN' : 'PT';
 }
+/* Idioma do navegador: varre navigator.languages em ordem de preferência. */
+function idiomaDoNavegador() {
+  try {
+    const lista = [];
+    if (Array.isArray(navigator.languages) && navigator.languages.length) lista.push(...navigator.languages);
+    if (navigator.language) lista.push(navigator.language);
+    if (navigator.userLanguage) lista.push(navigator.userLanguage);
+    for (const l of lista) {
+      const s = String(l || '').toLowerCase();
+      if (s.startsWith('pt')) return 'pt';
+      if (s.startsWith('en')) return 'en';
+    }
+  } catch {}
+  return 'pt';
+}
 async function carregarIdioma() {
   try {
     const r = await fetch(`${BASE}/data/i18n.json`, { cache: 'no-store' });
     if (r.ok) I18N.dict = await r.json();
   } catch {}
+  /* Prioridade: ?lang= > escolha salva > navegador > PT. */
   try {
-    const l = localStorage.getItem('dbabrabo.lang');
-    if (l === 'pt' || l === 'en') I18N.lang = l;
-    else {
-      const nav = String(navigator.language || navigator.userLanguage || 'pt').toLowerCase();
-      I18N.lang = nav.startsWith('en') ? 'en' : 'pt';
+    const q = new URLSearchParams(location.search).get('lang');
+    if (q === 'pt' || q === 'en') {
+      I18N.lang = q;
+      try { localStorage.setItem('dbabrabo.lang', q); } catch {}
+    } else {
+      const l = localStorage.getItem('dbabrabo.lang');
+      if (l === 'pt' || l === 'en') I18N.lang = l;
+      else I18N.lang = idiomaDoNavegador();
     }
   } catch {}
   aplicarIdioma();

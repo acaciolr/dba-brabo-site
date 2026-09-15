@@ -1116,18 +1116,50 @@ async function renderAll() {
   revealScan();
 }
 
-/* Idioma inicial: escolha salva > idioma do navegador > PT.
-   Só o clique no botão persiste; a detecção vale para a sessão fresca. */
+/* Idioma do navegador: varre navigator.languages em ordem de preferência
+   (ex.: ['pt-BR','en-US'] → pt; ['en-NZ','mi'] → en). Cai para PT. */
+function idiomaDoNavegador() {
+  try {
+    const lista = [];
+    if (Array.isArray(navigator.languages) && navigator.languages.length) lista.push(...navigator.languages);
+    if (navigator.language) lista.push(navigator.language);
+    if (navigator.userLanguage) lista.push(navigator.userLanguage);
+    for (const l of lista) {
+      const s = String(l || '').toLowerCase();
+      if (s.startsWith('pt')) return 'pt';
+      if (s.startsWith('en')) return 'en';
+    }
+  } catch {}
+  return 'pt';
+}
+
+/* ?lang=pt|en na URL: força o idioma (útil p/ teste e link compartilhado)
+   e persiste como escolha explícita. */
+function idiomaViaURL() {
+  try {
+    const q = new URLSearchParams(location.search).get('lang');
+    if (q === 'pt' || q === 'en') {
+      try { localStorage.setItem('dbabrabo.lang', q); } catch {}
+      return q;
+    }
+  } catch {}
+  return null;
+}
+
+/* Idioma inicial: ?lang= > escolha salva > idioma do navegador > PT.
+   Só o clique no botão e o ?lang= persistem; a detecção vale para a sessão fresca.
+   (Morar fora ≠ navegador em inglês: navigator.language segue o idioma do
+   navegador/SO, não a geolocalização.) */
 function idiomaInicial() {
+  const viaURL = idiomaViaURL();
+  if (viaURL) return viaURL;
   try {
     const salvo = localStorage.getItem('dbabrabo.lang');
     if (salvo === 'pt' || salvo === 'en') return salvo;
   } catch {}
-  try {
-    const nav = String(navigator.language || navigator.userLanguage || 'pt').toLowerCase();
-    if (nav.startsWith('en')) return 'en';
-  } catch {}
-  return 'pt';
+  const nav = idiomaDoNavegador();
+  try { console.info('[DBA BRABO] idioma detectado do navegador:', nav, '| navigator.language =', navigator.language, '| languages =', navigator.languages); } catch {}
+  return nav;
 }
 
 function setupIdioma() {

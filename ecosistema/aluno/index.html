@@ -74,15 +74,34 @@
 </div>
 
 <script>
-/* Idioma da área do aluno: mesma chave do portal (dbabrabo.lang). */
+/* Idioma da área do aluno: ?lang= > escolha salva (dbabrabo.lang) > navegador > PT.
+   O navegador segue o idioma do browser/SO, não a geolocalização. */
 (function () {
   var LANG = 'pt', DICT = null;
+  function idiomaDoNavegador() {
+    try {
+      var lista = [];
+      if (navigator.languages && navigator.languages.length) lista = lista.concat(navigator.languages);
+      if (navigator.language) lista.push(navigator.language);
+      if (navigator.userLanguage) lista.push(navigator.userLanguage);
+      for (var i = 0; i < lista.length; i++) {
+        var s = String(lista[i] || '').toLowerCase();
+        if (s.indexOf('pt') === 0) return 'pt';
+        if (s.indexOf('en') === 0) return 'en';
+      }
+    } catch (_) {}
+    return 'pt';
+  }
   try {
-    var salvo = localStorage.getItem('dbabrabo.lang');
-    if (salvo === 'pt' || salvo === 'en') LANG = salvo;
-    else {
-      var nav = String(navigator.language || navigator.userLanguage || 'pt').toLowerCase();
-      LANG = nav.indexOf('en') === 0 ? 'en' : 'pt';
+    var q = null;
+    try { q = new URLSearchParams(location.search).get('lang'); } catch (_) { q = null; }
+    if (q === 'pt' || q === 'en') {
+      LANG = q;
+      try { localStorage.setItem('dbabrabo.lang', q); } catch (_) {}
+    } else {
+      var salvo = localStorage.getItem('dbabrabo.lang');
+      if (salvo === 'pt' || salvo === 'en') LANG = salvo;
+      else LANG = idiomaDoNavegador();
     }
   } catch (_) { LANG = 'pt'; }
   function g(o, k) { return String(k).split('.').reduce(function (a, p) { return (a && a[p] != null) ? a[p] : null; }, o); }
