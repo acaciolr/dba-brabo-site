@@ -12,7 +12,11 @@
     "salary_max": 22000,
     "salary_currency": "BRL",
     "seniority": "Sênior",
-    "technologies": ["Oracle", "RAC", "Data Guard"],
+    "technologies": [
+      "Oracle",
+      "RAC",
+      "Data Guard"
+    ],
     "published": "2026-09-15",
     "description": "Resumo próprio de 1-2 linhas. Detalhes ficam no anúncio oficial.",
     "url": "https://anuncio-oficial-da-vaga"
@@ -75,5 +79,274 @@
       "desc_en": "Analytical SQL, modeling, BI and pipelines — the gateway to the data world."
     }
   ],
-  "jobs": []
+  "jobs": [
+    {
+      "id": "auto-arbeitnow-f1e5ef61d7",
+      "area": "dados",
+      "title": "Business Data Analyst Finance & Requirements Management (m/w/d)",
+      "company": "Aer Group",
+      "location": "Berlin Boppstr.",
+      "modality": "Presencial",
+      "remote": false,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "seniority": null,
+      "technologies": [
+        "datenstrukturen",
+        "business analysis",
+        "Requirements Management"
+      ],
+      "published": "2026-09-15",
+      "description": "Deine Aufgaben: Du verstehst Geschäftsprozesse, denkst analytisch und kannst komplexe Anforderungen verständlich strukturieren? Du bewegst Dich sicher zwischen Fachbereichen und technischen Teams und hast Freude daran, aus Daten und Anforderungen tragfähige Lösungen zu entwickeln…",
+      "url": "https://www.arbeitnow.com/jobs/companies/aer-group/business-data-analyst-finance-requirements-management-berlin-boppstr-186063",
+      "origem": "arbeitnow"
+    },
+    {
+      "id": "auto-arbeitnow-76284dd1e0",
+      "area": "dbre",
+      "title": "Senior DevOps / Platform Engineer, AI Infrastructure (m/f/x)",
+      "company": "MAIA",
+      "location": "Leipzig",
+      "modality": "Remoto",
+      "remote": true,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "seniority": "Sênior",
+      "technologies": [
+        "Remote",
+        "Engineering"
+      ],
+      "published": "2026-09-15",
+      "description": "MAIA is the AI platform built for companies where generic AI tools break down because the data is complex, the stakes are high, and precision matters. We work on the difficult parts of enterprise AI: understanding complex documents, integrating AI into real workflows, making orga…",
+      "url": "https://www.arbeitnow.com/jobs/companies/maia/senior-devops-platform-engineer-ai-infrastructure-leipzig-223621",
+      "origem": "arbeitnow"
+    },
+    {
+      "id": "auto-arbeitnow-62e40a4e8d",
+      "area": "dbre",
+      "title": "Senior DevOps / Platform Engineer, AI Infrastructure (m/w/d)",
+      "company": "MAIA",
+      "location": "Leipzig",
+      "modality": "Presencial",
+      "remote": false,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "seniority": "Sênior",
+      "technologies": [
+        "Engineering"
+      ],
+      "published": "2026-09-15",
+      "description": "MAIA macht das Wissen von Unternehmen im Arbeitsalltag nutzbar. Unsere KI-Plattform verbindet komplexe Dokumente, Unternehmenswissen und agentische Workflows, damit Menschen verlässliche Antworten finden und anspruchsvolle Aufgaben effizienter erledigen können. Ausgehend von unse…",
+      "url": "https://www.arbeitnow.com/jobs/companies/maia/senior-devops-platform-engineer-ai-infrastructure-leipzig-241297",
+      "origem": "arbeitnow"
+    },
+    {
+      "id": "auto-arbeitnow-73285fa4da",
+      "area": "dados",
+      "title": "Senior Software Engineer - Integrations - AI/ML",
+      "company": "Clickhouse",
+      "location": "Germany",
+      "modality": "Presencial",
+      "remote": false,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "seniority": "Sênior",
+      "technologies": [
+        "Engineering"
+      ],
+      "published": "2026-09-15",
+      "description": "The Connectors team is the bridge between ClickHouse and the broader ecosystem. We build and maintain the integrations that make ClickHouse accessible to millions of developers, data practitioners, and AI agents worldwide, from high-level data visualization plugins (Tableau, Powe…",
+      "url": "https://www.arbeitnow.com/jobs/companies/clickhouse/senior-software-engineer-integrations-ai-ml-germany-275597",
+      "origem": "arbeitnow"
+    },
+    {
+      "id": "auto-arbeitnow-3e058efc8a",
+      "area": "dbre",
+      "title": "Staff Site Reliability Engineer",
+      "company": "Pingidentity",
+      "location": "A combinar",
+      "modality": "Presencial",
+      "remote": false,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "seniority": "Especialista",
+      "technologies": [
+        "2300 ID Cloud Env Ops"
+      ],
+      "published": "2026-09-15",
+      "description": "&lt;div class=&quot;content-intro&quot;&gt;&lt;p&gt;&lt;strong&gt;About Ping Identity:&amp;nbsp;&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;At Ping Identity, we believe in making digital experiences both secure and seamless for all users, without compromise. We call this digital freedom.…",
+      "url": "https://www.arbeitnow.co.uk/jobs/companies/pingidentity/staff-site-reliability-engineer-245327",
+      "origem": "arbeitnow"
+    },
+    {
+      "id": "auto-arbeitnow-4f73845cb2",
+      "area": "dados",
+      "title": "Principal Data Engineer",
+      "company": "Blackduck",
+      "location": "Belfast",
+      "modality": "Presencial",
+      "remote": false,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "seniority": "Especialista",
+      "technologies": [
+        "5010 - R&D SaaS (GQP)"
+      ],
+      "published": "2026-09-15",
+      "description": "&lt;div class=&quot;content-intro&quot;&gt;&lt;p&gt;Black Duck Software, Inc. helps organizations build secure, high-quality software, minimizing risks while maximizing speed and productivity. Black Duck, a recognized pioneer in application security, provides SAST, SCA, and DAST…",
+      "url": "https://www.arbeitnow.co.uk/jobs/companies/blackduck/principal-data-engineer-belfast-249456",
+      "origem": "arbeitnow"
+    },
+    {
+      "id": "auto-arbeitnow-bc179d75fa",
+      "area": "dbre",
+      "title": "Senior Cloud Platform Engineer",
+      "company": "prolific",
+      "location": "Remote",
+      "modality": "Remoto",
+      "remote": true,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "seniority": "Sênior",
+      "technologies": [
+        "Engineering"
+      ],
+      "published": "2026-09-15",
+      "description": "&lt;h2 style=&quot;text-align: center;&quot;&gt;&lt;strong&gt;Senior Cloud Platform Engineer&lt;/strong&gt;&lt;/h2&gt; &lt;p style=&quot;text-align: center;&quot;&gt;&lt;em&gt;Team: Platform&lt;/em&gt;&lt;/p&gt; &lt;p style=&quot;text-align: center;&quot;&gt;&amp;nbsp;&lt;/p&gt;…",
+      "url": "https://www.arbeitnow.co.uk/jobs/companies/prolific/remote-senior-cloud-platform-engineer-431744",
+      "origem": "arbeitnow"
+    },
+    {
+      "id": "auto-arbeitnow-179140d80e",
+      "area": "dbre",
+      "title": "Senior SRE/ML Ops Engineer - Performance",
+      "company": "Vibe",
+      "location": "Paris",
+      "modality": "Presencial",
+      "remote": false,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "seniority": "Sênior",
+      "technologies": [
+        "Engineering & Product"
+      ],
+      "published": "2026-09-15",
+      "description": "About Vibe Streaming TV is no longer just a brand awareness channel. It’s becoming a core part of the performance marketing mix, alongside search and social. Vibe.co is building the platform that makes TV work like the rest of the acquisition stack: targeted, measurable, and opti…",
+      "url": "https://www.arbeitnow.fr/jobs/companies/vibe/senior-sre-ml-ops-engineer-performance-paris-375303",
+      "origem": "arbeitnow"
+    },
+    {
+      "id": "auto-arbeitnow-a6a57337a6",
+      "area": "dados",
+      "title": "Data Engineer, Measurement & Reporting",
+      "company": "Vibe",
+      "location": "Paris",
+      "modality": "Presencial",
+      "remote": false,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "seniority": null,
+      "technologies": [
+        "Engineering & Product"
+      ],
+      "published": "2026-09-15",
+      "description": "About Vibe At Vibe.co , we're reimagining how brands reach audiences in the age of streaming. We believe streaming TV is no longer just a brand awareness play, it's the next great performance marketing channel. We're building the infrastructure to unlock this $100B opportunity. V…",
+      "url": "https://www.arbeitnow.fr/jobs/companies/vibe/data-engineer-measurement-reporting-paris-295755",
+      "origem": "arbeitnow"
+    },
+    {
+      "id": "auto-arbeitnow-8d5c7b6617",
+      "area": "dados",
+      "title": "Senior Data Scientist - Performance",
+      "company": "Vibe",
+      "location": "Paris",
+      "modality": "Presencial",
+      "remote": false,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "seniority": "Sênior",
+      "technologies": [
+        "Engineering & Product"
+      ],
+      "published": "2026-09-15",
+      "description": "About Vibe Streaming TV is no longer just a brand awareness channel. It's becoming a core part of the performance marketing mix, alongside search and social. Vibe.co is building the platform that makes TV work like the rest of the acquisition stack: targeted, measurable, and opti…",
+      "url": "https://www.arbeitnow.fr/jobs/companies/vibe/senior-data-scientist-performance-paris-457648",
+      "origem": "arbeitnow"
+    },
+    {
+      "id": "auto-arbeitnow-257c5a92a2",
+      "area": "dados",
+      "title": "Director of Product Analytics",
+      "company": "Vibe",
+      "location": "Paris",
+      "modality": "Presencial",
+      "remote": false,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "seniority": null,
+      "technologies": [
+        "Engineering & Product"
+      ],
+      "published": "2026-09-15",
+      "description": "About Vibe Streaming TV is no longer just a brand awareness channel. It’s becoming a core part of the performance marketing mix, alongside search and social. Vibe.co is building the platform that makes TV work like the rest of the acquisition stack: targeted, measurable, and opti…",
+      "url": "https://www.arbeitnow.fr/jobs/companies/vibe/director-of-product-analytics-paris-403861",
+      "origem": "arbeitnow"
+    },
+    {
+      "id": "auto-arbeitnow-1d73a908fc",
+      "area": "dados",
+      "title": "Senior Analytical Engineer",
+      "company": "Octopus Energy Group",
+      "location": "Paris (FR)",
+      "modality": "Presencial",
+      "remote": false,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "seniority": "Sênior",
+      "technologies": [
+        "Data"
+      ],
+      "published": "2026-09-14",
+      "description": "Tu as envie de travailler dans un environnement bienveillant qui avance vite ? 5ème fournisseur français en 10 ans, Octopus Energy est un fournisseur d’énergies renouvelables qui agit comme un véritable fer de lance pour la révolution électro tech. &nbsp; Comment on fait ?&nbsp;…",
+      "url": "https://www.arbeitnow.fr/jobs/companies/octopus-energy-group/senior-analytical-engineer-paris-fr-242726",
+      "origem": "arbeitnow"
+    },
+    {
+      "id": "auto-remotive-e0732a6a5f",
+      "area": "dados",
+      "title": "Senior Data Engineer",
+      "company": "Lemon.io",
+      "location": "LATAM, Europe, USA, Canada, APAC",
+      "modality": "Remoto",
+      "remote": true,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_currency": null,
+      "seniority": "Sênior",
+      "technologies": [
+        ".Net",
+        "android",
+        "apache",
+        "AWS",
+        "azure",
+        "C"
+      ],
+      "published": "2026-08-19",
+      "description": "Are you a talented Senior Data Engineer looking for a remote job that lets you show your skills and get decent compensation? Look no further than Lemon.io — the marketplace that connects you with hand-picked startups in the US and Europe. What we offer: The rate depends on your s…",
+      "url": "https://remotive.com/remote-jobs/software-development/senior-data-engineer-2091097",
+      "origem": "remotive"
+    }
+  ]
 }

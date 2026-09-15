@@ -1,0 +1,52 @@
+# DBA BRABO — coleta automática de vagas (sem LinkedIn: sem API pública).
+#
+# Todo dia às 07:00 BRT (10:00 UTC): busca vagas de banco de dados nas APIs
+# públicas (Arbeitnow + Remotive, sem chave; Adzuna se houver secrets),
+# classifica por área, regenera data/jobs.json e commita. O push dispara o
+# workflow de deploy, que publica no GitHub Pages.
+#
+# Setup opcional (Adzuna BR): Settings > Secrets > Actions > New secret:
+#   ADZUNA_APP_ID e ADZUNA_APP_KEY (grátis em developer.adzuna.com).
+# Sem elas, a fonte Adzuna é pulada automaticamente.
+
+name: Atualizar vagas
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-jobs
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Coletar vagas
+        env:
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+        run: node tools/collect-jobs.mjs
+
+      - name: Validar JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('data/jobs.json','utf8')); console.log('jobs.json válido')"
+
+      - name: Commit automático (só se mudou)
+        run: |
+          git config user.name "dba-brabo-bot"
+          git config user.email "bot@dbabrabo.com.br"
+          git add data/jobs.json
+          git diff --staged --quiet && echo "sem novidades" && exit 0
+          git commit -m "vagas: atualizacao automatica $(date -u +%F)"
+          git push
