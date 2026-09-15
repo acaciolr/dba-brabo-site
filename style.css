@@ -306,6 +306,18 @@ section + section { border-top: 1px solid var(--line); }
 .menu-toggle { display: none; width: 40px; height: 40px; place-items: center; border-radius: var(--r-md); border: 1px solid var(--line); color: var(--fg-0); }
 .menu-toggle svg { width: 20px; height: 20px; }
 
+/* ---------- 05b · HEADER DENSO -------------------------------------------
+   11 links + 3 botões + 2 toggles só cabem com espaçamento enxuto.
+   Economiza ~200px mantendo a mesma cara: ninguém percebe, nada estoura. */
+.header { gap: var(--s-4); padding-inline: var(--s-4); }
+.nav { gap: 0; }
+.nav__link { padding: var(--s-2) 6px; }
+.nav__actions { gap: var(--s-1); margin-left: var(--s-2); }
+.nav__actions .btn--sm { padding-inline: var(--s-3); }
+.brand__mark { width: 32px; height: 32px; }
+.theme-toggle, .lang-toggle { width: 32px; height: 32px; min-width: 32px; }
+@media (max-width: 1560px) { .brand__tag { display: none; } }
+
 /* ---------- 06 · HERO E TERMINAL ---------------------------------------- */
 .hero {
   min-height: min(86vh, 840px);
@@ -826,10 +838,7 @@ section + section { border-top: 1px solid var(--line); }
   .founder--main .founder__headline, .founder--main .founder__track { text-align: left; }
 }
 
-@media (max-width: 860px) {
-  :root { --header-h: 60px; }
-  section { padding-block: var(--s-16); }
-
+@media (max-width: 1280px) {
   .menu-toggle { display: grid; }
   .nav {
     position: fixed; inset: var(--header-h) 0 auto 0;
@@ -846,6 +855,11 @@ section + section { border-top: 1px solid var(--line); }
   .nav__link.is-active::after { display: none; }
   .nav__actions { margin: var(--s-4) 0 0; justify-content: space-between; }
   .nav__actions .btn { flex: 1; }
+}
+
+@media (max-width: 860px) {
+  :root { --header-h: 60px; }
+  section { padding-block: var(--s-16); }
 
   .mentorias-grid, .grid--3, .grid--4 { grid-template-columns: 1fr; }
   .method__item::after { display: none; }
@@ -1238,18 +1252,6 @@ section + section { border-top: 1px solid var(--line); }
   border-left: 3px solid var(--brand);
 }
 .cons-cta p { color: var(--fg-1); font-size: var(--fs-sm); max-width: 58ch; margin: 0; }
-
-/* ---------- cabeçalho compacto: cabe +1 link sem estourar -----------------
-   Entre 861px e ~1340px os 11 links + ações não cabem no espaçamento padrão;
-   aqui aperta gaps, esconde a tag da marca e encurta o padding dos links.
-   Abaixo de 860px continua valendo o hambúrguer. */
-@media (max-width: 1340px) and (min-width: 861px) {
-  .header { gap: var(--s-3); padding-inline: var(--s-4); }
-  .brand__tag { display: none; }
-  .nav { gap: 0; }
-  .nav__link { padding: var(--s-2); }
-  .nav__actions { gap: var(--s-1); margin-left: var(--s-2); }
-}
 
 /* ---------- 21 · VAGAS ----------------------------------------------------
    Página /vagas/: reaproveita .mhero/.section-head/.grid--3/.card/.badge/
