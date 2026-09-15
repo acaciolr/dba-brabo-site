@@ -49,10 +49,24 @@ function langAtual() {
 let LANG = 'pt';
 let DICT = null;
 const get = (o, k) => String(k).split('.').reduce((a, p) => (a && a[p] != null ? a[p] : null), o);
-const t = k => get(DICT && DICT[LANG], k) || get(DICT && DICT.pt, k) || k;
+/* PT embutido: o cão de guarda pode disparar antes do dicionário chegar. */
+const T_FALLBACK = {
+  'vagas.stat_vagas': 'Vagas curadas', 'vagas.stat_areas': 'Áreas', 'vagas.stat_remotas': 'Remotas',
+  'vagas.todas': 'Todas', 'vagas.buscar_em': 'Buscar vagas desta área em:',
+  'vagas.nenhuma': 'Nenhuma vaga curada nesta área ainda.',
+  'vagas.nenhuma_sub': 'Use os portais abaixo para buscar agora. A curadoria é atualizada pela equipe DBA BRABO.',
+  'vagas.ver_vaga': 'Ver vaga', 'vagas.salario_combinar': 'Salário a combinar',
+  'vagas.nota': 'As vagas curadas redirecionam para o anúncio oficial. Portais externos têm conteúdo, prazos e regras próprias.',
+  'vagas.lento_h': 'As vagas estão demorando para carregar.',
+  'vagas.lento_p': 'Pode ser conexão lenta ou bloqueador de conteúdo: desative o adblocker para este site e recarregue (Ctrl+Shift+R). Se persistir, tente em aba anônima.',
+  'vagas.erro_h': 'Não foi possível carregar as vagas.',
+  'vagas.erro_p': 'Verifique sua conexão e recarregue. Em teste local, sirva via servidor (python3 -m http.server 8080) — fetch não funciona em file://.',
+};
+const t = k => get(DICT && DICT[LANG], k) || get(DICT && DICT.pt, k) || T_FALLBACK[k] || k;
 
 let JOBS = { areas: [], jobs: [] };
 let filtro = 'todas';
+let bootWatchdog = 0;
 
 function fmtSalario(j) {
   if (j.salary_min == null && j.salary_max == null) return esc(t('vagas.salario_combinar'));
@@ -142,27 +156,52 @@ function render() {
   }
 }
 
+/* Sinal com timeout (quando o navegador suporta): fetch nunca trava eterno. */
+function sinal(ms) {  try {
+    if (window.AbortSignal && AbortSignal.timeout) return AbortSignal.timeout(ms);
+  } catch {}
+  return undefined;
+}
+
+function marcarPronto() {
+  try {
+    clearTimeout(bootWatchdog);
+    const box = $('#vagasAreas');
+    if (box) box.dataset.pronto = '1';
+  } catch {}
+}
+
+function erroCarregamento(modo) {
+  console.error('[DBA BRABO/vagas] falha ao carregar:', modo);
+  const box = $('#vagasAreas');
+  if (!box || box.dataset.pronto) return;
+  const lento = modo === 'lento';
+  box.innerHTML = `<div class="vaga__vazio"><b>${esc(lento ? t('vagas.lento_h') : t('vagas.erro_h'))}</b><br>${esc(lento ? t('vagas.lento_p') : t('vagas.erro_p'))}</div>`;
+  marcarPronto();
+}
+
 async function boot() {
+  /* Cão de guarda: se em 12s nada renderizou (rede travada, bloqueador,
+     JS interrompido), troca o "Carregando…" por instrução — nunca vazio. */
+  bootWatchdog = setTimeout(() => erroCarregamento('lento'), 12000);
   try {
     const m = location.hash.match(/#area-([\w-]+)/);
     if (m) filtro = m[1];
   } catch {}
   try {
     const [jobs, dict] = await Promise.all([
-      fetch(url('data/jobs.json'), { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(`jobs.json — HTTP ${r.status}`); return r.json(); }),
-      fetch(url('data/i18n.json'), { cache: 'no-cache' }).then(r => (r.ok ? r.json() : null)).catch(() => null),
+      fetch(url('data/jobs.json'), { cache: 'no-cache', signal: sinal(15000) }).then(r => { if (!r.ok) throw new Error(`jobs.json — HTTP ${r.status}`); return r.json(); }),
+      fetch(url('data/i18n.json'), { cache: 'no-cache', signal: sinal(15000) }).then(r => (r.ok ? r.json() : null)).catch(() => null),
     ]);
     JOBS = jobs;
     DICT = dict;
     if (JOBS.areas && filtro !== 'todas' && !JOBS.areas.some(a => a.id === filtro)) filtro = 'todas';
+    LANG = langAtual();
+    render();
+    marcarPronto();
   } catch (err) {
-    console.error('[DBA BRABO/vagas] falha ao carregar:', err);
-    const box = $('#vagasAreas');
-    if (box) box.innerHTML = `<div class="vaga__vazio"><b>Não foi possível carregar as vagas.</b><br>Abra via servidor local ou aguarde o deploy: python3 -m http.server 8080.</div>`;
-    return;
+    erroCarregamento('erro');
   }
-  LANG = langAtual();
-  render();
   /* Troca de idioma no toggle do portal (script.js) re-renderiza o dinâmico. */
   document.addEventListener('click', e => {
     if (e.target && e.target.id === 'langToggle') setTimeout(() => { LANG = langAtual(); render(); }, 50);
