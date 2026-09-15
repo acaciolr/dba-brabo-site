@@ -568,6 +568,7 @@ function renderEventos() {
           ${passado ? '' : botao(L.inscricao, 'Inscrição', 'btn--outline btn--sm')}
           ${passado ? '' : botao(L.transmissao, 'Assistir ao vivo', 'btn--outline btn--sm')}
           ${botao(L.comunidade, 'Comunidade', 'btn--ghost btn--sm')}
+          ${((e.redes || []).map(r => botao(r.url, r.label, 'btn--ghost btn--sm')).join(''))}
         </div>
       </div>
     </article>`;

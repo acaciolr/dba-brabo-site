@@ -3,7 +3,7 @@
   "titulo": "Eventos",
   "eyebrow": "Agenda da comunidade",
   "intro": "Os encontros onde a comunidade brasileira de banco de dados se junta. Datas, locais e inscrição conferidos nos sites oficiais.",
-  "atualizadoEm": "2026-09-04",
+  "atualizadoEm": "2026-09-15",
   "itens": [
     {
       "slug": "aula-mais-longa-2026",
@@ -79,6 +79,30 @@
         "inscricao": "https://www.sympla.com.br/evento/guob-tech-day-2026/3458569",
         "comunidade": ""
       },
+      "confirmado": true
+    },
+    {
+      "slug": "data-saturday-vitoria-2026",
+      "nome": "Data Saturday Vitória 2026",
+      "edicao": "TIES · UniSales",
+      "desc": "O maior evento de dados e inteligência artificial do Espírito Santo, com palestras de consultores da Power Tuning o dia inteiro.",
+      "data": "2026-09-19",
+      "horario": "08:00 - 17:00",
+      "local": "UniSales — Centro Universitário Salesiano",
+      "cidade": "Vitória, ES",
+      "banner": "assets/eventos/data-saturday-vitoria-2026.png",
+      "accent": "#F59E0B",
+      "links": {
+        "site": "",
+        "inscricao": "https://www.sympla.com.br/evento/data-ai-saturday-vitoria-2026-1156/3443729",
+        "comunidade": ""
+      },
+      "redes": [
+        { "label": "Instagram", "url": "https://www.instagram.com/soupowertuning/" },
+        { "label": "YouTube", "url": "https://www.youtube.com/@PowerTuningData" },
+        { "label": "Facebook", "url": "https://www.facebook.com/SouPowerTuning/" },
+        { "label": "LinkedIn", "url": "https://www.linkedin.com/company/power-tuning/" }
+      ],
       "confirmado": true
     }
   ]
