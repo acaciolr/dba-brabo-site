@@ -56,10 +56,16 @@ monitoramento e labs continuam existindo como páginas, fora do hub.
 
 O hub e as 11 subpáginas exigem sessão. Sem sessão, caem no login:
 
-- Login: `ecosistema/aluno/` — usuário master `dbabrabo` + senha.
-- Gate: `js/auth.js` (`EcoAuth.exigirLogin()` no `<head>` de cada página
-  protegida; `ecosistema/mentor/` só redireciona p/ `mentor/`, que tem o
-  próprio acesso cifrado).
+- Login: `ecosistema/aluno/` — usuário master `dbabrabo` + senha, ou login
+  por aluno (e-mail + senha inicial definida no cadastro).
+- Gate: `js/auth.js` (`EcoAuth.exigirLogin(url, lab?)` no `<head>` de cada página
+  protegida; páginas de lab passam o próprio `data-tech`, terminal deduz do
+  `?vm=` e vm-manager é só admin; `ecosistema/mentor/` só redireciona p/
+  `mentor/`, que tem o próprio acesso cifrado).
+- Alunos: cadastro na área do mentor (botão ＋ Aluno, `mentor/alunos.js`,
+  só no navegador) → Exportar → `node tools/build-alunos.mjs export.json
+  --write` → commita SÓ `json/alunos.json` (user+hash+labs, sem CPF).
+  O export local nunca vai ao repo (ver `.gitignore`).
 - A senha NUNCA fica no repositório: no código vai só o SHA-256 de
   `"usuario:senha"`. Para trocar a senha, gere o novo hash e troque
   `MASTER_HASH` em `js/auth.js`:

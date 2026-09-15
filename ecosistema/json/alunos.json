@@ -1,0 +1,4 @@
+{
+  "_comment": "Acesso por aluno (Fase Alunos): login + labs por matrícula, SEM PII. Gerado por tools/build-alunos.mjs a partir de exportação LOCAL do registry do mentor. Nunca commitar o export (tem CPF e verificadores) — só este arquivo vai ao repo.",
+  "alunos": []
+}

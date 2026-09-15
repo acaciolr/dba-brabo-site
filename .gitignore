@@ -38,3 +38,7 @@ conteudo-mentor/
 # Pacotes locais de transporte do conteudo cifrado do mentor (data/mentor/*.enc ja vai versionado). O .zip duplica MBs rastreados e pode conter build com outra senha: o fluxo oficial e tools/build-mentor.mjs + tools/build-users.mjs.
 mentor-imagens-diagramas.zip
 mentor-passo-a-passo.zip
+
+# Export local do registry de alunos (tem CPF e verificadores de senha).
+# NUNCA commitar: só ecosistema/json/alunos.json (user+hash+labs) vai ao repo.
+alunos-export*.json

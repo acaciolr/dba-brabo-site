@@ -75,13 +75,33 @@ function renderStatus(groups) {
   }).join('');
 }
 
+/* ---------- acesso: aluno só vê os cards das mentorias contratadas ----- */
+function filtrarLabs() {
+  try {
+    if (typeof EcoAuth === 'undefined' || !EcoAuth.labs) return;
+    if (EcoAuth.ehAdmin && EcoAuth.ehAdmin()) return;   // admin vê tudo
+    const labs = EcoAuth.labs() || [];
+    document.querySelectorAll('[data-lab]').forEach(a => {
+      if (!labs.includes(a.dataset.lab)) a.style.display = 'none';
+    });
+    document.querySelectorAll('[data-admin]').forEach(a => { a.style.display = 'none'; });
+  } catch {}
+}
+
 /* ---------- teclado: 1–5 abrem ecossistemas ---------- */
 function teclado() {
   const mapa = { 1: 'oracle/', 2: 'mysql/', 3: 'sqlserver/', 4: 'postgresql/', 5: 'mongodb/' };
   document.addEventListener('keydown', e => {
     if (e.target.matches('input, textarea')) return;
     const dest = mapa[e.key];
-    if (dest) location.href = dest;
+    if (!dest) return;
+    try {
+      if (typeof EcoAuth !== 'undefined' && EcoAuth.pode && !EcoAuth.pode(dest.replace('/', ''))) {
+        toast('Este ambiente não está na sua matrícula.');
+        return;
+      }
+    } catch {}
+    location.href = dest;
   });
 }
 
@@ -90,6 +110,7 @@ function teclado() {
   relogio();
   drawer();
   teclado();
+  filtrarLabs();
   try {
     const vms = await loadJSON('json/vms.json');
     const h = vms.host || {};

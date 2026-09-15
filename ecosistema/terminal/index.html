@@ -13,7 +13,16 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css">
 <link rel="stylesheet" href="../css/tui.css">
 <script src="../js/auth.js"></script>
-<script>EcoAuth.exigirLogin('../aluno/');</script>
+<script>
+/* Console por VM: o lab é deduzido do prefixo do nome (?vm=ora-node-01). */
+(function () {
+  var vm = '';
+  try { vm = new URLSearchParams(location.search).get('vm') || ''; } catch (_) {}
+  var lab = (/^(ora|mysql|sql|pg|patroni|mongo)/i.exec(vm) || [])[1] || '';
+  lab = { ora: 'oracle', mysql: 'mysql', sql: 'sqlserver', pg: 'postgresql', patroni: 'postgresql', mongo: 'mongodb' }[String(lab).toLowerCase()] || '';
+  EcoAuth.exigirLogin('../aluno/', lab || undefined);
+})();
+</script>
 </head>
 <body>
 

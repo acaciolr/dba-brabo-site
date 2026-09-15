@@ -12,7 +12,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="../css/tui.css">
 <script src="../js/auth.js"></script>
-<script>EcoAuth.exigirLogin('../aluno/');</script>
+<script>
+EcoAuth.exigirLogin('../aluno/');
+if (!EcoAuth.ehAdmin()) location.replace('../');   // todas as VMs = só admin
+</script>
 </head>
 <body>
 
