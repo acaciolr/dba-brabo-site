@@ -1,0 +1,79 @@
+{
+  "_comment": "Vagas DBA BRABO (/vagas/). Curadoria manual por enquanto: cada item de jobs[] aponta SEMPRE para o anúncio oficial (url). Nunca copiar descrição integral de terceiros — use resumo próprio em description. jobs vazio = a página mostra os portais externos de cada área. Arquitetura pronta para automação futura (workflow gerando este arquivo a partir de APIs).",
+  "_schema_job": {
+    "id": "slug-unico-ex-oracle-dba-senior-xyz",
+    "area": "oracle | sqlserver | postgresql | mysql | nosql | dbre | dados",
+    "title": "Oracle DBA Sênior",
+    "company": "Nome da empresa",
+    "location": "São Paulo, SP",
+    "modality": "Remoto | Híbrido | Presencial",
+    "remote": true,
+    "salary_min": 18000,
+    "salary_max": 22000,
+    "salary_currency": "BRL",
+    "seniority": "Sênior",
+    "technologies": ["Oracle", "RAC", "Data Guard"],
+    "published": "2026-09-15",
+    "description": "Resumo próprio de 1-2 linhas. Detalhes ficam no anúncio oficial.",
+    "url": "https://anuncio-oficial-da-vaga"
+  },
+  "areas": [
+    {
+      "id": "oracle",
+      "titulo": "DBA Oracle",
+      "query": "Oracle DBA",
+      "accent": "#F0805A",
+      "desc_pt": "Oracle Database, Exadata, RAC, Data Guard, GoldenGate e OCI. O coração do DBA BRABO.",
+      "desc_en": "Oracle Database, Exadata, RAC, Data Guard, GoldenGate and OCI. The heart of DBA BRABO."
+    },
+    {
+      "id": "sqlserver",
+      "titulo": "DBA SQL Server",
+      "query": "SQL Server DBA",
+      "accent": "#F08A6E",
+      "desc_pt": "SQL Server, Always On, replicação, performance e Azure SQL.",
+      "desc_en": "SQL Server, Always On, replication, performance and Azure SQL."
+    },
+    {
+      "id": "postgresql",
+      "titulo": "DBA PostgreSQL",
+      "query": "PostgreSQL DBA",
+      "accent": "#4FD1B0",
+      "desc_pt": "PostgreSQL, replicação física e lógica, Patroni, tuning e cloud.",
+      "desc_en": "PostgreSQL, physical and logical replication, Patroni, tuning and cloud."
+    },
+    {
+      "id": "mysql",
+      "titulo": "DBA MySQL",
+      "query": "MySQL DBA",
+      "accent": "#34D3C4",
+      "desc_pt": "MySQL, InnoDB Cluster, Group Replication, Percona e MariaDB.",
+      "desc_en": "MySQL, InnoDB Cluster, Group Replication, Percona and MariaDB."
+    },
+    {
+      "id": "nosql",
+      "titulo": "DBA NoSQL",
+      "query": "MongoDB DBA",
+      "accent": "#47C98E",
+      "desc_pt": "MongoDB, Redis, Cassandra e DynamoDB — replica sets, sharding e performance.",
+      "desc_en": "MongoDB, Redis, Cassandra and DynamoDB — replica sets, sharding and performance."
+    },
+    {
+      "id": "dbre",
+      "titulo": "DBRE",
+      "query": "Database Reliability Engineer",
+      "accent": "#5FB8DE",
+      "desc_pt": "Database Reliability Engineering: automação, IaC, observabilidade, SRE de dados e cloud (OCI, AWS, Azure).",
+      "desc_en": "Database Reliability Engineering: automation, IaC, observability, data SRE and cloud (OCI, AWS, Azure)."
+    },
+    {
+      "id": "dados",
+      "titulo": "Analista de Dados",
+      "query": "Analista de Dados SQL",
+      "accent": "#C792EA",
+      "desc_pt": "SQL analítico, modelagem, BI e pipelines — a porta de entrada para o mundo de dados.",
+      "desc_en": "Analytical SQL, modeling, BI and pipelines — the gateway to the data world."
+    }
+  ],
+  "jobs": []
+}

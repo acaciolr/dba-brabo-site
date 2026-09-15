@@ -1238,3 +1238,46 @@ section + section { border-top: 1px solid var(--line); }
   border-left: 3px solid var(--brand);
 }
 .cons-cta p { color: var(--fg-1); font-size: var(--fs-sm); max-width: 58ch; margin: 0; }
+
+/* ---------- cabeçalho compacto: cabe +1 link sem estourar -----------------
+   Entre 861px e ~1340px os 11 links + ações não cabem no espaçamento padrão;
+   aqui aperta gaps, esconde a tag da marca e encurta o padding dos links.
+   Abaixo de 860px continua valendo o hambúrguer. */
+@media (max-width: 1340px) and (min-width: 861px) {
+  .header { gap: var(--s-3); padding-inline: var(--s-4); }
+  .brand__tag { display: none; }
+  .nav { gap: 0; }
+  .nav__link { padding: var(--s-2); }
+  .nav__actions { gap: var(--s-1); margin-left: var(--s-2); }
+}
+
+/* ---------- 21 · VAGAS ----------------------------------------------------
+   Página /vagas/: reaproveita .mhero/.section-head/.grid--3/.card/.badge/
+   .btn/.hero__stats. Só o filtro por área (chips) e os miolos do card de
+   vaga são novos — sempre com os tokens do tema. */
+.vchips { position: sticky; top: var(--header-h); z-index: 60; padding-block: var(--s-3); background: color-mix(in srgb, var(--bg-0) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.vchip {
+  font-size: var(--fs-sm); font-weight: 600; color: var(--fg-1);
+  padding: var(--s-2) var(--s-4); border-radius: var(--r-full);
+  border: 1px solid var(--line-strong); background: var(--bg-1);
+  cursor: pointer; white-space: nowrap;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.vchip:hover { color: var(--fg-0); border-color: var(--accent); }
+.vchip.is-on { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 12%, var(--bg-1)); }
+.vsec { scroll-margin-top: calc(var(--header-h) + 76px); }
+.vsec + .vsec { margin-top: var(--s-16); }
+.vaga { display: flex; flex-direction: column; }
+.vaga h3 { font-size: var(--fs-md); }
+.vaga__empresa { color: var(--fg-1); font-size: var(--fs-sm); margin-top: var(--s-1); }
+.vaga__salario { font-family: var(--font-display); font-weight: 700; color: var(--accent); margin-top: var(--s-3); }
+.vaga__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); margin-top: var(--s-4); padding-top: var(--s-4); border-top: 1px solid var(--line); }
+.vaga__data { font-size: var(--fs-xs); color: var(--fg-2); }
+.vaga__vazio {
+  border: 1px dashed var(--line-strong); border-radius: var(--r-lg);
+  padding: var(--s-6); color: var(--fg-1); font-size: var(--fs-sm);
+}
+.vaga__vazio b { color: var(--fg-0); }
+.vaga__fontes { margin-top: var(--s-4); }
+.vaga__fontes span { display: block; font-size: var(--fs-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--fg-2); margin-bottom: var(--s-3); }
+.vaga__nota { color: var(--fg-2); font-size: var(--fs-xs); max-width: 72ch; }
