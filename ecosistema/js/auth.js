@@ -37,7 +37,8 @@
 
   async function sha256Hex(texto) {
     if (!crypto.subtle) {
-      throw new Error('WebCrypto indisponível — sirva via http://localhost:8080/ecosistema/aluno/ (não funciona em file://).');
+      throw new Error((window.EcoT && window.EcoT('webcrypto')) ||
+        'WebCrypto indisponível — sirva via http://localhost:8080/ecosistema/aluno/ (não funciona em file://).');
     }
     var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto));
     return hex(buf);
@@ -85,7 +86,7 @@
       if (!s) { el.hidden = true; return; }
       el.hidden = false;
       el.textContent = s.u;
-      el.title = 'Sessão ativa: ' + s.u;
+      el.title = ((window.EcoT && window.EcoT('sessao_ativa')) || 'Sessão ativa: ') + s.u;
     });
   });
   document.addEventListener('click', function (e) {

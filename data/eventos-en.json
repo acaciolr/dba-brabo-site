@@ -1,0 +1,116 @@
+{
+  "_comment": "Agenda de eventos da comunidade. A classificacao entre proximos e edicoes anteriores e feita no navegador comparando 'data' (e 'dataFim', quando o evento dura mais de um dia) com a data de hoje — nao mexa em HTML para atualizar: acrescente ou edite itens aqui e atualize 'atualizadoEm'. Formato: AAAA-MM-DD. 'links.transmissao' vira o botao 'Assistir ao vivo'. 'dataFim' e opcional: sem ele, o evento e de um dia so.",
+  "titulo": "Events",
+  "eyebrow": "Community calendar",
+  "intro": "Where Brazil's database community gets together. Dates, venues, and registration confirmed on the official sites.",
+  "atualizadoEm": "2026-09-15",
+  "itens": [
+    {
+      "slug": "aula-mais-longa-2026",
+      "nome": "The Longest Class in History",
+      "edicao": "80 uninterrupted hours",
+      "desc": "Record attempt for the longest programming class ever, with 80 continuous hours of Intro to SQL and Database Administration. Led by professor Matheus Boesing, in a hybrid format with live streaming.",
+      "data": "2026-09-04",
+      "dataFim": "2026-09-07",
+      "horario": "Continuous live stream, 24/7",
+      "local": "Auditório Dr. Roque Edison Redel",
+      "cidade": "Três de Maio, RS",
+      "banner": "assets/eventos/aula-mais-longa-2026.webp",
+      "accent": "#FAB43C",
+      "links": {
+        "site": "https://aulamaislonga.com.br/",
+        "transmissao": "https://www.youtube.com/watch?v=-D4DPYQI-Jo",
+        "inscricao": "",
+        "comunidade": ""
+      },
+      "confirmado": true
+    },
+    {
+      "slug": "pgconf-brasil-2026",
+      "nome": "PGConf Brasil 2026",
+      "edicao": "Blumenau, SC",
+      "desc": "Brazil's largest PostgreSQL conference, with three days of technical tracks, tutorials, and community.",
+      "data": "2026-09-02",
+      "dataFim": "2026-09-04",
+      "horario": "02/09 08:00 — 04/09 18:00",
+      "local": "Quality Hotel Blumenau",
+      "cidade": "Blumenau, SC",
+      "banner": "assets/eventos/pgconf-brasil-2026.webp",
+      "accent": "#5A9BD8",
+      "links": {
+        "site": "https://2026.pgconf.com.br/",
+        "inscricao": "https://www.sympla.com.br/evento/pgconf-brasil-2026-https-2026-pgconf-com-br/3422638",
+        "comunidade": ""
+      },
+      "confirmado": true,
+      "capaClara": true
+    },
+    {
+      "slug": "mysql-br-conf-2026",
+      "nome": "MySQL BR Conf 2026",
+      "edicao": "The Community Strikes Back",
+      "desc": "The annual conference of the Brazil MySQL Community, with a technical track dedicated to MySQL, HeatWave, and high availability.",
+      "data": "2026-09-26",
+      "horario": "08:30 - 17:30",
+      "local": "Universidade Anhembi Morumbi — Mooca",
+      "cidade": "São Paulo, SP",
+      "banner": "assets/eventos/mysql-br-conf-2026.webp",
+      "accent": "#E8833A",
+      "links": {
+        "site": "https://mysqlbrconf.com.br/",
+        "inscricao": "https://www.sympla.com.br/evento/mysql-br-conf-2026/3406555",
+        "comunidade": "https://comunidademysql.com.br/"
+      },
+      "confirmado": true
+    },
+    {
+      "slug": "guob-tech-day-2026",
+      "nome": "GUOB Tech Day 2026",
+      "edicao": "LAOUC Community Tour",
+      "desc": "The annual meeting of the Brazil Oracle Technology Users Group, part of the LAOUC circuit spanning eight Latin American countries.",
+      "data": "2026-08-29",
+      "horario": "08:10 - 18:30",
+      "local": "USCS — Universidade Municipal de São Caetano do Sul",
+      "cidade": "São Caetano do Sul, SP",
+      "banner": "assets/eventos/guob-tech-day-2026.webp",
+      "accent": "#E3201C",
+      "links": {
+        "site": "https://guob.com.br/",
+        "inscricao": "https://www.sympla.com.br/evento/guob-tech-day-2026/3458569",
+        "comunidade": ""
+      },
+      "confirmado": true
+    },
+    {
+      "slug": "data-saturday-vitoria-2026",
+      "nome": "Data Saturday Vitória 2026",
+      "edicao": "TIES · UniSales",
+      "desc": "The largest data and artificial intelligence event in Espírito Santo, with talks by Power Tuning consultants all day long.",
+      "data": "2026-09-19",
+      "horario": "08:00 - 17:00",
+      "local": "UniSales — Centro Universitário Salesiano",
+      "cidade": "Vitória, ES",
+      "banner": "assets/eventos/data-saturday-vitoria-2026.png",
+      "accent": "#F59E0B",
+      "links": {
+        "site": "",
+        "inscricao": "https://www.sympla.com.br/evento/data-ai-saturday-vitoria-2026-1156/3443729",
+        "comunidade": ""
+      },
+      "realizador": {
+        "titulo": "Organized by Power Tuning",
+        "texto": "Espírito Santo-based consultancy and Microsoft Solutions Partner (Data & AI + Azure), with 12 years and 1,400+ companies served across SQL Server, Oracle, MySQL, PostgreSQL, Power BI, Fabric, and enterprise AI. At Data Saturday, Power Tuning consultants lead the talks all day.",
+        "site": "https://powertuning.com.br/",
+        "siteRotulo": "powertuning.com.br"
+      },
+      "redes": [
+        { "label": "Power Tuning website", "url": "https://powertuning.com.br/" },
+        { "label": "Instagram", "url": "https://www.instagram.com/soupowertuning/" },
+        { "label": "YouTube", "url": "https://www.youtube.com/@PowerTuningData" },
+        { "label": "Facebook", "url": "https://www.facebook.com/SouPowerTuning/" },
+        { "label": "LinkedIn", "url": "https://www.linkedin.com/company/power-tuning/" }
+      ],
+      "confirmado": true
+    }
+  ]
+}

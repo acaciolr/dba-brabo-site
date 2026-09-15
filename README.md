@@ -131,6 +131,24 @@ Tópicos sem esses campos aparecem como lista simples — sem quebrar nada.
 
 `data/projetos.json`. Se `links.github` estiver vazio, o botão não aparece.
 
+### Traduzir o portal (PT/EN)
+
+O botão EN/PT troca o idioma sem refresh. O chrome vem de `data/i18n.json`
+(blocos `pt`/`en` com as mesmas chaves) e o conteúdo dinâmico de
+`data/<nome>-en.json` (espelho completo do JSON PT: **slugs, tags, ids de
+filtro, URLs e cores idênticos** — só os textos humanos mudam). Sem o espelho,
+a seção segue em PT (fallback silencioso).
+
+Regras ao mexer em texto visível:
+
+1. Toda chave nova usada em `t()`/`T()`/`data-i18n` precisa existir em
+   `data/i18n.json → pt` (o `en` acompanha).
+2. Rode `node tools/check-i18n.mjs` — e o `node tools/build.mjs --check`
+   já barra o commit com chave faltante ou espelho EN com slug/tag divergente.
+3. Se o texto aparece em `script.js`, o PT de emergência em `FALLBACK_PT`
+   precisa acompanhar (só é usado se o `i18n.json` falhar).
+4. `data/search-index-en.json` é gerado pelo build a partir dos espelhos EN.
+
 ---
 
 ## Publicar

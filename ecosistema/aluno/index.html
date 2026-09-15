@@ -12,22 +12,27 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="../css/tui.css">
+<style>
+  .elang-toggle{min-width:44px;height:30px;padding:0 10px;border-radius:8px;border:1px solid var(--line,#2a3340);background:transparent;color:var(--fg-1,#c9d4e0);font:600 12px/1 Poppins,system-ui,sans-serif;letter-spacing:.08em;cursor:pointer}
+  .elang-toggle:hover{border-color:var(--brand,#4fa8e8);color:var(--brand,#4fa8e8)}
+</style>
 </head>
 <body>
 
 <header class="etop">
-  <a class="ebrand" href="../../" aria-label="DBA BRABO — voltar ao portal">
+  <a class="ebrand" href="../../" data-i18n-aria="aluno.topo_voltar" aria-label="DBA BRABO — voltar ao portal">
     <img src="../../assets/logo/avatar-96.png" alt="" width="30" height="30">
-    <span>DBA <b>BRABO</b><small>Ecossistema Super DBA</small></span>
+    <span>DBA <b>BRABO</b><small data-i18n="aluno.marca_small">Ecossistema Super DBA</small></span>
   </a>
   <span class="etop__sp"></span>
-  <a class="esair esair--ghost" href="../../">Portal</a>
+  <button class="elang-toggle" id="langToggleAluno" type="button" aria-label="Mudar idioma" data-i18n-aria="idioma">PT</button>
+  <a class="esair esair--ghost" href="../../" data-i18n="aluno.portal">Portal</a>
 </header>
 
 <div class="ewrap">
-  <main class="elogin" aria-label="Acesso à área do aluno">
+  <main class="elogin" data-i18n-aria="aluno.acesso_aria" aria-label="Acesso à área do aluno">
     <div class="elogin__card epanel">
-      <span class="eleg">Área do aluno</span>
+      <span class="eleg" data-i18n="aluno.eyebrow">Área do aluno</span>
 
       <div class="elogin__marca">
         <img src="../../assets/logo/avatar-96.png" alt="DBA BRABO" width="44" height="44">
@@ -37,43 +42,84 @@
         </div>
       </div>
 
-      <h1>Acesso ao ecossistema</h1>
-      <p class="elogin__sub">Entre com seu usuário e senha para abrir o hub de labs, consoles e runbooks.</p>
+      <h1 data-i18n="aluno.h1">Acesso ao ecossistema</h1>
+      <p class="elogin__sub" data-i18n="aluno.sub">Entre com seu usuário e senha para abrir o hub de labs, consoles e runbooks.</p>
 
       <form id="formLogin" autocomplete="off">
         <div class="ecampo">
-          <label for="usuario">usuário</label>
+          <label for="usuario" data-i18n="aluno.usuario">usuário</label>
           <input type="text" id="usuario" name="usuario" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="dbabrabo">
         </div>
         <div class="ecampo">
-          <label for="senha">senha</label>
+          <label for="senha" data-i18n="aluno.senha">senha</label>
           <input type="password" id="senha" name="senha" required placeholder="••••••••••">
         </div>
         <div class="e-erro" id="erro" role="alert"></div>
-        <button class="ebtn ebtn--primary ebtn--block" type="submit" id="btnEntrar">Entrar no ecossistema</button>
+        <button class="ebtn ebtn--primary ebtn--block" type="submit" id="btnEntrar" data-i18n="aluno.entrar">Entrar no ecossistema</button>
       </form>
 
       <div class="e-ok" id="jaLogado" hidden>
-        <p>Você já está logado como <b data-eco-user></b>.</p>
+        <p><span data-i18n="aluno.ja_logado">Você já está logado como</span> <b data-eco-user></b>.</p>
         <p style="display:flex;gap:8px;flex-wrap:wrap">
-          <a class="ebtn ebtn--primary" href="../">Abrir o hub</a>
-          <a class="ebtn" href="./" data-eco-sair="./">Sair</a>
+          <a class="ebtn ebtn--primary" href="../" data-i18n="aluno.abrir_hub">Abrir o hub</a>
+          <a class="ebtn" href="./" data-eco-sair="./" data-i18n="aluno.sair">Sair</a>
         </p>
       </div>
 
-      <p class="elogin__nota">A sessão vale nesta aba e morre ao fechá-la — igual à área do mentor.
+      <p class="elogin__nota" data-i18n="aluno.nota_sessao">A sessão vale nesta aba e morre ao fechá-la — igual à área do mentor.
         Sem sessão, hub, consoles e managers redirecionam para cá.</p>
-      <p class="elogin__nota"><a href="../../">&larr; voltar ao portal</a> · <a href="../../mentor/">É mentor? Abrir a área do mentor</a></p>
+      <p class="elogin__nota"><a href="../../" data-i18n="aluno.voltar">&larr; voltar ao portal</a> · <a href="../../mentor/" data-i18n="aluno.eh_mentor">É mentor? Abrir a área do mentor</a></p>
     </div>
   </main>
 </div>
 
+<script>
+/* Idioma da área do aluno: mesma chave do portal (dbabrabo.lang). */
+(function () {
+  var LANG = 'pt', DICT = null;
+  try { LANG = localStorage.getItem('dbabrabo.lang') || 'pt'; } catch (_) { LANG = 'pt'; }
+  if (LANG !== 'pt' && LANG !== 'en') LANG = 'pt';
+  function g(o, k) { return String(k).split('.').reduce(function (a, p) { return (a && a[p] != null) ? a[p] : null; }, o); }
+  function T(k, fb) { return g(DICT && DICT[LANG], k) || g(DICT && DICT.pt, k) || fb || k; }
+  window.EcoT = function (k) { return T('aluno.' + k, null); };
+  function aplicar() {
+    if (!DICT) return;
+    document.documentElement.lang = T('meta.lang', 'pt-BR');
+    document.title = T('aluno.titulo', document.title);
+    var md = document.querySelector('meta[name="description"]');
+    if (md) md.setAttribute('content', T('aluno.meta_desc', md.getAttribute('content')));
+    document.querySelectorAll('[data-i18n]').forEach(function (n) { n.innerHTML = T(n.getAttribute('data-i18n'), null) || n.innerHTML; });
+    document.querySelectorAll('[data-i18n-aria]').forEach(function (n) { n.setAttribute('aria-label', T(n.getAttribute('data-i18n-aria'), null) || n.getAttribute('aria-label')); });
+    var btn = document.getElementById('langToggleAluno');
+    if (btn) {
+      btn.textContent = LANG === 'pt' ? 'EN' : 'PT';
+      btn.setAttribute('aria-label', T('idioma', 'Mudar idioma'));
+    }
+    document.querySelectorAll('[data-eco-user]').forEach(function (el) {
+      if (el.textContent) el.title = T('aluno.sessao_ativa', 'Sessão ativa: ') + el.textContent;
+    });
+  }
+  window.EcoAplicarIdioma = aplicar;
+  fetch('../../data/i18n.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) { DICT = d; aplicar(); }).catch(function () {});
+  document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.getElementById('langToggleAluno');
+    if (btn) btn.addEventListener('click', function () {
+      LANG = LANG === 'pt' ? 'en' : 'pt';
+      try { localStorage.setItem('dbabrabo.lang', LANG); } catch (_) {}
+      aplicar();
+    });
+    aplicar();
+  });
+})();
+</script>
 <script src="../js/auth.js"></script>
 <script>
 (function () {
   var form = document.getElementById('formLogin');
   var errBox = document.getElementById('erro');
   var btn = document.getElementById('btnEntrar');
+  function Tt(k, fb) { return (window.EcoT && window.EcoT(k)) || fb; }
 
   if (EcoAuth.estaLogado()) {
     document.getElementById('jaLogado').hidden = false;
@@ -90,8 +136,7 @@
     e.preventDefault();
     limpaErro();
     btn.disabled = true;
-    var volta = btn.textContent;
-    btn.textContent = 'Verificando…';
+    btn.textContent = Tt('verificando', 'Verificando…');
     try {
       var ok = await EcoAuth.entrar(
         document.getElementById('usuario').value,
@@ -101,14 +146,16 @@
         location.href = EcoAuth.proximoOu('../');
         return;
       }
-      erro('Usuário ou senha incorretos.');
+      erro(Tt('erro_cred', 'Usuário ou senha incorretos.'));
       document.getElementById('senha').value = '';
       document.getElementById('senha').focus();
     } catch (err) {
-      erro(err.message || 'Falha ao verificar. Tente de novo.');
+      erro(err.message || Tt('erro_generico', 'Falha ao verificar. Tente de novo.'));
     } finally {
       btn.disabled = false;
-      btn.textContent = volta;
+      if (window.EcoAplicarIdioma) window.EcoAplicarIdioma();
+      if (btn.textContent === Tt('verificando', 'Verificando…'))
+        btn.textContent = Tt('entrar', 'Entrar no ecossistema');
     }
   });
 })();

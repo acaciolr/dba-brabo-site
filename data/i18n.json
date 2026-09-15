@@ -62,9 +62,82 @@
       "mentor": "Área do mentor"
     },
     "tema": "Alternar tema",
+    "tema_nome": "Tema: {t}. Clique para alternar.",
     "menu_abrir": "Abrir menu",
     "idioma": "Mudar idioma",
     "pular": "Pular para o conteúdo",
+    "meta_title": "DBA BRABO — Mentoria Técnica para DBAs | Oracle, MySQL, SQL Server, PostgreSQL",
+    "meta_desc": "Mentoria individual em Oracle, MySQL, SQL Server, PostgreSQL e MongoDB — da arquitetura interna à alta disponibilidade, com lab prático.",
+    "marca_tag": "Mentoria Técnica para DBAs",
+    "terminal_pronto": "pronto para a próxima mentoria",
+    "stats": {
+      "catalogo": "Mentorias no catálogo", "trilhas": "Trilhas técnicas",
+      "stack": "Tecnologias no stack", "anos": "Anos em produção"
+    },
+    "sobre_cards": [
+      { "t": "Database", "d": "Oracle, MySQL, SQL Server, PostgreSQL e MongoDB — arquitetura interna antes de qualquer comando." },
+      { "t": "Alta Disponibilidade", "d": "RAC, Data Guard, Always On, InnoDB Cluster e Patroni. Quorum, failover e o custo de cada garantia." },
+      { "t": "Replicação", "d": "Binlog, GTID, WAL streaming e GoldenGate. Consistência entre nós e resolução de conflito." },
+      { "t": "Backup & Recovery", "d": "RMAN, XtraBackup, pgBackRest, PITR e ZDLRA — com teste de restore, não só agendamento." },
+      { "t": "Performance", "d": "AWR, Query Store, Performance Schema e EXPLAIN. Diagnóstico por evidência." },
+      { "t": "Cloud", "d": "OCI, AWS, Azure e GCP pela ótica de quem responde pelo RPO, não pelo console." },
+      { "t": "Segurança", "d": "TDE, TLS, RBAC e auditoria que sobrevive a uma inspeção de compliance." },
+      { "t": "Automação & DBRE", "d": "Infra como código, pipeline de schema, observabilidade e teste de caos." }
+    ],
+    "fund": {
+      "principal": "Fundador e mentor", "secundario": "Fundador",
+      "bio_breve": "Apresentação em breve.", "linkedin": "Ver LinkedIn",
+      "linkedin_titulo": "Link ainda não cadastrado"
+    },
+    "card": { "eyebrow": "Mentoria", "modulos": "módulos", "pilares": "pilares", "ver": "Ver conteúdo" },
+    "cons": { "plat": "Plataformas", "como": "Como funciona", "bancos": "Bancos", "nuvens": "Nuvens" },
+    "proj": {
+      "breve": "Detalhes técnicos em breve.", "github": "Ver no GitHub", "acessar": "Acessar",
+      "repo_breve": "Repositório em breve", "link_breve": "Link em breve",
+      "st_prod": "Em produção", "st_homolog": "Em homologação", "st_dev": "Em desenvolvimento"
+    },
+    "ev": {
+      "encerrada": "Edição encerrada", "agora": "Acontecendo agora", "amanha": "Amanhã",
+      "faltam": "Faltam {d} dias", "site": "Site oficial", "inscricao": "Inscrição",
+      "ao_vivo": "Assistir ao vivo", "comunidade": "Comunidade", "site_curto": "Site",
+      "arte": "Arte de divulgação do {nome}", "nota": "Agenda conferida nos sites oficiais em {data}.",
+      "vazio": "Nenhum evento com data confirmada no momento. As edições anteriores ficam abaixo.",
+      "passados": "Edições anteriores"
+    },
+    "soc": {
+      "oficial": "Comunidade oficial", "entrar": "Entrar no grupo",
+      "ver_mentorias": "Ver as mentorias antes", "aponte": "Aponte a câmera",
+      "escaneie": "Escaneie", "abrir": "Abrir",
+      "vazio": "Nenhum canal configurado — preencha data/site.json → links."
+    },
+    "busca": {
+      "nada": "Nada encontrado para", "g_mentorias": "Mentorias",
+      "g_modulos": "Módulos e pilares", "g_tec": "Tecnologias", "g_proj": "Projetos",
+      "aparece": "Aparece em"
+    },
+    "filtros": {
+      "tudo": "{n} mentorias no catálogo", "uma": "{n} mentoria em {f}", "varias": "{n} mentorias em {f}"
+    },
+    "copiar": "copiar", "copiado": "copiado",
+    "boot_titulo": "Não foi possível carregar o conteúdo",
+    "boot_texto": "Os arquivos de data/ não foram encontrados. Se você abriu o index.html direto do disco, o navegador bloqueia a leitura por CORS — rode um servidor local: python3 -m http.server 8080.",
+    "aluno": {
+      "titulo": "Área do Aluno — ECOSSISTEMA SUPER DBA",
+      "meta_desc": "Acesso restrito ao ecossistema de labs DBA BRABO: Oracle, MySQL, SQL Server, PostgreSQL e MongoDB.",
+      "topo_voltar": "DBA BRABO — voltar ao portal",
+      "marca_small": "Ecossistema Super DBA",
+      "portal": "Portal", "acesso_aria": "Acesso à área do aluno",
+      "eyebrow": "Área do aluno", "h1": "Acesso ao ecossistema",
+      "sub": "Entre com seu usuário e senha para abrir o hub de labs, consoles e runbooks.",
+      "usuario": "usuário", "senha": "senha", "entrar": "Entrar no ecossistema",
+      "verificando": "Verificando…", "erro_cred": "Usuário ou senha incorretos.",
+      "erro_generico": "Falha ao verificar. Tente de novo.",
+      "ja_logado": "Você já está logado como", "abrir_hub": "Abrir o hub", "sair": "Sair",
+      "nota_sessao": "A sessão vale nesta aba e morre ao fechá-la — igual à área do mentor. Sem sessão, hub, consoles e managers redirecionam para cá.",
+      "voltar": "← voltar ao portal", "eh_mentor": "É mentor? Abrir a área do mentor",
+      "webcrypto": "WebCrypto indisponível — sirva via http://localhost:8080/ecosistema/aluno/ (não funciona em file://).",
+      "sessao_ativa": "Sessão ativa: "
+    },
     "mentor": {
       "area_restrita": "Área restrita",
       "titulo": "Material de apoio ao mentor",
@@ -93,7 +166,24 @@
       "somente_pt": "Conteúdo ainda em português — tradução a caminho.",
       "pausar": "pausar",
       "animar": "animar",
-      "sem_acesso": "Sua conta não tem acesso a esta trilha."
+      "sem_acesso": "Sua conta não tem acesso a esta trilha.",
+      "inicio_olho": "Ecossistema de formação técnica",
+      "inicio_claim": "Não basta saber usar banco de dados. É preciso saber administrá-lo.",
+      "inicio_p": "Mentoria individual em Oracle, MySQL, SQL Server, PostgreSQL e MongoDB — da arquitetura interna à alta disponibilidade, com lab prático no seu ambiente e troubleshooting de cenário real.",
+      "inicio_conta": "Você está em:",
+      "inicio_trilhas": "trilhas",
+      "inicio_topicos": "tópicos",
+      "titulo_pag": "Área do Mentor — DBA BRABO",
+      "tag": "Área do mentor",
+      "inicio_aria": "Voltar ao início da área do mentor",
+      "ecossistema": "Ecossistema",
+      "acesso": "Acesso",
+      "erro_ler": "Não foi possível ler",
+      "erro_titulo": "Erro",
+      "en_soon": "EN soon",
+      "print_ref": "Print de referência",
+      "bash": "bash",
+      "atencao": "Atenção"
     }
   },
   "en": {
@@ -158,9 +248,82 @@
       "mentor": "Mentor area"
     },
     "tema": "Toggle theme",
+    "tema_nome": "Theme: {t}. Click to switch.",
     "menu_abrir": "Open menu",
     "idioma": "Switch language",
     "pular": "Skip to content",
+    "meta_title": "DBA BRABO — Technical Mentorship for DBAs | Oracle, MySQL, SQL Server, PostgreSQL",
+    "meta_desc": "One-on-one mentorship in Oracle, MySQL, SQL Server, PostgreSQL and MongoDB — from internals to high availability, with hands-on labs.",
+    "marca_tag": "Technical Mentorship for DBAs",
+    "terminal_pronto": "ready for the next mentorship",
+    "stats": {
+      "catalogo": "Mentorships in the catalog", "trilhas": "Technical tracks",
+      "stack": "Technologies in the stack", "anos": "Years in production"
+    },
+    "sobre_cards": [
+      { "t": "Database", "d": "Oracle, MySQL, SQL Server, PostgreSQL and MongoDB — internals before any command." },
+      { "t": "High Availability", "d": "RAC, Data Guard, Always On, InnoDB Cluster and Patroni. Quorum, failover and the cost of each guarantee." },
+      { "t": "Replication", "d": "Binlog, GTID, WAL streaming and GoldenGate. Consistency across nodes and conflict resolution." },
+      { "t": "Backup & Recovery", "d": "RMAN, XtraBackup, pgBackRest, PITR and ZDLRA — with restore testing, not just scheduling." },
+      { "t": "Performance", "d": "AWR, Query Store, Performance Schema and EXPLAIN. Evidence-based diagnostics." },
+      { "t": "Cloud", "d": "OCI, AWS, Azure and GCP through the eyes of whoever owns the RPO, not the console." },
+      { "t": "Security", "d": "TDE, TLS, RBAC and auditing that survives a compliance inspection." },
+      { "t": "Automation & DBRE", "d": "Infrastructure as code, schema pipelines, observability and chaos testing." }
+    ],
+    "fund": {
+      "principal": "Founder and mentor", "secundario": "Founder",
+      "bio_breve": "Bio coming soon.", "linkedin": "View LinkedIn",
+      "linkedin_titulo": "Link not registered yet"
+    },
+    "card": { "eyebrow": "Mentorship", "modulos": "modules", "pilares": "pillars", "ver": "View content" },
+    "cons": { "plat": "Platforms", "como": "How it works", "bancos": "Databases", "nuvens": "Clouds" },
+    "proj": {
+      "breve": "Technical details coming soon.", "github": "View on GitHub", "acessar": "Open",
+      "repo_breve": "Repository coming soon", "link_breve": "Link coming soon",
+      "st_prod": "In production", "st_homolog": "In staging", "st_dev": "In development"
+    },
+    "ev": {
+      "encerrada": "Edition closed", "agora": "Happening now", "amanha": "Tomorrow",
+      "faltam": "{d} days to go", "site": "Official website", "inscricao": "Registration",
+      "ao_vivo": "Watch live", "comunidade": "Community", "site_curto": "Website",
+      "arte": "Artwork for {nome}", "nota": "Agenda checked on the official websites on {data}.",
+      "vazio": "No event with a confirmed date right now. Past editions are listed below.",
+      "passados": "Past editions"
+    },
+    "soc": {
+      "oficial": "Official community", "entrar": "Join the group",
+      "ver_mentorias": "Browse the mentorships first", "aponte": "Point your camera",
+      "escaneie": "Scan", "abrir": "Open",
+      "vazio": "No channel configured — fill in data/site.json → links."
+    },
+    "busca": {
+      "nada": "Nothing found for", "g_mentorias": "Mentorships",
+      "g_modulos": "Modules & pillars", "g_tec": "Technologies", "g_proj": "Projects",
+      "aparece": "Featured in"
+    },
+    "filtros": {
+      "tudo": "{n} mentorships in the catalog", "uma": "{n} mentorship in {f}", "varias": "{n} mentorships in {f}"
+    },
+    "copiar": "copy", "copiado": "copied",
+    "boot_titulo": "Could not load the content",
+    "boot_texto": "The data/ files were not found. If you opened index.html straight from disk, the browser blocks reads via CORS — serve it locally: python3 -m http.server 8080.",
+    "aluno": {
+      "titulo": "Student Area — SUPER DBA ECOSYSTEM",
+      "meta_desc": "Restricted access to the DBA BRABO lab ecosystem: Oracle, MySQL, SQL Server, PostgreSQL and MongoDB.",
+      "topo_voltar": "DBA BRABO — back to the portal",
+      "marca_small": "Super DBA Ecosystem",
+      "portal": "Portal", "acesso_aria": "Student area sign-in",
+      "eyebrow": "Student area", "h1": "Ecosystem access",
+      "sub": "Sign in with your username and password to open the lab hub, consoles and runbooks.",
+      "usuario": "username", "senha": "password", "entrar": "Sign in to the ecosystem",
+      "verificando": "Checking…", "erro_cred": "Wrong username or password.",
+      "erro_generico": "Verification failed. Try again.",
+      "ja_logado": "You are already signed in as", "abrir_hub": "Open the hub", "sair": "Sign out",
+      "nota_sessao": "This session lives in this tab and dies when you close it — same as the mentor area. Without a session, the hub, consoles and managers redirect here.",
+      "voltar": "← back to the portal", "eh_mentor": "A mentor? Open the mentor area",
+      "webcrypto": "WebCrypto unavailable — serve via http://localhost:8080/ecosistema/aluno/ (does not work over file://).",
+      "sessao_ativa": "Active session: "
+    },
     "mentor": {
       "area_restrita": "Restricted area",
       "titulo": "Mentor reference material",
@@ -189,7 +352,24 @@
       "somente_pt": "Content still in Portuguese — translation on its way.",
       "pausar": "pause",
       "animar": "play",
-      "sem_acesso": "Your account has no access to this track."
+      "sem_acesso": "Your account has no access to this track.",
+      "inicio_olho": "Technical training ecosystem",
+      "inicio_claim": "Knowing how to use a database is not enough. You must know how to run it.",
+      "inicio_p": "One-on-one mentorship in Oracle, MySQL, SQL Server, PostgreSQL and MongoDB — from internals to high availability, with hands-on labs in your environment and real-world troubleshooting.",
+      "inicio_conta": "You are signed in as:",
+      "inicio_trilhas": "tracks",
+      "inicio_topicos": "topics",
+      "titulo_pag": "Mentor Area — DBA BRABO",
+      "tag": "Mentor area",
+      "inicio_aria": "Back to the mentor area home",
+      "ecossistema": "Ecosystem",
+      "acesso": "Access",
+      "erro_ler": "Could not read",
+      "erro_titulo": "Error",
+      "en_soon": "EN soon",
+      "print_ref": "Reference screenshot",
+      "bash": "bash",
+      "atencao": "Heads up"
     }
   }
 }

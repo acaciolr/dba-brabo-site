@@ -70,7 +70,7 @@ function setupTemaMentor() {
       document.documentElement.dataset.themePref = t;
     } catch { document.documentElement.dataset.theme = 'dark'; }
     const btn = $('#themeToggle');
-    if (btn) btn.setAttribute('aria-label', `Tema: ${t}. Clique para alternar.`);
+    if (btn) btn.setAttribute('aria-label', (T('tema_nome', 'Tema: {t}. Clique para alternar.')).replace('{t}', t));
   };
   let atual = 'dark';
   try { atual = localStorage.getItem(KEY) || 'dark'; } catch {}
@@ -367,7 +367,7 @@ async function abrirTopico(trilha, modulo, topico) {
   const t  = app.indice.trilhas.find(x => x.slug === trilha);
   const el = $('#mconteudo');
   if (!t || !app.trilhas.includes(trilha)) {
-    return el.innerHTML = `<div class="mrev"><b>Acesso</b><span>${esc(T('mentor.sem_acesso', 'Sua conta não tem acesso a esta trilha.'))}</span></div>`;
+    return el.innerHTML = `<div class="mrev"><b>${esc(T('mentor.acesso', 'Acesso'))}</b><span>${esc(T('mentor.sem_acesso', 'Sua conta não tem acesso a esta trilha.'))}</span></div>`;
   }
   const m  = t.modulos.find(x => x.id === modulo);
   const p  = m.topicos.find(x => x.id === topico);
@@ -382,7 +382,7 @@ async function abrirTopico(trilha, modulo, topico) {
   el.innerHTML = `<p style="color:var(--fg-3);font-family:var(--font-mono);font-size:var(--fs-xs)">${esc(T('mentor.decifrando2', 'decifrando…'))}</p>`;
   let dados;
   try { dados = await carregarTrilha(trilha); }
-  catch (e) { return el.innerHTML = `<div class="mrev"><b>Erro</b> Não foi possível ler ${trilha}.enc — ${esc(e.message)}</div>`; }
+  catch (e) { return el.innerHTML = `<div class="mrev"><b>${esc(T('mentor.erro_titulo', 'Erro'))}</b> ${esc(T('mentor.erro_ler', 'Não foi possível ler'))} ${esc(trilha)}.enc — ${esc(e.message)}</div>`; }
 
   /* O conteudo e chaveado por topico; trilhas com ids repetidos entre
      modulos (mysql) usam chave namespaced "modulo/topico". Tenta a
@@ -426,7 +426,7 @@ function terminal(bloco) {
   return `<div class="term-mac">
     <div class="term-mac__barra">
       <div class="term-mac__luzes"><i></i><i></i><i></i></div>
-      <div class="term-mac__titulo">${esc(bloco.titulo || 'bash')}</div>
+      <div class="term-mac__titulo">${esc(bloco.titulo || T('mentor.bash', 'bash'))}</div>
       <button class="term-mac__copiar" type="button">${esc(T('mentor.copiar', 'copiar'))}</button>
     </div>
     <pre>${linhas}</pre>
@@ -465,12 +465,12 @@ function renderBloco(b) {
     case 'imagem': {
       const src = String(b.src || '').replace(/^\//, '');
       if (!src) return '';
-      return `<figure class="mimg"><img src="${BASE}/${esc(src)}" alt="${esc(b.alt || b.leg || 'Print de referência')}" loading="lazy">${b.leg ? `<figcaption class="mdiag__leg">${rico(b.leg)}</figcaption>` : ''}</figure>`;
+      return `<figure class="mimg"><img src="${BASE}/${esc(src)}" alt="${esc(b.alt || b.leg || T('mentor.print_ref', 'Print de referência'))}" loading="lazy">${b.leg ? `<figcaption class="mdiag__leg">${rico(b.leg)}</figcaption>` : ''}</figure>`;
     }
     case 'passos':
       return (b.itens || []).map(passo).join('');
     case 'aviso':
-      return `<div class="mrev"><b>${esc(b.rotulo || 'Atenção')}</b><span>${rico(b.texto)}</span></div>`;
+      return `<div class="mrev"><b>${esc(b.rotulo || T('mentor.atencao', 'Atenção'))}</b><span>${rico(b.texto)}</span></div>`;
     default:
       return '';
   }
@@ -484,7 +484,7 @@ function renderTopico(t, m, c) {
   </header>`;
 
   if (c.versoes) h += `<p style="font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--fg-3);margin-bottom:var(--s-6)">${esc(T('mentor.testado_em', 'Escrito e testado em: '))}${esc(c.versoes)}</p>`;
-  if (c._lang === 'pt' && I18N.lang === 'en') h += `<div class="mrev"><b>EN soon</b><span>${esc(T('mentor.somente_pt', 'Conteúdo ainda em português — tradução a caminho.'))}</span></div>`;
+  if (c._lang === 'pt' && I18N.lang === 'en') h += `<div class="mrev"><b>${esc(T('mentor.en_soon', 'EN soon'))}</b><span>${esc(T('mentor.somente_pt', 'Conteúdo ainda em português — tradução a caminho.'))}</span></div>`;
 
   for (const b of (c.blocos || [])) {
     h += `<section class="mbloco">`;

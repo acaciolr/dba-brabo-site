@@ -17,6 +17,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { verificarI18n } from './check-i18n.mjs';
 
 const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const CHECK_ONLY = process.argv.includes('--check');
@@ -28,6 +29,13 @@ const catalogo    = read('mentorias.json');
 const projetos    = read('projetos.json');
 const tecnologias = read('tecnologias.json');
 const roadmap     = read('roadmap.json');
+/* Espelhos EN (opcionais): alimentam data/search-index-en.json. Ausência de
+   qualquer um deles = só o índice PT é gerado, sem falhar o build. */
+const readEN = f => { try { return JSON.parse(fs.readFileSync(p('data', f), 'utf8')); } catch { return null; } };
+const catalogoEN    = readEN('mentorias-en.json');
+const projetosEN    = readEN('projetos-en.json');
+const tecnologiasEN = readEN('tecnologias-en.json');
+const roadmapEN     = readEN('roadmap-en.json');
 
 const ORIGIN = (site.site.usarDominioProprio ? site.site.domainFuturo : site.site.domain).replace(/\/$/, '');
 
@@ -124,7 +132,7 @@ function head({ title, desc, canonical, ogImage, base, ld }) {
 ${ld ? `<script type="application/ld+json">${JSON.stringify(ld)}</script>` : ''}
 </head>
 <body>
-<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<a class="skip-link" href="#conteudo" data-i18n="pular">Pular para o conteúdo</a>
 <div class="backdrop" aria-hidden="true"></div>
 <div class="aurora" aria-hidden="true"></div>`;
 }
@@ -134,26 +142,27 @@ function header(base) {
 <header class="header">
   <a class="brand" href="${base}/" aria-label="DBA BRABO — início">
     <img class="brand__mark" src="${base}/assets/logo/avatar-96.png" width="38" height="38" alt="">
-    <span class="brand__name">DBA <span>BRABO</span><small class="brand__tag">Mentoria Técnica para DBAs</small></span>
+    <span class="brand__name">DBA <span>BRABO</span><small class="brand__tag" data-i18n="marca_tag">Mentoria Técnica para DBAs</small></span>
   </a>
   <nav class="nav" id="nav" aria-label="Navegação principal">
-    <a class="nav__link" href="${base}/#sobre">Sobre</a>
-    <a class="nav__link" href="${base}/mentorias/">Mentorias</a>
-    <a class="nav__link" href="${base}/#metodologia">Metodologia</a>
-    <a class="nav__link" href="${base}/#projetos">Projetos</a>
-    <a class="nav__link" href="${base}/#tecnologias">Stack</a>
-    <a class="nav__link" href="${base}/#roadmap">Roadmap</a>
-    <a class="nav__link" href="${base}/#faq">FAQ</a>
+    <a class="nav__link" href="${base}/#sobre" data-i18n="nav.sobre">Sobre</a>
+    <a class="nav__link" href="${base}/mentorias/" data-i18n="nav.mentorias">Mentorias</a>
+    <a class="nav__link" href="${base}/#metodologia" data-i18n="nav.metodologia">Metodologia</a>
+    <a class="nav__link" href="${base}/#projetos" data-i18n="nav.projetos">Projetos</a>
+    <a class="nav__link" href="${base}/#tecnologias" data-i18n="nav.stack">Stack</a>
+    <a class="nav__link" href="${base}/#roadmap" data-i18n="nav.roadmap">Roadmap</a>
+    <a class="nav__link" href="${base}/#faq" data-i18n="nav.faq">FAQ</a>
     <span class="nav__actions">
-      <a class="btn btn--primary btn--sm" href="${base}/#comunidade" data-community>Comunidade</a>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema">
+      <a class="btn btn--primary btn--sm" href="${base}/#comunidade" data-community data-i18n="nav.comunidade">Comunidade</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Alternar tema" data-i18n-aria="tema">
         <svg data-icon="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
         <svg data-icon="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         <svg data-icon="system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
       </button>
+      <button class="lang-toggle" id="langToggle" type="button" aria-label="Mudar idioma" data-i18n-aria="idioma">PT</button>
     </span>
   </nav>
-  <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav">
+  <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" data-i18n-aria="menu_abrir" aria-expanded="false" aria-controls="nav">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
   </button>
 </header>`;
@@ -170,20 +179,20 @@ function footer(base) {
           <img class="brand__mark" src="${base}/assets/logo/avatar-96.png" width="38" height="38" alt="">
           <span class="brand__name">DBA <span>BRABO</span></span>
         </a>
-        <p>Conhecimento real de banco de dados, infraestrutura, performance, alta disponibilidade, cloud e automação.</p>
+        <p data-i18n="footer.desc">Conhecimento real de banco de dados, infraestrutura, performance, alta disponibilidade, cloud e automação.</p>
       </div>
-      <div class="footer__col"><h4>Mentorias</h4>
+      <div class="footer__col"><h4 data-i18n="footer.mentorias">Mentorias</h4>
         ${destaques.map(m => `<a href="${base}/mentorias/${m.slug}/">${esc(m.nome)}</a>`).join('')}
-        <a href="${base}/mentorias/">Ver todas →</a></div>
-      <div class="footer__col"><h4>Portal</h4>
-        <a href="${base}/#sobre">Sobre</a><a href="${base}/#metodologia">Metodologia</a>
-        <a href="${base}/#projetos">Projetos</a><a href="${base}/#tecnologias">Stack</a>
-        <a href="${base}/#roadmap">Roadmap</a><a href="${base}/#faq">FAQ</a></div>
-      <div class="footer__col"><h4>Redes</h4><div id="footerSocial"></div></div>
+        <a href="${base}/mentorias/" data-i18n="footer.ver_todas">Ver todas →</a></div>
+      <div class="footer__col"><h4 data-i18n="footer.portal">Portal</h4>
+        <a href="${base}/#sobre" data-i18n="nav.sobre">Sobre</a><a href="${base}/#metodologia" data-i18n="nav.metodologia">Metodologia</a>
+        <a href="${base}/#projetos" data-i18n="nav.projetos">Projetos</a><a href="${base}/#tecnologias" data-i18n="nav.stack">Stack</a>
+        <a href="${base}/#roadmap" data-i18n="nav.roadmap">Roadmap</a><a href="${base}/#faq" data-i18n="nav.faq">FAQ</a></div>
+      <div class="footer__col"><h4 data-i18n="footer.redes">Redes</h4><div id="footerSocial"></div></div>
     </div>
     <div class="footer__bottom">
       <span id="footerYear">© ${site.footer.anoInicio}–${new Date().getFullYear()} ${esc(site.footer.copyright)}</span>
-      <span class="mono">Feito para quem administra banco de dados de verdade.</span>
+      <span class="mono" data-i18n="footer.assinatura">Feito para quem administra banco de dados de verdade.</span>
     </div>
   </div>
 </footer>
@@ -491,23 +500,44 @@ ${catalogo.categorias.map(c => {
    detalhados (eles vivem em data/modulos/<slug>.json e so sao anexados aqui,
    no build). Sem este indice, buscar "GTID" nao acharia o topico de GTID.    */
 function indiceBusca() {
+  return montarIndice({
+    cat: catalogo, proj: projetos, tec: tecnologias, road: roadmap, comTopicos: true,
+    gMent: 'Mentorias', gMod: 'Módulos e pilares', gTec: 'Tecnologias',
+    gTop: 'Tópicos', gProj: 'Projetos', gRoad: 'Roadmap', aparece: 'Aparece em'
+  });
+}
+
+/* Índice EN: só o nível de catálogo (mentorias-en/projetos-en/tecnologias-en/
+   roadmap-en). data/modulos/ continua PT, então o grupo "Tópicos" fica fora
+   do índice EN em vez de poluir a busca inglesa com português. */
+function indiceBuscaEN() {
+  if (!catalogoEN || !projetosEN || !tecnologiasEN || !roadmapEN) return null;
+  return montarIndice({
+    cat: catalogoEN, proj: projetosEN, tec: tecnologiasEN, road: roadmapEN, comTopicos: false,
+    gMent: 'Mentorships', gMod: 'Modules & pillars', gTec: 'Technologies',
+    gTop: 'Topics', gProj: 'Projects', gRoad: 'Roadmap', aparece: 'Featured in'
+  });
+}
+
+function montarIndice({ cat, proj, tec, road, comTopicos, gMent, gMod, gTec, gTop, gProj, gRoad, aparece }) {
   const ix = [];
   const push = (g, t, s, href, k) => ix.push({ g, t, s, href, k: String(k).toLowerCase() });
 
-  for (const m of catalogo.mentorias) {
+  for (const m of cat.mentorias) {
     const href = `mentorias/${m.slug}/`;
-    push('Mentorias', m.nome, m.desc, href,
+    push(gMent, m.nome, m.desc, href,
          `${m.nome} ${m.nomeCompleto || ''} ${m.desc} ${m.subtitulo || ''} ${(m.tags || []).join(' ')}`);
     for (const pl of m.pilares || [])
-      push('Módulos e pilares', pl.titulo, `${m.nome} — ${pl.desc}`, href, `${pl.titulo} ${pl.desc} ${m.nome}`);
+      push(gMod, pl.titulo, `${m.nome} — ${pl.desc}`, href, `${pl.titulo} ${pl.desc} ${m.nome}`);
     for (const t of m.tecnologias || [])
-      push('Tecnologias', t, `Aparece em ${m.nome}`, href, `${t} ${m.nome}`);
+      push(gTec, t, `${aparece} ${m.nome}`, href, `${t} ${m.nome}`);
+    if (!comTopicos) continue;
     for (const mod of m.modulos || []) {
-      push('Módulos e pilares', mod.titulo, `${m.nome} — ${mod.resumo || ''}`,
+      push(gMod, mod.titulo, `${m.nome} — ${mod.resumo || ''}`,
            `${href}#mod-${mod.id}`, `${mod.titulo} ${mod.resumo || ''}`);
       for (const tp of mod.topicos || []) {
         const anc = `${href}#t-${tp.slug || slugify(tp.titulo)}`;
-        push('Tópicos', tp.titulo, `${m.nome} · ${mod.titulo}`, anc,
+        push(gTop, tp.titulo, `${m.nome} · ${mod.titulo}`, anc,
              [tp.titulo, tp.resumo || '', tp.conceito || '',
               (tp.comoFunciona || []).join(' '), (tp.naPratica || []).join(' '),
               (tp.troubleshooting || []).map(x => `${x.sintoma} ${x.causa} ${x.acao}`).join(' '),
@@ -516,12 +546,12 @@ function indiceBusca() {
       }
     }
   }
-  for (const pj of projetos.projetos)
-    push('Projetos', pj.nome, pj.tagline, '#projetos', `${pj.nome} ${pj.desc} ${pj.stack.join(' ')} ${pj.destaques.join(' ')}`);
-  for (const g of tecnologias.grupos) for (const it of g.itens)
-    push('Tecnologias', it.nome, it.desc, '#tecnologias', `${it.nome} ${it.desc} ${g.nome}`);
-  for (const e of roadmap.etapas)
-    push('Roadmap', e.titulo, e.resumo, '#roadmap', `${e.titulo} ${e.resumo} ${e.detalhe}`);
+  for (const pj of proj.projetos)
+    push(gProj, pj.nome, pj.tagline, '#projetos', `${pj.nome} ${pj.desc} ${pj.stack.join(' ')} ${pj.destaques.join(' ')}`);
+  for (const g of tec.grupos) for (const it of g.itens)
+    push(gTec, it.nome, it.desc, '#tecnologias', `${it.nome} ${it.desc} ${g.nome}`);
+  for (const e of road.etapas)
+    push(gRoad, e.titulo, e.resumo, '#roadmap', `${e.titulo} ${e.resumo} ${e.detalhe}`);
 
   const visto = new Set();
   return ix.filter(r => { const c = r.g + '|' + r.t + '|' + r.href; if (visto.has(c)) return false; visto.add(c); return true; });
@@ -597,6 +627,32 @@ function validar() {
   for (const f of varrer(ROOT))
     erros.push(`duplicata de conflito de sincronizacao: "${f}" — confira se o original ainda existe antes de commitar`);
 
+  // Espelhos EN: chaves de junção (slugs/tags/ids) precisam ser idênticas às PT,
+  // senão filtros, roadmap e busca quebram no idioma EN.
+  const par = (rel, pt, en, oQue) => {
+    const f = p('data', rel);
+    if (!fs.existsSync(f)) return;
+    let d; try { d = JSON.parse(fs.readFileSync(f, 'utf8')); }
+    catch { erros.push(`${rel}: JSON inválido`); return; }
+    const a = JSON.stringify(pt(d)), b = JSON.stringify(en(d));
+    if (a !== b) erros.push(`${rel}: ${oQue} divergem do PT`);
+  };
+  try {
+    const menEN = readEN('mentorias-en.json');
+    if (menEN) {
+      par('mentorias-en.json', () => catalogo.mentorias.map(m => m.slug), d => d.mentorias.map(m => m.slug), 'slugs das mentorias');
+      par('mentorias-en.json', () => catalogo.filtros.map(f => f.id), d => d.filtros.map(f => f.id), 'ids dos filtros');
+      catalogo.mentorias.forEach((m, i) => {
+        const e = menEN.mentorias[i];
+        if (!e || e.slug !== m.slug) return;
+        if ((e.tags || []).join(',') !== (m.tags || []).join(',')) erros.push(`mentorias-en ${m.slug}: tags divergem do PT`);
+      });
+    }
+  } catch {}
+
+  // Cobertura i18n: nenhuma chave t()/T()/data-i18n pode ficar sem PT.
+  for (const f of verificarI18n(ROOT)) erros.push(`i18n sem PT: "${f}"`);
+
   return erros;
 }
 
@@ -623,6 +679,9 @@ saidas.push(write('mentorias/index.html', paginaCatalogo()));
 for (const m of catalogo.mentorias) saidas.push(write(`mentorias/${m.slug}/index.html`, paginaMentoria(m)));
 const IX = indiceBusca();
 saidas.push(write('data/search-index.json', JSON.stringify({ _gerado: 'por tools/build.mjs — nao editar a mao', total: IX.length, itens: IX })));
+const IXEN = indiceBuscaEN();
+if (IXEN) saidas.push(write('data/search-index-en.json', JSON.stringify({ _gerado: 'por tools/build.mjs — nao editar a mao', total: IXEN.length, itens: IXEN })));
+else console.log('sem espelhos EN completos — search-index-en.json mantido como está');
 saidas.push(write('sitemap.xml', sitemap()));
 saidas.push(write('robots.txt', robots()));
 

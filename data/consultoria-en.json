@@ -1,0 +1,120 @@
+{
+  "_comment": "Servicos de consultoria. Nada aqui pode descrever servico que o time nao executa. Sem numero de clientes, sem nome de cliente, sem promessa de resultado.",
+  "eyebrow": "Consulting",
+  "titulo": "Databases in mission-critical environments",
+  "intro": "Design, migration, recovery, and ongoing support. It's the same work that gave rise to the mentoring, done directly in your environment.",
+  "servicos": [
+    {
+      "id": "ha",
+      "nome": "Architecture and high availability",
+      "desc": "Design and implementation of clusters, replicas, and contingency. RPO and RTO defined by what the business can afford to lose, not by what the vendor promises.",
+      "tec": [
+        "Oracle RAC",
+        "Data Guard",
+        "InnoDB Cluster",
+        "Always On",
+        "Replication"
+      ],
+      "accent": "#F0805A"
+    },
+    {
+      "id": "migracao",
+      "nome": "Migration and upgrade",
+      "desc": "Version, platform, or datacenter moves, with a rollback plan written before starting. Includes operating system and architecture changes.",
+      "tec": [
+        "AutoUpgrade",
+        "Data Pump",
+        "GoldenGate",
+        "RMAN",
+        "Cross-platform"
+      ],
+      "accent": "#34D3C4"
+    },
+    {
+      "id": "backup",
+      "nome": "Backup and recovery",
+      "desc": "Strategy designed from the restore backward, not from the backup forward. With a tested recovery run — a backup that was never restored is just a big file.",
+      "tec": [
+        "RMAN",
+        "ZDLRA",
+        "XtraBackup",
+        "pgBackRest",
+        "PITR"
+      ],
+      "accent": "#5AA9E6"
+    },
+    {
+      "id": "performance",
+      "nome": "Performance and tuning",
+      "desc": "Evidence-based diagnosis: execution plan, wait events, and what changed since the time it was running well.",
+      "tec": [
+        "AWR",
+        "Performance Schema",
+        "pg_stat_statements",
+        "Query Store"
+      ],
+      "accent": "#E8833A"
+    },
+    {
+      "id": "assessment",
+      "nome": "Assessment and health check",
+      "desc": "A snapshot of what's running: what's out of support, what has no contingency, what will hurt at the next peak — and in what order it's worth fixing.",
+      "tec": [
+        "Exadata",
+        "ODA",
+        "On-premise environments",
+        "Cloud environments"
+      ],
+      "accent": "#B57BF5"
+    },
+    {
+      "id": "cloud",
+      "nome": "Cloud and managed environments",
+      "desc": "Migration and operation in the cloud, including what changes when the database stops being yours and becomes a managed service: automated backup, patching, failover, and the limits nobody reads before signing.",
+      "tec": [
+        "OCI Autonomous and DB Systems",
+        "AWS RDS and Aurora",
+        "Azure SQL and Managed Instance",
+        "Cloud SQL and AlloyDB"
+      ],
+      "accent": "#4FD1B0"
+    }
+  ],
+  "plataformas": {
+    "titulo": "Platforms",
+    "bancos": [
+      "Oracle",
+      "SQL Server",
+      "MySQL",
+      "PostgreSQL",
+      "MongoDB"
+    ],
+    "nuvens": [
+      "Oracle Cloud (OCI)",
+      "AWS",
+      "Azure",
+      "Google Cloud"
+    ]
+  },
+  "formatos": {
+    "titulo": "How it works",
+    "itens": [
+      {
+        "nome": "One-off",
+        "desc": "One migration, one incident, one assessment. Get in, fix it, document it, get out."
+      },
+      {
+        "nome": "Project",
+        "desc": "Scope and timeline locked before starting, with a rollback plan written on day one."
+      },
+      {
+        "nome": "Ongoing",
+        "desc": "Environment support and monitoring: health routines, backup reviews, and someone to call when it hurts."
+      }
+    ]
+  },
+  "cta": {
+    "texto": "Describe your scenario and what's hurting. If it's not something we do, I'll tell you on the first call.",
+    "rotulo": "Discuss a project"
+  }
+}

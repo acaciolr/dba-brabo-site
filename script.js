@@ -95,7 +95,30 @@ function icon(name, cls = '') {
 
 /* ---------- estado ------------------------------------------------------ */
 const DATA = { site: null, mentorias: null, projetos: null, tecnologias: null, roadmap: null, faq: null, certificacoes: null, eventos: null, consultoria: null, i18n: null };
+/* Espelhos em inglês (data/*-en.json). Carregados sob demanda na primeira
+   troca para EN; ausência de qualquer arquivo = fallback silencioso para PT. */
+const DATA_EN = {};
+let EN_READY = false;
 let LANG = 'pt';
+
+/* Conjunto de dados ativo no idioma: EN quando disponível, PT caso contrário. */
+function D(nome) {
+  return (LANG === 'en' && DATA_EN[nome]) || DATA[nome];
+}
+/* Locale ativo para Intl (datas). */
+function LOC() { return LANG === 'en' ? 'en-US' : 'pt-BR'; }
+
+async function loadENs() {
+  if (EN_READY) return;
+  const nomes = ['site', 'mentorias', 'projetos', 'tecnologias', 'roadmap', 'faq', 'certificacoes', 'eventos', 'consultoria'];
+  await Promise.all(nomes.map(async n => {
+    try {
+      const r = await fetch(url(`data/${n}-en.json`), { cache: 'no-cache' });
+      if (r.ok) DATA_EN[n] = await r.json();
+    } catch { /* sem espelho EN = segue em PT */ }
+  }));
+  EN_READY = true;
+}
 
 async function loadJSON(name) {
   const r = await fetch(url(`data/${name}.json`), { cache: 'no-cache' });
@@ -110,7 +133,7 @@ async function loadJSON(name) {
 /* ---------- terminal do hero -------------------------------------------- */
 function renderTerminal() {
   const el = $('#terminal'); if (!el) return;
-  const s = DATA.site;
+  const s = D('site');
   const skills = ['Oracle', 'MySQL', 'SQL Server', 'PostgreSQL', 'MongoDB', 'Exadata', 'Cloud', 'Automation'];
 
   el.innerHTML = `
@@ -128,7 +151,7 @@ function renderTerminal() {
 
       <div class="terminal__line" data-reveal="4" hidden style="margin-top:8px"><span class="terminal__prompt">$</span><span class="terminal__cmd" data-type="status"></span></div>
       <div class="terminal__line" data-reveal="5" hidden><span class="terminal__prompt">→</span>
-        <span class="terminal__out" style="color:var(--ok)">pronto para a próxima mentoria<span class="caret"></span></span></div>
+        <span class="terminal__out" style="color:var(--ok)">${esc(t('terminal_pronto'))}<span class="caret"></span></span></div>
     </div>`;
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -162,13 +185,13 @@ function renderTerminal() {
 /* ---------- hero: numeros reais, contados do proprio catalogo ----------- */
 function renderStats() {
   const el = $('#heroStats'); if (!el) return;
-  const ms = DATA.mentorias.mentorias;
+  const ms = D('mentorias').mentorias;
   const tecs = new Set(ms.flatMap(m => m.tecnologias || []));
   const stats = [
-    { n: ms.length,                                              label: 'Mentorias no catálogo' },
-    { n: ms.filter(m => m.categoria === 'tecnica').length,       label: 'Trilhas técnicas' },
-    { n: DATA.tecnologias.grupos.reduce((s,g)=>s+g.itens.length,0), label: 'Tecnologias no stack' },
-    { n: DATA.site.mentor.anosExperiencia || '—',                label: 'Anos em produção' }
+    { n: ms.length,                                              label: t('stats.catalogo') },
+    { n: ms.filter(m => m.categoria === 'tecnica').length,       label: t('stats.trilhas') },
+    { n: D('tecnologias').grupos.reduce((s,g)=>s+g.itens.length,0), label: t('stats.stack') },
+    { n: D('site').mentor.anosExperiencia || '—',                label: t('stats.anos') }
   ];
   el.innerHTML = stats.map(s => `
     <div class="stat"><div class="stat__num"><em>${esc(s.n)}</em></div>
@@ -178,16 +201,10 @@ function renderStats() {
 /* ---------- sobre: pilares do ecossistema ------------------------------- */
 function renderSobre() {
   const el = $('#sobreGrid'); if (!el) return;
-  const items = [
-    { i: 'database',    t: 'Database',            d: 'Oracle, MySQL, SQL Server, PostgreSQL e MongoDB — arquitetura interna antes de qualquer comando.' },
-    { i: 'ha',          t: 'Alta Disponibilidade',d: 'RAC, Data Guard, Always On, InnoDB Cluster e Patroni. Quorum, failover e o custo de cada garantia.' },
-    { i: 'replication', t: 'Replicação',          d: 'Binlog, GTID, WAL streaming e GoldenGate. Consistência entre nós e resolução de conflito.' },
-    { i: 'backup',      t: 'Backup & Recovery',   d: 'RMAN, XtraBackup, pgBackRest, PITR e ZDLRA — com teste de restore, não só agendamento.' },
-    { i: 'performance', t: 'Performance',         d: 'AWR, Query Store, Performance Schema e EXPLAIN. Diagnóstico por evidência.' },
-    { i: 'cloud',       t: 'Cloud',               d: 'OCI, AWS, Azure e GCP pela ótica de quem responde pelo RPO, não pelo console.' },
-    { i: 'security',    t: 'Segurança',           d: 'TDE, TLS, RBAC e auditoria que sobrevive a uma inspeção de compliance.' },
-    { i: 'automation',  t: 'Automação & DBRE',    d: 'Infra como código, pipeline de schema, observabilidade e teste de caos.' }
-  ];
+  const cards = (DATA.i18n && (DATA.i18n[LANG] || {}).sobre_cards)
+             || (DATA.i18n && DATA.i18n.pt.sobre_cards)
+             || FALLBACK_PT.sobre_cards || [];
+  const items = cards.map((c, n) => ({ i: ['database','ha','replication','backup','performance','cloud','security','automation'][n] || 'tag', t: c.t, d: c.d }));
   el.innerHTML = items.map((x, n) => `
     <article class="card reveal" style="--d:${n * 40}ms">
       <div class="card__icon">${icon(x.i)}</div>
@@ -202,14 +219,14 @@ function renderSobre() {
 function botaoLinkedin(url, tamanho = '') {
   const cls = `btn ${tamanho} `.trim();
   return url
-    ? `<a class="${cls} btn--outline" href="${esc(url)}" target="_blank" rel="noopener">${icon('linkedin')} Ver LinkedIn</a>`
+    ? `<a class="${cls} btn--outline" href="${esc(url)}" target="_blank" rel="noopener">${icon('linkedin')} ${esc(t('fund.linkedin'))}</a>`
     : `<button class="${cls} btn--outline is-disabled" type="button" disabled
-         title="Link ainda não cadastrado">${icon('linkedin')} Ver LinkedIn</button>`;
+         title="${esc(t('fund.linkedin_titulo'))}">${icon('linkedin')} ${esc(t('fund.linkedin'))}</button>`;
 }
 
 function renderFundadores() {
   const box = $('#fundadores'); if (!box) return;
-  const F = (DATA.site.fundadores && DATA.site.fundadores.lista) || [];
+  const F = (D('site').fundadores && D('site').fundadores.lista) || [];
   const principal = F.find(f => f.principal);
   const demais = F.filter(f => !f.principal);
 
@@ -218,7 +235,7 @@ function renderFundadores() {
       ${f.avatar ? `<img class="founder__avatar" src="${url(f.avatar)}" width="128" height="128"
                         alt="Avatar de ${esc(f.nome)} — DBA BRABO" loading="lazy">` : ''}
       <div class="founder__body">
-        <p class="eyebrow">Fundador e mentor</p>
+        <p class="eyebrow">${esc(t('fund.principal'))}</p>
         <h3 class="founder__name">${esc(f.nome)}</h3>
         ${f.titulo ? `<p class="founder__role">${esc(f.titulo)}</p>` : ''}
         ${f.headline ? `<p class="founder__headline">${esc(f.headline)}</p>` : ''}
@@ -235,12 +252,12 @@ function renderFundadores() {
 
   const pequeno = f => `
     <article class="founder founder--sm reveal">
-      <p class="eyebrow">Fundador</p>
+      <p class="eyebrow">${esc(t('fund.secundario'))}</p>
       <h3 class="founder__name founder__name--sm">${esc(f.nome)}</h3>
       ${f.titulo ? `<p class="founder__role">${esc(f.titulo)}</p>` : ''}
       ${f.headline
         ? `<p class="founder__headline">${esc(f.headline)}</p>`
-        : `<p class="founder__headline muted"><em>Apresentação em breve.</em></p>`}
+        : `<p class="founder__headline muted"><em>${esc(t('fund.bio_breve'))}</em></p>`}
       ${f.trajetoria && f.trajetoria.length
         ? `<ul class="founder__track">${f.trajetoria.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
       ${f.reconhecimentos && f.reconhecimentos.length
@@ -255,7 +272,7 @@ function renderFundadores() {
 /* ---------- metodologia e formato --------------------------------------- */
 function renderMetodologia() {
   const el = $('#metodologiaGrid');
-  if (el) el.innerHTML = DATA.site.metodologia.etapas.map(e => `
+  if (el) el.innerHTML = D('site').metodologia.etapas.map(e => `
     <div class="method__item reveal">
       <div class="method__n">${esc(e.n)}</div>
       <div class="method__title">${esc(e.titulo)}</div>
@@ -263,7 +280,7 @@ function renderMetodologia() {
     </div>`).join('');
 
   const f = $('#formato');
-  if (f) f.innerHTML = DATA.site.formato.itens.map(i => `
+  if (f) f.innerHTML = D('site').formato.itens.map(i => `
     <div class="format__item reveal">
       <div class="format__icon">${icon(i.icone)}</div>
       <div><h3 style="font-size:var(--fs-base)">${esc(i.titulo)}</h3>
@@ -275,7 +292,7 @@ function renderMetodologia() {
 function precoDe(m) {
   const v = m.investimento && m.investimento.valor;
   if (v) return { txt: v, pending: false };
-  return { txt: DATA.site.investimento.fallback, pending: true };
+  return { txt: D('site').investimento.fallback, pending: true };
 }
 
 function mentoriaCard(m) {
@@ -289,16 +306,16 @@ function mentoriaCard(m) {
       <img src="${url(m.banner.card)}" alt="" loading="lazy" width="800" height="306">
     </a>
     <div class="mcard__body">
-      <p class="mcard__eyebrow">${esc(m.chamada || 'Mentoria')}</p>
+      <p class="mcard__eyebrow">${esc(m.chamada || t('card.eyebrow'))}</p>
       <h3 class="mcard__title"><a href="${url(`mentorias/${m.slug}/`)}">${esc(m.nome)}</a></h3>
       <p class="mcard__desc">${esc(m.desc)}</p>
       <div class="mcard__meta">
         <span>${icon('level')}${esc(m.nivel)}</span>
-        <span>${icon('modules')}${nMod ? `${nMod} módulos` : `${m.pilares.length} pilares`}</span>
+        <span>${icon('modules')}${nMod ? `${nMod} ${esc(t('card.modulos'))}` : `${m.pilares.length} ${esc(t('card.pilares'))}`}</span>
       </div>
       <div class="mcard__foot">
         <span class="mcard__price${p.pending ? ' is-pending' : ''}">${esc(p.txt)}</span>
-        <a class="btn btn--outline btn--sm" href="${url(`mentorias/${m.slug}/`)}">Ver conteúdo ${icon('chevronRight')}</a>
+        <a class="btn btn--outline btn--sm" href="${url(`mentorias/${m.slug}/`)}">${esc(t('card.ver'))} ${icon('chevronRight')}</a>
       </div>
     </div>
   </article>`;
@@ -306,7 +323,7 @@ function mentoriaCard(m) {
 
 function renderMentorias() {
   const grid = $('#mentoriasGrid'); if (!grid) return;
-  const ms = DATA.mentorias.mentorias;
+  const ms = D('mentorias').mentorias;
   const ordem = m => (m.flagship ? 0 : m.destaque ? 1 : 2);
   grid.innerHTML = [...ms].sort((a, b) => ordem(a) - ordem(b)).map(mentoriaCard).join('');
   renderFiltros(ms);
@@ -315,10 +332,12 @@ function renderMentorias() {
 function renderFiltros(ms) {
   const box = $('#filtros'); if (!box) return;
   const conta = id => id === 'all' ? ms.length : ms.filter(m => (m.tags || []).includes(id)).length;
-  box.innerHTML = DATA.mentorias.filtros
+  box.innerHTML = D('mentorias').filtros
     .filter(f => conta(f.id) > 0)
     .map(f => `<button class="filter${f.id === 'all' ? ' is-active' : ''}" data-filter="${esc(f.id)}"
        aria-pressed="${f.id === 'all'}">${esc(f.label)}<span class="filter__count">${conta(f.id)}</span></button>`).join('');
+  const nota = $('#resultsNote');
+  if (nota) nota.textContent = t('filtros.tudo').replace('{n}', ms.length);
 }
 
 /* ---------- consultoria -------------------------------------------------
@@ -327,7 +346,7 @@ function renderFiltros(ms) {
 ------------------------------------------------------------------------- */
 function renderConsultoria() {
   const box = $('#consultoria'); if (!box) return;
-  const c = DATA.consultoria;
+  const c = D('consultoria');
   const secao = box.closest('section');
   if (!c || !(c.servicos || []).length) { if (secao) secao.hidden = true; return; }
 
@@ -342,8 +361,8 @@ function renderConsultoria() {
   const P = c.plataformas || {};
   const F = c.formatos || {};
   // canalContato guarda a CHAVE do canal, nao a URL — resolve em site.links.
-  const L = (DATA.site && DATA.site.links) || {};
-  const chave = (DATA.site && DATA.site.contato && DATA.site.contato.canalContato) || 'linkedinEmpresa';
+  const L = (D('site') && D('site').links) || {};
+  const chave = (D('site') && D('site').contato && D('site').contato.canalContato) || 'linkedinEmpresa';
   const contato = (L[chave] && L[chave].url) || (L.linkedin && L.linkedin.url) || '';
 
   box.innerHTML = `
@@ -351,17 +370,17 @@ function renderConsultoria() {
 
     <div class="cons-base">
       <div class="cons-bloco reveal">
-        <p class="cons-bloco__t">${esc(P.titulo || 'Plataformas')}</p>
+        <p class="cons-bloco__t">${esc(P.titulo || t('cons.plat'))}</p>
         <div class="cons-plat">
-          <div class="cons-plat__linha"><span class="cons-plat__rot">Bancos</span>
+          <div class="cons-plat__linha"><span class="cons-plat__rot">${esc(t('cons.bancos'))}</span>
             ${(P.bancos || []).map(x => `<b>${esc(x)}</b>`).join('')}</div>
-          <div class="cons-plat__linha"><span class="cons-plat__rot">Nuvens</span>
+          <div class="cons-plat__linha"><span class="cons-plat__rot">${esc(t('cons.nuvens'))}</span>
             ${(P.nuvens || []).map(x => `<b>${esc(x)}</b>`).join('')}</div>
         </div>
       </div>
 
       <div class="cons-bloco reveal">
-        <p class="cons-bloco__t">${esc(F.titulo || 'Como funciona')}</p>
+        <p class="cons-bloco__t">${esc(F.titulo || t('cons.como'))}</p>
         <div class="cons-form">
           ${(F.itens || []).map(i => `
             <div class="cons-form__item"><b>${esc(i.nome)}</b><span>${esc(i.desc)}</span></div>`).join('')}
@@ -378,11 +397,23 @@ function renderConsultoria() {
 }
 
 /* ---------- projetos ----------------------------------------------------- */
-const STATUS_BADGE = { 'Em produção':'badge--ok', 'Em homologação':'badge--warn', 'Em desenvolvimento':'' };
+function statusBadge(st) {
+  const s = String(st || '').toLowerCase();
+  if (/produ[cç][aã]o|production/.test(s)) return 'badge--ok';
+  if (/homolog|staging/.test(s)) return 'badge--warn';
+  return '';
+}
+function statusLabel(st) {
+  const s = String(st || '').toLowerCase();
+  if (/produ[cç][aã]o|production/.test(s)) return t('proj.st_prod');
+  if (/homolog|staging/.test(s)) return t('proj.st_homolog');
+  if (/desenvolvimento|development/.test(s)) return t('proj.st_dev');
+  return st;
+}
 
 function renderProjetos() {
   const el = $('#projetosGrid'); if (!el) return;
-  el.innerHTML = DATA.projetos.projetos.map(p => {
+  el.innerHTML = D('projetos').projetos.map(p => {
     // repoPublico:false esconde o botao mesmo com URL cadastrada — evita mandar
     // o visitante para um 404 enquanto o repositorio nao esta no ar.
     const disponivel = p.repoPublico !== false;
@@ -391,7 +422,7 @@ function renderProjetos() {
     return `
     <article class="card pcard reveal" style="--accent:${esc(p.accent)}">
       <div class="pcard__status">
-        <span class="badge ${STATUS_BADGE[p.status] || ''}">${esc(p.status)}</span>
+        <span class="badge ${statusBadge(p.status)}">${esc(statusLabel(p.status))}</span>
         ${p.versao ? `<span class="badge mono">${esc(p.versao)}</span>` : ''}
       </div>
       <div class="pcard__head">
@@ -402,14 +433,14 @@ function renderProjetos() {
       ${p.destaques && p.destaques.length
         ? `<ul class="pcard__list">${p.destaques.map(d => `<li>${esc(d)}</li>`).join('')}</ul>` : ''}
       ${!p.desc && !(p.destaques || []).length
-        ? `<p class="pcard__vazio">Detalhes técnicos em breve.</p>` : ''}
+        ? `<p class="pcard__vazio">${esc(t('proj.breve'))}</p>` : ''}
       ${p.stack && p.stack.length
         ? `<div class="badges">${p.stack.slice(0, 6).map(s => `<span class="badge">${esc(s)}</span>`).join('')}</div>` : ''}
       <div class="pcard__foot">
         ${link
           ? `<a class="btn btn--outline btn--sm" href="${esc(link)}" target="_blank" rel="noopener">
-               ${icon(ehGithub ? 'github' : 'external')} ${ehGithub ? 'Ver no GitHub' : 'Acessar'}</a>`
-          : `<span class="pcard__soon">${p.repoPublico === false ? 'Repositório em breve' : 'Link em breve'}</span>`}
+               ${icon(ehGithub ? 'github' : 'external')} ${esc(ehGithub ? t('proj.github') : t('proj.acessar'))}</a>`
+          : `<span class="pcard__soon">${esc(p.repoPublico === false ? t('proj.repo_breve') : t('proj.link_breve'))}</span>`}
       </div>
     </article>`;
   }).join('');
@@ -418,12 +449,12 @@ function renderProjetos() {
 /* ---------- stack -------------------------------------------------------- */
 function renderStack() {
   const el = $('#stackGrid'); if (!el) return;
-  const ms = DATA.mentorias.mentorias;
+  const ms = D('mentorias').mentorias;
   const ondeAparece = nome => ms.filter(m =>
     (m.tecnologias || []).some(t => t.toLowerCase().includes(nome.toLowerCase()) ||
                                     nome.toLowerCase().includes(t.toLowerCase())));
 
-  el.innerHTML = DATA.tecnologias.grupos.map(g => `
+  el.innerHTML = D('tecnologias').grupos.map(g => `
     <section class="stack__group reveal" style="--accent:${esc(g.accent)}">
       <div class="stack__head">
         <div class="stack__icon">${icon(g.icone)}</div>
@@ -450,8 +481,8 @@ function renderStack() {
    transparente — entao nao ha ajuste de tamanho aqui. Sem datas: a ordem e por
    peso tecnico e o nivel aparece no cabecalho de cada faixa. */
 function renderCertificacoes() {
-  const box = $('#certificacoes'); if (!box || !DATA.certificacoes) return;
-  const C = DATA.certificacoes;
+  const box = $('#certificacoes'); if (!box || !D('certificacoes')) return;
+  const C = D('certificacoes');
 
   const destaque = c => `
     <article class="cred-hero reveal" style="--accent:${esc(c.accent)}">
@@ -495,7 +526,7 @@ function renderCertificacoes() {
 ------------------------------------------------------------------------- */
 function renderEventos() {
   const box = $('#eventos'); if (!box) return;
-  const cfg = DATA.eventos || {};
+  const cfg = D('eventos') || {};
   const itens = (cfg.itens || []).filter(e => e && e.data && e.confirmado !== false);
   const secao = box.closest('section');
 
@@ -505,15 +536,24 @@ function renderEventos() {
   const asData  = iso => { const [a, m, d] = String(iso).split('-').map(Number); return new Date(a, m - 1, d); };
   const diasAte = iso => Math.round((asData(iso) - hoje) / 86400000);
   const fimDe   = e => e.dataFim || e.data;
+  const EN = LANG === 'en';
 
-  const fmtLongo = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
-  const fmtCurto = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
-  const soMes    = new Intl.DateTimeFormat('pt-BR', { month: 'long' });
+  const fmtLongo = new Intl.DateTimeFormat(LOC(), { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+  const fmtCurto = new Intl.DateTimeFormat(LOC(), { day: '2-digit', month: 'short', year: 'numeric' });
+  const soMes    = new Intl.DateTimeFormat(LOC(), { month: 'long' });
+  const fmtCurtoEN = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const mesEN      = new Intl.DateTimeFormat('en-US', { month: 'long' });
 
-  /* "2 a 4 de setembro de 2026" — e nao duas datas soltas. */
+  /* PT: "2 a 4 de setembro de 2026". EN: "September 2–4, 2026". */
   const periodo = e => {
     const a = asData(e.data), b = asData(fimDe(e));
     if (+a === +b) return fmtLongo.format(a);
+    if (EN) {
+      if (a.getFullYear() !== b.getFullYear()) return `${fmtCurtoEN.format(a)} – ${fmtCurtoEN.format(b)}`;
+      if (a.getMonth() === b.getMonth())
+        return `${mesEN.format(a)} ${a.getDate()}–${b.getDate()}, ${b.getFullYear()}`;
+      return `${mesEN.format(a)} ${a.getDate()} – ${mesEN.format(b)} ${b.getDate()}, ${b.getFullYear()}`;
+    }
     const dia = n => String(n.getDate()).padStart(2, '0');
     if (a.getFullYear() !== b.getFullYear()) return `${fmtCurto.format(a)} a ${fmtCurto.format(b)}`;
     if (a.getMonth() === b.getMonth())
@@ -522,6 +562,7 @@ function renderEventos() {
   };
   const periodoCurto = e => {
     const a = asData(e.data), b = asData(fimDe(e));
+    if (EN) return +a === +b ? fmtCurtoEN.format(a) : `${fmtCurtoEN.format(a)} – ${fmtCurtoEN.format(b)}`;
     return +a === +b ? fmtCurto.format(a) : `${fmtCurto.format(a)} a ${fmtCurto.format(b)}`;
   };
 
@@ -533,10 +574,10 @@ function renderEventos() {
 
   const selo = e => {
     const d = diasAte(e.data);
-    if (jaPassou(e)) return { txt: 'Edição encerrada', ic: 'check', cls: '' };
-    if (rolando(e))  return { txt: 'Acontecendo agora', ic: 'clock', cls: ' evento__selo--agora' };
-    if (d === 1)     return { txt: 'Amanhã', ic: 'clock', cls: '' };
-    return { txt: `Faltam ${d} dias`, ic: 'clock', cls: '' };
+    if (jaPassou(e)) return { txt: t('ev.encerrada'), ic: 'check', cls: '' };
+    if (rolando(e))  return { txt: t('ev.agora'), ic: 'clock', cls: ' evento__selo--agora' };
+    if (d === 1)     return { txt: t('ev.amanha'), ic: 'clock', cls: '' };
+    return { txt: t('ev.faltam').replace('{d}', d), ic: 'clock', cls: '' };
   };
 
   const botao = (u, rotulo, cls) => u
@@ -549,7 +590,7 @@ function renderEventos() {
     <article class="evento${passado ? ' evento--passado' : ''} reveal" style="--accent:${esc(e.accent || 'var(--brand)')}">
       <div class="evento__capa${e.capaClara ? ' evento__capa--clara' : ''}">
         <span class="evento__selo${s.cls}">${icon(s.ic)} ${esc(s.txt)}</span>
-        ${e.banner ? `<img src="${url(e.banner)}" alt="Arte de divulgação do ${esc(e.nome)}" loading="lazy" width="1200" height="675">` : ''}
+        ${e.banner ? `<img src="${url(e.banner)}" alt="${esc(t('ev.arte').replace('{nome}', e.nome))}" loading="lazy" width="1200" height="675">` : ''}
       </div>
       <div class="evento__corpo">
         ${e.edicao ? `<p class="evento__edicao">${esc(e.edicao)}</p>` : ''}
@@ -564,15 +605,15 @@ function renderEventos() {
             ${e.cidade ? `<span>${esc(e.cidade)}</span>` : ''}</div></div>
         </div>
         <div class="evento__btns">
-          ${botao(L.site, 'Site oficial', passado ? 'btn--outline btn--sm' : 'btn--primary')}
-          ${passado ? '' : botao(L.inscricao, 'Inscrição', 'btn--outline btn--sm')}
-          ${passado ? '' : botao(L.transmissao, 'Assistir ao vivo', 'btn--outline btn--sm')}
-          ${botao(L.comunidade, 'Comunidade', 'btn--ghost btn--sm')}
+          ${botao(L.site, t('ev.site'), passado ? 'btn--outline btn--sm' : 'btn--primary')}
+          ${passado ? '' : botao(L.inscricao, t('ev.inscricao'), 'btn--outline btn--sm')}
+          ${passado ? '' : botao(L.transmissao, t('ev.ao_vivo'), 'btn--outline btn--sm')}
+          ${botao(L.comunidade, t('ev.comunidade'), 'btn--ghost btn--sm')}
         </div>
         ${(e.realizador || (e.redes || []).length) ? `
         <div class="evento__org">
           ${e.realizador && e.realizador.titulo ? `<p class="evento__org-titulo">${esc(e.realizador.titulo)}</p>` : ''}
-          ${e.realizador && e.realizador.texto ? `<p class="evento__org-texto">${esc(e.realizador.texto)}${e.realizador.site ? ` <a href="${esc(e.realizador.site)}" target="_blank" rel="noopener">${esc(e.realizador.siteRotulo || 'Site oficial')}</a>` : ''}</p>` : ''}
+          ${e.realizador && e.realizador.texto ? `<p class="evento__org-texto">${esc(e.realizador.texto)}${e.realizador.site ? ` <a href="${esc(e.realizador.site)}" target="_blank" rel="noopener">${esc(e.realizador.siteRotulo || t('ev.site'))}</a>` : ''}</p>` : ''}
           ${((e.redes || []).length) ? `<div class="evento__btns evento__btns--redes">${((e.redes || []).map(r => botao(r.url, r.label, 'btn--ghost btn--sm')).join(''))}</div>` : ''}
         </div>` : ''}
       </div>
@@ -586,19 +627,19 @@ function renderEventos() {
         <p class="evento-mini__nome">${esc(e.nome)}</p>
         <p class="evento-mini__meta">${esc(periodoCurto(e))} &middot; ${esc(e.cidade || '')}</p>
       </div>
-      ${(e.links || {}).site ? `<a class="btn btn--outline btn--sm" href="${esc(e.links.site)}" target="_blank" rel="noopener">${icon('external')} Site</a>` : ''}
+      ${(e.links || {}).site ? `<a class="btn btn--outline btn--sm" href="${esc(e.links.site)}" target="_blank" rel="noopener">${icon('external')} ${esc(t('ev.site_curto'))}</a>` : ''}
     </div>`;
 
   const nota = cfg.atualizadoEm
-    ? `<p class="eventos-nota">Agenda conferida nos sites oficiais em ${esc(fmtCurto.format(asData(cfg.atualizadoEm)))}.</p>` : '';
+    ? `<p class="eventos-nota">${esc(t('ev.nota').replace('{data}', fmtCurto.format(asData(cfg.atualizadoEm))))}</p>` : '';
 
   box.innerHTML = nota
     + (proximos.length
         ? `<div class="eventos${proximos.length === 1 ? ' eventos--destaque' : ''}">${proximos.map(card).join('')}</div>`
-        : `<p class="muted"><em>Nenhum evento com data confirmada no momento. As edições anteriores ficam abaixo.</em></p>`)
+        : `<p class="muted"><em>${esc(t('ev.vazio'))}</em></p>`)
     + (passados.length
         ? `<div class="eventos-passados">
-             <p class="eventos-passados__head">Edições anteriores</p>
+             <p class="eventos-passados__head">${esc(t('ev.passados'))}</p>
              ${passados.map(mini).join('')}
            </div>` : '');
 }
@@ -606,8 +647,8 @@ function renderEventos() {
 /* ---------- roadmap ------------------------------------------------------ */
 function renderRoadmap() {
   const el = $('#roadmapList'); if (!el) return;
-  const byS = Object.fromEntries(DATA.mentorias.mentorias.map(m => [m.slug, m]));
-  el.innerHTML = DATA.roadmap.etapas.map(e => {
+  const byS = Object.fromEntries(D('mentorias').mentorias.map(m => [m.slug, m]));
+  el.innerHTML = D('roadmap').etapas.map(e => {
     const links = (e.mentorias || []).map(s => byS[s]).filter(Boolean);
     return `
     <div class="reveal">
@@ -643,16 +684,16 @@ async function qrInline(canal) {
   } catch { return ''; }
 }
 
-function placaQR(canal, svg, { pequeno = false, hint = 'Aponte a câmera' } = {}) {
+function placaQR(canal, svg, { pequeno = false, hint = null } = {}) {
   if (!svg) return '';
-  const L = DATA.site.links[canal];
+  const L = D('site').links[canal];
   return `<div class="qr${pequeno ? ' qr--sm' : ''}"
      style="--qr-plate:${esc(L.qrPlate || '#F2F5F8')};--qr-ink:${esc(L.qrInk || '#12181F')}">
-     ${svg}<span class="qr__hint">${esc(hint)}</span></div>`;
+     ${svg}<span class="qr__hint">${esc(hint || t('soc.aponte'))}</span></div>`;
 }
 
 async function renderSocial() {
-  const L = DATA.site.links;
+  const L = D('site').links;
   const ativos = k => L[k] && L[k].url;
 
   // rodape: todos os canais com URL
@@ -670,8 +711,8 @@ async function renderSocial() {
       a.href = alvo; a.target = '_blank'; a.rel = 'noopener';
     });
   };
-  aponta('[data-community]', DATA.site.contato?.canalComunidade || 'whatsapp', 'linkedinEmpresa');
-  aponta('[data-contato]',   DATA.site.contato?.canalContato   || 'linkedinEmpresa', 'linkedin');
+  aponta('[data-community]', D('site').contato?.canalComunidade || 'whatsapp', 'linkedinEmpresa');
+  aponta('[data-contato]',   D('site').contato?.canalContato   || 'linkedinEmpresa', 'linkedin');
 
   const box = $('#canais'); if (!box) return;
 
@@ -688,16 +729,16 @@ async function renderSocial() {
     const d = L[destaque];
     html += `<article class="canal--hero reveal" style="--accent:${esc(d.accent)}">
       <div>
-        <p class="canal__eyebrow">Comunidade oficial</p>
+        <p class="canal__eyebrow">${esc(t('soc.oficial'))}</p>
         <h3 class="canal__title">${esc(d.label)}</h3>
         <p class="canal__desc">${esc(d.desc)}</p>
         <div class="canal__actions">
           <a class="btn btn--primary" href="${esc(d.url)}" target="_blank" rel="noopener">
-            ${icon(CANAL_ICON[destaque])} Entrar no grupo</a>
-          <a class="btn btn--ghost" href="#mentorias">Ver as mentorias antes</a>
+            ${icon(CANAL_ICON[destaque])} ${esc(t('soc.entrar'))}</a>
+          <a class="btn btn--ghost" href="#mentorias">${esc(t('soc.ver_mentorias'))}</a>
         </div>
       </div>
-      ${placaQR(destaque, svgs[destaque], { hint: 'Aponte a câmera' })}
+      ${placaQR(destaque, svgs[destaque], { hint: t('soc.aponte') })}
     </article>`;
   }
 
@@ -705,7 +746,7 @@ async function renderSocial() {
     html += `<div class="canais__cols">${outros.map(k => {
       const c = L[k];
       return `<article class="canal reveal" style="--accent:${esc(c.accent)}">
-        ${placaQR(k, svgs[k], { pequeno:true, hint:'Escaneie' })}
+        ${placaQR(k, svgs[k], { pequeno:true, hint: t('soc.escaneie') })}
         <div class="canal__main">
           <div class="canal__head">
             <span class="canal__icon">${icon(CANAL_ICON[k])}</span>
@@ -713,7 +754,7 @@ async function renderSocial() {
             ${c.handle ? `<div class="canal__handle">${esc(c.handle)}</div>` : ''}</div>
           </div>
           <p class="canal__desc--sm">${esc(c.desc || '')}</p>
-          <a class="canal__link" href="${esc(c.url)}" target="_blank" rel="noopener">Abrir ${icon('external')}</a>
+          <a class="canal__link" href="${esc(c.url)}" target="_blank" rel="noopener">${esc(t('soc.abrir'))} ${icon('external')}</a>
         </div>
       </article>`;
     }).join('')}</div>`;
@@ -730,13 +771,13 @@ async function renderSocial() {
     }).join('')}</div>`;
   }
 
-  box.innerHTML = html || `<p class="muted">Nenhum canal configurado — preencha <code class="mono">data/site.json → links</code>.</p>`;
+  box.innerHTML = html || `<p class="muted">${esc(t('soc.vazio'))}</p>`;
 }
 
 /* ---------- FAQ ---------------------------------------------------------- */
 function renderFAQ() {
   const el = $('#faqList'); if (!el) return;
-  el.innerHTML = DATA.faq.perguntas.map((f, i) => `
+  el.innerHTML = D('faq').perguntas.map((f, i) => `
     <div class="acc reveal">
       <button class="acc__head" aria-expanded="false" aria-controls="faq-p-${i}">
         <span class="acc__num">${String(i + 1).padStart(2, '0')}</span>
@@ -753,11 +794,11 @@ function renderFAQ() {
 function renderFooter() {
   const y = $('#footerYear');
   if (y) {
-    const ini = DATA.site.footer.anoInicio, atual = new Date().getFullYear();
-    y.textContent = `© ${ini === atual ? ini : `${ini}–${atual}`} ${DATA.site.footer.copyright}`;
+    const ini = D('site').footer.anoInicio, atual = new Date().getFullYear();
+    y.textContent = `© ${ini === atual ? ini : `${ini}–${atual}`} ${D('site').footer.copyright}`;
   }
   const links = $('#footerMentorias');
-  if (links) links.innerHTML = DATA.mentorias.mentorias.filter(m => m.destaque).slice(0, 5)
+  if (links) links.innerHTML = D('mentorias').mentorias.filter(m => m.destaque).slice(0, 5)
     .map(m => `<a href="${url(`mentorias/${m.slug}/`)}">${esc(m.nome)}</a>`).join('');
 }
 
@@ -770,30 +811,42 @@ function renderFooter() {
    porque os topicos detalhados vivem em data/modulos/ e nao chegam ao
    navegador. Se o arquivo nao existir, monta-se um indice reduzido na hora. */
 async function carregarIndice() {
-  try {
-    const r = await fetch(url('data/search-index.json'), { cache: 'no-cache' });
-    if (r.ok) { const d = await r.json(); if (d.itens && d.itens.length) return d.itens.map(x => ({ ...x, href: /^#/.test(x.href) ? url('') + x.href : url(x.href) })); }
-  } catch { /* cai no fallback */ }
+  const arquivos = LANG === 'en'
+    ? ['data/search-index-en.json', 'data/search-index.json']
+    : ['data/search-index.json'];
+  for (const arq of arquivos) {
+    try {
+      const r = await fetch(url(arq), { cache: 'no-cache' });
+      if (r.ok) { const d = await r.json(); if (d.itens && d.itens.length) return d.itens.map(x => ({ ...x, href: /^#/.test(x.href) ? url('') + x.href : url(x.href) })); }
+    } catch { /* tenta o próximo */ }
+  }
   return indiceReduzido();
 }
 
 function indiceReduzido() {
   const ix = [];
-  for (const m of DATA.mentorias.mentorias) {
+  for (const m of D('mentorias').mentorias) {
     const href = url(`mentorias/${m.slug}/`);
-    ix.push({ g:'Mentorias', t:m.nome, s:m.desc, href, k:`${m.nome} ${m.desc} ${(m.tags||[]).join(' ')}`.toLowerCase() });
-    for (const p of m.pilares || []) ix.push({ g:'Módulos e pilares', t:p.titulo, s:`${m.nome} — ${p.desc}`, href, k:`${p.titulo} ${p.desc}`.toLowerCase() });
-    for (const t of m.tecnologias || []) ix.push({ g:'Tecnologias', t, s:`Aparece em ${m.nome}`, href, k:`${t} ${m.nome}`.toLowerCase() });
+    ix.push({ g: t('busca.g_mentorias'), t:m.nome, s:m.desc, href, k:`${m.nome} ${m.desc} ${(m.tags||[]).join(' ')}`.toLowerCase() });
+    for (const p of m.pilares || []) ix.push({ g: t('busca.g_modulos'), t:p.titulo, s:`${m.nome} — ${p.desc}`, href, k:`${p.titulo} ${p.desc}`.toLowerCase() });
+    for (const tech of m.tecnologias || []) ix.push({ g: t('busca.g_tec'), t: tech, s:`${t('busca.aparece')} ${m.nome}`, href, k:`${tech} ${m.nome}`.toLowerCase() });
   }
-  for (const p of DATA.projetos.projetos)
-    ix.push({ g:'Projetos', t:p.nome, s:p.tagline, href:url('#projetos'), k:`${p.nome} ${p.desc}`.toLowerCase() });
+  for (const p of D('projetos').projetos)
+    ix.push({ g: t('busca.g_proj'), t:p.nome, s:p.tagline, href:url('#projetos'), k:`${p.nome} ${p.desc}`.toLowerCase() });
   return ix;
+}
+
+/* Índice de busca ativo (trocado no toggle de idioma sem religar eventos). */
+let SEARCH_INDEX = [];
+
+async function recarregarBusca() {
+  SEARCH_INDEX = await carregarIndice();
 }
 
 async function setupSearch() {
   const input = $('#search'); if (!input) return;
   const box = $('#searchResults');
-  const index = await carregarIndice();
+  await recarregarBusca();
   let cursor = -1, atuais = [];
 
   const marca = (txt, q) => {
@@ -807,9 +860,9 @@ async function setupSearch() {
   const buscar = () => {
     const q = input.value.trim().toLowerCase();
     if (q.length < 2) return fechar();
-    atuais = index.filter(r => r.k.includes(q)).slice(0, 24);
+    atuais = SEARCH_INDEX.filter(r => r.k.includes(q)).slice(0, 24);
     if (!atuais.length) {
-      box.innerHTML = `<p class="search__empty">Nada encontrado para <strong>${esc(input.value)}</strong>.</p>`;
+      box.innerHTML = `<p class="search__empty">${esc(t('busca.nada'))} <strong>${esc(input.value)}</strong>.</p>`;
     } else {
       let html = '', grupoAtual = '';
       atuais.forEach((r, i) => {
@@ -861,8 +914,9 @@ function setupFiltros() {
       if (ok) n++;
     });
     if (nota) nota.textContent = f === 'all'
-      ? `${n} mentorias no catálogo`
-      : `${n} ${n === 1 ? 'mentoria' : 'mentorias'} em ${btn.textContent.replace(/\d+$/, '').trim()}`;
+      ? t('filtros.tudo').replace('{n}', n)
+      : (n === 1 ? t('filtros.uma') : t('filtros.varias'))
+          .replace('{n}', n).replace('{f}', btn.textContent.replace(/\d+$/, '').trim());
   });
 }
 
@@ -905,7 +959,7 @@ function setupCopy() {
     try {
       await navigator.clipboard.writeText(code.textContent);
       const antes = btn.innerHTML;
-      btn.innerHTML = `${icon('check')} copiado`;
+      btn.innerHTML = `${icon('check')} ${esc(t('copiado'))}`;
       btn.classList.add('is-done');
       setTimeout(() => { btn.innerHTML = antes; btn.classList.remove('is-done'); }, 1800);
     } catch { /* clipboard indisponivel (http, permissao) — silencioso */ }
@@ -916,12 +970,12 @@ function setupCopy() {
 function setupTema() {
   const KEY = 'dbabrabo-theme';
   const ordem = ['dark', 'light', 'system'];
-  const aplicar = t => {
+  const aplicar = tema => {
     document.documentElement.dataset.theme =
-      t === 'system' ? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : t;
-    document.documentElement.dataset.themePref = t;
+      tema === 'system' ? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : tema;
+    document.documentElement.dataset.themePref = tema;
     const btn = $('#themeToggle');
-    if (btn) btn.setAttribute('aria-label', `Tema: ${t}. Clique para alternar.`);
+    if (btn) btn.setAttribute('aria-label', t('tema_nome').replace('{t}', tema));
   };
   let atual = localStorage.getItem(KEY) || 'dark';   // dark premium por padrao (secao 39 do briefing)
   aplicar(atual);
@@ -957,15 +1011,22 @@ function setupNav() {
 }
 
 /* ---------- revelacao no scroll ----------------------------------------- */
-function setupReveal() {
+/* Observador único: revealScan() recadastra os .reveal novos após cada
+   re-render de idioma sem empilhar IntersectionObservers. */
+let revealIO = null;
+function revealScan() {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
     $$('.reveal').forEach(n => n.classList.add('is-in')); return;
   }
-  const io = new IntersectionObserver((es, obs) => {
-    es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('is-in'); obs.unobserve(en.target); } });
-  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
-  $$('.reveal').forEach(n => io.observe(n));
+  if (!revealIO) {
+    revealIO = new IntersectionObserver((es, obs) => {
+      es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('is-in'); obs.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+  }
+  $$('.reveal:not(.is-in)').forEach(n => revealIO.observe(n));
 }
+
+function setupReveal() { revealScan(); }
 
 /* ---------- observador da secao ativa (separado, correto) --------------- */
 function setupScrollSpy() {
@@ -981,17 +1042,55 @@ function setupScrollSpy() {
   secoes.forEach(s => io.observe(s));
 }
 
-/* ---------- idioma (chrome PT/EN; conteúdo profundo chega na Fase 2) ----- */
+/* ---------- idioma (chrome + conteúdo PT/EN via data/*-en.json) ---------- */
+/* PT de emergência: se data/i18n.json falhar, os renders usam estes literais
+   (idênticos ao HTML estático) em vez de exibir chaves cruas. Sincronizar com
+   data/i18n.json → pt ao acrescentar chaves novas usadas em script.js. */
+const FALLBACK_PT = {
+  meta: { lang: 'pt-BR' },
+  meta_title: 'DBA BRABO — Mentoria Técnica para DBAs | Oracle, MySQL, SQL Server, PostgreSQL',
+  meta_desc: 'Mentoria individual em Oracle, MySQL, SQL Server, PostgreSQL e MongoDB — da arquitetura interna à alta disponibilidade, com lab prático.',
+  marca_tag: 'Mentoria Técnica para DBAs',
+  terminal_pronto: 'pronto para a próxima mentoria',
+  stats: { catalogo: 'Mentorias no catálogo', trilhas: 'Trilhas técnicas', stack: 'Tecnologias no stack', anos: 'Anos em produção' },
+  sobre_cards: [
+    { t: 'Database', d: 'Oracle, MySQL, SQL Server, PostgreSQL e MongoDB — arquitetura interna antes de qualquer comando.' },
+    { t: 'Alta Disponibilidade', d: 'RAC, Data Guard, Always On, InnoDB Cluster e Patroni. Quorum, failover e o custo de cada garantia.' },
+    { t: 'Replicação', d: 'Binlog, GTID, WAL streaming e GoldenGate. Consistência entre nós e resolução de conflito.' },
+    { t: 'Backup & Recovery', d: 'RMAN, XtraBackup, pgBackRest, PITR e ZDLRA — com teste de restore, não só agendamento.' },
+    { t: 'Performance', d: 'AWR, Query Store, Performance Schema e EXPLAIN. Diagnóstico por evidência.' },
+    { t: 'Cloud', d: 'OCI, AWS, Azure e GCP pela ótica de quem responde pelo RPO, não pelo console.' },
+    { t: 'Segurança', d: 'TDE, TLS, RBAC e auditoria que sobrevive a uma inspeção de compliance.' },
+    { t: 'Automação & DBRE', d: 'Infra como código, pipeline de schema, observabilidade e teste de caos.' }
+  ],
+  fund: { principal: 'Fundador e mentor', secundario: 'Fundador', bio_breve: 'Apresentação em breve.', linkedin: 'Ver LinkedIn', linkedin_titulo: 'Link ainda não cadastrado' },
+  card: { eyebrow: 'Mentoria', modulos: 'módulos', pilares: 'pilares', ver: 'Ver conteúdo' },
+  cons: { plat: 'Plataformas', como: 'Como funciona', bancos: 'Bancos', nuvens: 'Nuvens' },
+  proj: { breve: 'Detalhes técnicos em breve.', github: 'Ver no GitHub', acessar: 'Acessar', repo_breve: 'Repositório em breve', link_breve: 'Link em breve', st_prod: 'Em produção', st_homolog: 'Em homologação', st_dev: 'Em desenvolvimento' },
+  ev: { encerrada: 'Edição encerrada', agora: 'Acontecendo agora', amanha: 'Amanhã', faltam: 'Faltam {d} dias', site: 'Site oficial', inscricao: 'Inscrição', ao_vivo: 'Assistir ao vivo', comunidade: 'Comunidade', site_curto: 'Site', arte: 'Arte de divulgação do {nome}', nota: 'Agenda conferida nos sites oficiais em {data}.', vazio: 'Nenhum evento com data confirmada no momento. As edições anteriores ficam abaixo.', passados: 'Edições anteriores' },
+  soc: { oficial: 'Comunidade oficial', entrar: 'Entrar no grupo', ver_mentorias: 'Ver as mentorias antes', aponte: 'Aponte a câmera', escaneie: 'Escaneie', abrir: 'Abrir', vazio: 'Nenhum canal configurado — preencha data/site.json → links.' },
+  busca: { nada: 'Nada encontrado para', g_mentorias: 'Mentorias', g_modulos: 'Módulos e pilares', g_tec: 'Tecnologias', g_proj: 'Projetos', aparece: 'Aparece em' },
+  filtros: { tudo: '{n} mentorias no catálogo', uma: '{n} mentoria em {f}', varias: '{n} mentorias em {f}' },
+  copiar: 'copiar', copiado: 'copiado',
+  tema_nome: 'Tema: {t}. Clique para alternar.',
+  boot_titulo: 'Não foi possível carregar o conteúdo',
+  boot_texto: 'Os arquivos de data/ não foram encontrados. Se você abriu o index.html direto do disco, o navegador bloqueia a leitura por CORS — rode um servidor local: python3 -m http.server 8080.'
+};
 function t(chave) {
   const get = (o, k) => k.split('.').reduce((a, p) => (a && a[p] != null ? a[p] : null), o);
   return get(DATA.i18n && DATA.i18n[LANG], chave)
       || get(DATA.i18n && DATA.i18n.pt, chave)
+      || get(FALLBACK_PT, chave)
       || chave;
 }
 
 function aplicarIdioma() {
   if (!DATA.i18n) return;
   document.documentElement.lang = t('meta.lang');
+  /* <title> e meta description só trocam onde a página marcou com data-i18n:
+     as páginas geradas de mentoria têm título/descrição próprios e ficam intactas. */
+  $$('title[data-i18n]').forEach(n => { n.textContent = t(n.dataset.i18n); });
+  $$('meta[data-i18n-meta]').forEach(n => { n.setAttribute('content', t(n.dataset.i18nMeta)); });
   $$('[data-i18n]').forEach(n => { n.innerHTML = t(n.dataset.i18n); });
   $$('[data-i18n-ph]').forEach(n => { n.placeholder = t(n.dataset.i18nPh); });
   $$('[data-i18n-aria]').forEach(n => { n.setAttribute('aria-label', t(n.dataset.i18nAria)); });
@@ -1000,15 +1099,33 @@ function aplicarIdioma() {
   if (btn) btn.textContent = LANG === 'pt' ? 'EN' : 'PT';
 }
 
+/* Re-render completo no idioma ativo (conteúdo dinâmico + chrome). */
+async function renderAll() {
+  aplicarIdioma();
+  // tema usa o dicionário — reaplica o rótulo no idioma certo
+  try {
+    const pref = localStorage.getItem('dbabrabo-theme') || 'dark';
+    const btn = $('#themeToggle');
+    if (btn) btn.setAttribute('aria-label', t('tema_nome').replace('{t}', pref));
+  } catch {}
+  renderTerminal(); renderStats(); renderSobre(); renderFundadores(); renderMetodologia();
+  renderMentorias(); renderConsultoria(); renderProjetos(); renderStack(); renderCertificacoes(); renderEventos(); renderRoadmap();
+  renderFAQ(); renderFooter();
+  await renderSocial();
+  if ($('#search')) await recarregarBusca();
+  revealScan();
+}
+
 function setupIdioma() {
   try { LANG = localStorage.getItem('dbabrabo.lang') || 'pt'; } catch { LANG = 'pt'; }
   if (!['pt', 'en'].includes(LANG)) LANG = 'pt';
   aplicarIdioma();
   const btn = $('#langToggle');
-  if (btn) btn.addEventListener('click', () => {
+  if (btn) btn.addEventListener('click', async () => {
     LANG = LANG === 'pt' ? 'en' : 'pt';
     try { localStorage.setItem('dbabrabo.lang', LANG); } catch {}
-    aplicarIdioma();
+    if (LANG === 'en') await loadENs();
+    await renderAll();
   });
 }
 
@@ -1032,12 +1149,13 @@ async function boot() {
     console.error('[DBA BRABO] falha ao carregar os dados:', err);
     const alvo = $('#mentoriasGrid') || $('main');
     if (alvo) alvo.innerHTML = `<div class="card" style="--accent:var(--err)">
-      <h3>Não foi possível carregar o conteúdo</h3>
-      <p>Os arquivos de <code class="mono">data/</code> não foram encontrados. Se você abriu o
-      <code class="mono">index.html</code> direto do disco, o navegador bloqueia a leitura por CORS —
-      rode um servidor local: <code class="mono">python3 -m http.server 8080</code>.</p></div>`;
+      <h3>${esc(DATA.i18n ? t('boot_titulo') : 'Não foi possível carregar o conteúdo')}</h3>
+      <p>${esc(DATA.i18n ? t('boot_texto') : 'Os arquivos de data/ não foram encontrados. Se você abriu o index.html direto do disco, o navegador bloqueia a leitura por CORS — rode um servidor local: python3 -m http.server 8080.')}</p></div>`;
     return;
   }
+
+  // idioma persistido pode ser EN: pré-carrega os espelhos antes do 1º render
+  if (LANG === 'en') await loadENs();
 
   renderTerminal(); renderStats(); renderSobre(); renderFundadores(); renderMetodologia();
   renderMentorias(); renderConsultoria(); renderProjetos(); renderStack(); renderCertificacoes(); renderEventos(); renderRoadmap();

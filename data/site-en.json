@@ -1,0 +1,296 @@
+{
+  "_comment": "Configuracao central do portal DBA BRABO. Todo link, texto de marca e dado do mentor vive aqui. Nada de URL espalhada pelo codigo.",
+  "site": {
+    "name": "DBA BRABO",
+    "shortName": "DBA BRABO",
+    "tagline": "Technical Mentorship for DBAs",
+    "claim": "Knowing how to use databases is not enough. You need to know how to administer them.",
+    "description": "Technical training ecosystem for database administrators: Oracle, MySQL, SQL Server, PostgreSQL, MongoDB, high availability, performance, cloud and automation.",
+    "lang": "en",
+    "locale": "en_US",
+    "domain": "https://dbabrabo.com.br",
+    "domainFuturo": "https://dbabrabo.com.br",
+    "usarDominioProprio": true,
+    "logo": "assets/logo/dba-brabo-avatar.png",
+    "ogImage": "assets/og/dba-brabo-og.png",
+    "_notaOG": "Capa de compartilhamento da home e do catalogo. As paginas individuais de mentoria usam o proprio banner como og:image — isso e intencional."
+  },
+  "mentor": {
+    "nome": "Acácio Lima Rocha",
+    "handle": "acaciolr",
+    "titulo": "Senior Database Administrator",
+    "headline": "Senior DBA with 12+ years in critical production environments.",
+    "atuacao": "Senior DBA Consultant at Dataside",
+    "trajetoria": [
+      "Principal Advanced Support Engineer",
+      "MySQL Tech Lead",
+      "Senior DBA Consultant"
+    ],
+    "reconhecimentos": [
+      "Oracle ACE Associate",
+      "LinkedIn Top Database Administration Voice 2024"
+    ],
+    "especialidades": [
+      "Oracle RAC",
+      "Exadata",
+      "Data Guard",
+      "Grid Infrastructure",
+      "ASM",
+      "RMAN",
+      "AutoUpgrade",
+      "MySQL InnoDB Cluster",
+      "MySQL NDB",
+      "Percona XtraDB Cluster",
+      "SQL Server",
+      "PostgreSQL",
+      "Sybase ASE",
+      "OCI",
+      "AWS",
+      "Azure",
+      "GCP",
+      "Shell",
+      "Python",
+      "Automation"
+    ],
+    "_pendente_bio_longa": "Se quiser um parágrafo autoral de apresentação, escreva aqui e ele substitui o texto derivado dos campos acima.",
+    "anosExperiencia": "12+"
+  },
+  "links": {
+    "_nota": "URLs marcadas com confirmado:true foram informadas pelo mentor. As demais aguardam confirmacao e podem ser esvaziadas sem quebrar o site.",
+    "linkedin": {
+      "url": "https://www.linkedin.com/in/acaciolr",
+      "label": "LinkedIn",
+      "desc": "Technical articles, project behind-the-scenes and the mentor's professional network.",
+      "confirmado": false,
+      "qr": true,
+      "accent": "#4FA8E8",
+      "qrPlate": "#E9F2FA",
+      "qrInk": "#0C3A5E"
+    },
+    "linkedinEmpresa": {
+      "url": "https://www.linkedin.com/company/dbabrabo",
+      "label": "LinkedIn DBA BRABO",
+      "desc": "Official ecosystem page — technical content and mentorship updates.",
+      "confirmado": true,
+      "qr": true,
+      "accent": "#4FA8E8",
+      "qrPlate": "#E9F2FA",
+      "qrInk": "#0C3A5E"
+    },
+    "instagram": {
+      "url": "https://www.instagram.com/dbabrabo",
+      "label": "Instagram",
+      "desc": "Quick tips, behind-the-scenes and the mentorship schedule.",
+      "confirmado": true,
+      "handle": "@dbabrabo",
+      "qr": true,
+      "accent": "#B57BF5",
+      "qrPlate": "#F3EDFB",
+      "qrInk": "#3D1E63"
+    },
+    "github": {
+      "url": "https://github.com/acaciolr",
+      "label": "GitHub",
+      "desc": "Scripts, tools and open-source projects from the ecosystem.",
+      "confirmado": false,
+      "qr": false,
+      "accent": "#A8B6C6",
+      "qrPlate": "#EEF1F4",
+      "qrInk": "#1B2129"
+    },
+    "blog": {
+      "url": "https://acaciolrdba.wordpress.com",
+      "label": "Blog",
+      "desc": "Case studies, real-world troubleshooting and technical deep dives.",
+      "confirmado": false,
+      "qr": false,
+      "accent": "#FF8A4C",
+      "qrPlate": "#FDF0E8",
+      "qrInk": "#6B2C0C"
+    },
+    "whatsapp": {
+      "url": "https://chat.whatsapp.com/FkSQn51247h5mDV6DFsW5t?s=cl&p=i&mlu=4",
+      "label": "WhatsApp Community",
+      "desc": "Official DBA group: questions, knowledge sharing and a direct channel with the mentor.",
+      "confirmado": true,
+      "qr": true,
+      "destaque": true,
+      "accent": "#4ADE80",
+      "qrPlate": "#EAF7EF",
+      "qrInk": "#0F4A2A"
+    },
+    "youtube": {
+      "url": "",
+      "label": "YouTube",
+      "desc": "",
+      "confirmado": false,
+      "accent": "#F0705A",
+      "qrPlate": "#FDECEA",
+      "qrInk": "#631B12"
+    },
+    "email": {
+      "url": "",
+      "label": "Email",
+      "desc": "Talk directly with the mentor.",
+      "confirmado": false,
+      "accent": "#2ED8C3",
+      "qrPlate": "#E6F8F6",
+      "qrInk": "#0B463F"
+    },
+    "_notaQR": "QR sempre com modulos escuros sobre placa clara (qrInk sobre qrPlate). QR invertido nao e lido por boa parte dos leitores — testado e reprovado. A placa usa um tom da cor do canal para nao ficar preto e branco."
+  },
+  "comunidades": [
+    {
+      "nome": "Comunidade MySQL Brasil",
+      "url": "https://comunidademysql.com.br",
+      "confirmado": false
+    },
+    {
+      "nome": "GUOB — Grupo de Usuários Oracle do Brasil",
+      "url": "https://www.guob.com.br",
+      "confirmado": false
+    }
+  ],
+  "formato": {
+    "_fonte": "Extraído do rodapé e das seções presentes em todos os 19 banners oficiais.",
+    "itens": [
+      {
+        "icone": "chat",
+        "titulo": "WhatsApp Group",
+        "desc": "Direct channel with the mentor between sessions."
+      },
+      {
+        "icone": "phone",
+        "titulo": "On-demand calls",
+        "desc": "Live sessions scheduled around your needs."
+      },
+      {
+        "icone": "flask",
+        "titulo": "Hands-on Lab",
+        "desc": "Real implementation in your environment, not just slides."
+      }
+    ]
+  },
+  "metodologia": {
+    "_fonte": "Derivado da estrutura das mentorias Técnica, Carreira e Certificação & Skills.",
+    "etapas": [
+      {
+        "n": "01",
+        "titulo": "Assessment",
+        "desc": "Initial call of up to 1h to map your current level and goals."
+      },
+      {
+        "n": "02",
+        "titulo": "Theory",
+        "desc": "Internal architecture and fundamentals before any lab."
+      },
+      {
+        "n": "03",
+        "titulo": "Hands-on Lab",
+        "desc": "Administration, replication and high availability in your environment."
+      },
+      {
+        "n": "04",
+        "titulo": "Backup & DR",
+        "desc": "Complete strategy with a real restore test."
+      },
+      {
+        "n": "05",
+        "titulo": "Performance",
+        "desc": "Bottleneck diagnosis and evidence-based tuning."
+      },
+      {
+        "n": "06",
+        "titulo": "Ongoing Support",
+        "desc": "Follow-up between sessions via group and calls."
+      }
+    ]
+  },
+  "investimento": {
+    "_pendente": "Valores ainda nao informados. Enquanto 'valor' estiver vazio o site exibe o texto de fallback abaixo e nenhum preco e inventado.",
+    "exibirPrecos": false,
+    "moeda": "BRL",
+    "fallback": "Contact us",
+    "ctaSemPreco": "Talk to the mentor"
+  },
+  "seo": {
+    "twitterCard": "summary_large_image",
+    "themeColor": "#0A0D12",
+    "keywords": [
+      "DBA",
+      "Oracle",
+      "MySQL",
+      "SQL Server",
+      "PostgreSQL",
+      "MongoDB",
+      "Exadata",
+      "RAC",
+      "Data Guard",
+      "GoldenGate",
+      "ZDLRA",
+      "ODA",
+      "high availability",
+      "performance",
+      "backup",
+      "DBA mentorship"
+    ]
+  },
+  "footer": {
+    "copyright": "DBA BRABO. All rights reserved.",
+    "anoInicio": 2025
+  },
+  "fundadores": {
+    "_nota": "principal:true renderiza o card grande com avatar. Os demais entram em cards menores empilhados ao lado. Campo linkedin vazio deixa o botao pronto porem desabilitado — basta preencher a URL depois.",
+    "lista": [
+      {
+        "id": "acacio",
+        "principal": true,
+        "nome": "Acácio Lima Rocha",
+        "titulo": "Senior Database Administrator",
+        "headline": "Senior DBA with 12+ years in critical production environments.",
+        "avatar": "assets/logo/avatar-256.png",
+        "trajetoria": [
+          "Principal Advanced Support Engineer",
+          "MySQL Tech Lead",
+          "Senior DBA Consultant"
+        ],
+        "reconhecimentos": [
+          "Oracle ACE Associate",
+          "LinkedIn Top Database Administration Voice 2024"
+        ],
+        "linkedin": "https://www.linkedin.com/in/acaciolr",
+        "github": "https://github.com/acaciolr",
+        "confirmado": true
+      },
+      {
+        "id": "weverton",
+        "principal": false,
+        "nome": "Weverton Amorim",
+        "titulo": "Senior DBA Consultant",
+        "headline": "Senior DBA with 12+ years in critical production environments.",
+        "trajetoria": [],
+        "reconhecimentos": [],
+        "linkedin": "https://www.linkedin.com/in/weverton-amorim/",
+        "github": "",
+        "confirmado": true
+      },
+      {
+        "id": "luis",
+        "principal": false,
+        "nome": "Luis Henrique Jacoveto",
+        "titulo": "Senior DBA Consultant",
+        "headline": "Senior DBA with 12+ years in critical production environments.",
+        "trajetoria": [],
+        "reconhecimentos": [],
+        "linkedin": "https://www.linkedin.com/in/luishenriquejm/",
+        "github": "",
+        "confirmado": true
+      }
+    ]
+  },
+  "contato": {
+    "_nota": "data-community -> grupo do WhatsApp. data-contato -> pagina oficial no LinkedIn. Sao CTAs diferentes de proposito.",
+    "canalContato": "linkedinEmpresa",
+    "canalComunidade": "whatsapp"
+  }
+}

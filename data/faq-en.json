@@ -1,0 +1,26 @@
+{
+  "_comment": "Somente informacoes presentes nos materiais oficiais (banners) ou fornecidas pelo mentor. Nada de politica comercial inventada.",
+  "perguntas": [
+    { "q": "Who are the mentorships for?",
+      "a": "For technology professionals and students who work with databases and want to go beyond using them — administering, diagnosing and owning production environments. There are technical tracks per technology plus career and certification programs." },
+    { "q": "Do I need prior experience as a DBA?",
+      "a": "No. The first step of every mentorship is a diagnostic call to map your current level and your goal. The plan is built from there — beginners start with SQL Language and database architecture fundamentals." },
+    { "q": "How do the sessions work?",
+      "a": "On-demand calls, scheduled around your needs — not fixed-date cohorts. Between sessions, follow-up happens in the WhatsApp group." },
+    { "q": "Are the mentorships hands-on?",
+      "a": "Yes. The format planned for every mentorship is theory first — internal architecture and fundamentals — followed by hands-on labs in administration, replication and high availability, whenever possible in your own environment." },
+    { "q": "Which databases are covered?",
+      "a": "Oracle Database, MySQL, SQL Server, PostgreSQL and MongoDB, plus SQL Language. There are also mentorships on Engineered Systems (Exadata, ODA, ZDLRA), replication with GoldenGate, the four main clouds (OCI, AWS, Azure, GCP) and DBRE." },
+    { "q": "Is there a certificate?",
+      "a": "Yes, in the Complete Mentorship: the Certificate of Completion is exclusive to that program." },
+    { "q": "What is the difference between the Technical and the Complete Mentorship?",
+      "a": "The Technical one covers architecture, hands-on labs, backup and DR, and performance. The Complete one brings together three fronts — Technical, Career and Certification — with pace and order personalized by the mentor, and includes the Certificate of Completion." },
+    { "q": "How does the community work?",
+      "a": "It is a WhatsApp group of DBAs for questions, knowledge sharing and networking, and also the direct channel to the mentor between sessions." },
+    { "q": "How do I join?",
+      "a": "Talk directly to the mentor through the channels in the Community section. The conversation starts with the diagnostic call, with no commitment." },
+    { "q": "What is the investment?",
+      "a": "Pricing is presented in the initial conversation, depending on the chosen mentorship and the agreed format.",
+      "_pendente": "Substituir por tabela de precos assim que o mentor informar; ate la esta resposta nao afirma valor nenhum." }
+  ]
+}

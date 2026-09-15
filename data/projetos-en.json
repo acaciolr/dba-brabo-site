@@ -1,0 +1,172 @@
+{
+  "_comment": "Projetos e ferramentas do ecossistema DBA BRABO. 'confirmado:false' = descricao derivada de registros da sessao e ainda nao revisada pelo mentor. URLs vazias nao renderizam botao.",
+  "projetos": [
+    {
+      "slug": "ora-brabo",
+      "nome": "ORA BRABO",
+      "tagline": "Oracle monitoring in TUI",
+      "desc": "Oracle monitoring tool for the terminal, built with Textual, with dedicated panels for RAC, Data Guard, ASM and Exadata and asynchronous collectors.",
+      "stack": [
+        "Python",
+        "Textual",
+        "Oracle",
+        "RAC",
+        "Data Guard",
+        "ASM",
+        "Exadata"
+      ],
+      "destaques": [
+        "12 panels accessible via function keys",
+        "Asynchronous collectors — the interface never freezes waiting on a query",
+        "Coverage of RAC, Data Guard, ASM and Exadata"
+      ],
+      "status": "In production",
+      "accent": "#F0805A",
+      "links": {
+        "github": "https://github.com/acaciolr/ora-brabo",
+        "site": "",
+        "docs": ""
+      },
+      "confirmado": true,
+      "monitoramento": true,
+      "repoPublico": true
+    },
+    {
+      "slug": "mysql-super-dba",
+      "nome": "MySQL Super DBA",
+      "tagline": "MySQL lab platform",
+      "desc": "Lab orchestrator based on Multipass VMs that provisions complete MySQL topologies for study and training — including failure and recovery scenarios.",
+      "stack": [
+        "Python",
+        "Rich",
+        "Multipass",
+        "tmux",
+        "MySQL",
+        "InnoDB Cluster",
+        "Group Replication",
+        "NDB",
+        "Percona XtraDB Cluster"
+      ],
+      "destaques": [
+        "19 provisionable MySQL topologies",
+        "Rich-based TUI menus and tmux log panels",
+        "Chaos and recovery scenarios to train troubleshooting",
+        "Complete documentation accompanying each topology"
+      ],
+      "status": "In staging",
+      "versao": "v3.0",
+      "accent": "#34D3C4",
+      "destaque": true,
+      "links": {
+        "github": "",
+        "docs": ""
+      },
+      "confirmado": false
+    },
+    {
+      "slug": "sql-brabo",
+      "nome": "SQL BRABO",
+      "tagline": "SQL Server automation and diagnostics",
+      "desc": "Set of scripts and procedures for SQL Server administration — tempdb diagnostics, restore automation with dedicated stored procedures, and import/export routines via BCP.",
+      "stack": [
+        "SQL Server",
+        "T-SQL",
+        "PowerShell",
+        "BCP"
+      ],
+      "destaques": [
+        "tempdb diagnostics",
+        "Restore automation with dedicated stored procedures",
+        "Import/export scripts via BCP"
+      ],
+      "status": "In staging",
+      "accent": "#F08A6E",
+      "links": {
+        "github": "https://github.com/acaciolr/sql-brabo",
+        "site": "",
+        "docs": ""
+      },
+      "confirmado": true,
+      "monitoramento": true,
+      "repoPublico": true
+    },
+    {
+      "slug": "pg-brabo",
+      "nome": "PG BRABO",
+      "tagline": "PostgreSQL administration and auditing",
+      "desc": "PostgreSQL administration scripts following the same conventions as the ecosystem's MySQL tools — session auditing, backup, performance and security.",
+      "stack": [
+        "PostgreSQL",
+        "Shell",
+        "Python",
+        "SQL"
+      ],
+      "destaques": [
+        "Session auditing mirroring the conventions of the MySQL tools",
+        "Backup and verification routines",
+        "Collection for performance analysis"
+      ],
+      "status": "In development",
+      "accent": "#4FD1B0",
+      "links": {
+        "github": "https://github.com/acaciolr/pg_brabo",
+        "site": "",
+        "docs": ""
+      },
+      "confirmado": false,
+      "monitoramento": true,
+      "repoPublico": false,
+      "_pendente": "Repositorio ainda privado ou nao criado — virar repoPublico:true quando estiver no ar."
+    },
+    {
+      "slug": "recover-database-framework",
+      "nome": "Recover Database Framework",
+      "tagline": "Database recovery framework",
+      "desc": "",
+      "stack": [],
+      "destaques": [],
+      "status": "In development",
+      "accent": "#2ED8C3",
+      "links": {
+        "github": "",
+        "site": "",
+        "docs": ""
+      },
+      "confirmado": false,
+      "_pendente": "Descricao, stack e destaques ainda nao informados pelo mentor. Enquanto desc estiver vazio o card mostra apenas nome, tagline e status."
+    },
+    {
+      "slug": "bsar",
+      "nome": "BSAR",
+      "tagline": "Slow query log in AWR-style report",
+      "desc": "Slow query log analyzer for MySQL, MariaDB and Percona. It normalizes queries, groups them by fingerprint and delivers a report in the terminal and in interactive HTML, in the style of Oracle's AWR.",
+      "stack": [
+        "Python",
+        "MySQL",
+        "MariaDB",
+        "Percona",
+        "SQLite",
+        "HTML"
+      ],
+      "destaques": [
+        "Zero external dependencies — only the Python 3.6+ standard library",
+        "Reads .log, .gz, .zip or directly from the mysql.slow_log table",
+        "p50 to p99 percentiles, automatic callouts and index suggestions",
+        "SQLite snapshot to compare periods and spot regressions",
+        "HTML, JSON, CSV and text output, with --watch mode and alerts"
+      ],
+      "status": "In staging",
+      "accent": "#5AA9E6",
+      "links": {
+        "github": "https://github.com/acaciolr/bsar",
+        "site": "",
+        "docs": ""
+      },
+      "confirmado": true,
+      "monitoramento": true,
+      "repoPublico": true
+    }
+  ],
+  "_quadro": "O grid foi pensado para 6 projetos. Hoje sao 5 — o sexto entra quando o mentor definir.",
+  "_notaLinks": "repoPublico:false esconde o botao mesmo com links.github preenchido, para nao levar o visitante a um 404."
+}
